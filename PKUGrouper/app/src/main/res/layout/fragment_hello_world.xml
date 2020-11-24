@@ -9,7 +9,7 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/HelloButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,6 +17,7 @@
         android:layout_marginTop="396dp"
         android:layout_marginEnd="159dp"
         android:layout_marginBottom="287dp"
+        android:elevation="50dp"
         android:text="ClickMe"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,5 @@
 package com.e.pkugrouper;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,14 +8,13 @@ import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HelloWorldFragment#newInstance} factory method to
+ * Use the {@link MissionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HelloWorldFragment extends Fragment {
+public class MissionFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,9 +25,7 @@ public class HelloWorldFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private Button helloButton;
-
-    public HelloWorldFragment() {
+    public MissionFragment() {
         // Required empty public constructor
     }
 
@@ -39,11 +35,11 @@ public class HelloWorldFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HelloWorldFragment.
+     * @return A new instance of fragment MissionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HelloWorldFragment newInstance(String param1, String param2) {
-        HelloWorldFragment fragment = new HelloWorldFragment();
+    public static MissionFragment newInstance(String param1, String param2) {
+        MissionFragment fragment = new MissionFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,17 +60,13 @@ public class HelloWorldFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_hello_world, container, false);
-        helloButton = v.findViewById(R.id.HelloButton);
-        helloButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                Fragment fragment = new MainViewFragment();
-                fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
-            }
-        });
+
+       /* FragmentManager fm = getFragmentManager();
+        Fragment fragment = new SquareFragment();
+        fm.beginTransaction().replace(R.id.mission_list_frame1,fragment).commit();*/
+
+        View v = inflater.inflate(R.layout.fragment_mission, container, false);
+
         return v;
     }
-
 }

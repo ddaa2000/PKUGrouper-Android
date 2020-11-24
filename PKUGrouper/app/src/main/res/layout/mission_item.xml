@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mission_item"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="100dp">
+
+    <TextView
+        android:id="@+id/mission_list_mission_name"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textSize="24sp"
+        android:text="Mission" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:text="description of the mission" />
+</LinearLayout>
