@@ -3,7 +3,7 @@ package com.e.pkugrouper.Managers;
 import com.e.pkugrouper.Models.ICommonUser;
 import com.e.pkugrouper.Models.IUser;
 
-public class UserManager implements IUserManager{
+public class UserManager extends HttpManager implements IUserManager{
 
     @Override
     public ICommonUser findMemberByID(int missionID, int userID) {

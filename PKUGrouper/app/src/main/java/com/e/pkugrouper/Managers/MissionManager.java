@@ -5,7 +5,7 @@ import com.e.pkugrouper.Models.IUser;
 
 import java.util.List;
 
-public class MissionManager implements IMissionManager{
+public class MissionManager extends HttpManager implements IMissionManager{
     @Override
     public void setCurrentUser(IUser _currentUser) {
 

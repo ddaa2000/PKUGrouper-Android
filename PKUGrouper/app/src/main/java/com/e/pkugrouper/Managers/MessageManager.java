@@ -5,7 +5,7 @@ import com.e.pkugrouper.Models.IUser;
 
 import java.util.List;
 
-public class MessageManager implements IMessageManager{
+public class MessageManager extends HttpManager implements IMessageManager{
     @Override
     public void setCurrentUser(IUser _currentUser) {
 
@@ -14,5 +14,15 @@ public class MessageManager implements IMessageManager{
     @Override
     public List<IMessage> getCurrentUserMessages() {
         return null;
+    }
+
+    @Override
+    public void reportBug(IMessage bug) {
+
+    }
+
+    @Override
+    public void report(IMessage report) {
+
     }
 }
