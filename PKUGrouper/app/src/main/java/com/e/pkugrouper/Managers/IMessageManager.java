@@ -5,6 +5,10 @@ import com.e.pkugrouper.Models.IUser;
 
 import java.util.List;
 
+/**
+ * @author ddaa
+ * MessageManager应当实现的接口
+ */
 public interface IMessageManager {
     void setCurrentUser(IUser _currentUser);
 
