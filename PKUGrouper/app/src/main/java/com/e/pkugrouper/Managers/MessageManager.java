@@ -17,12 +17,13 @@ public class MessageManager extends HttpManager implements IMessageManager{
     }
 
     @Override
-    public void reportBug(IMessage bug) {
-
+    public boolean reportBug(IMessage bug) {
+        return false;
     }
 
     @Override
-    public void report(IMessage report) {
-
+    public boolean report(IMessage report) {
+        return false;
     }
+
 }

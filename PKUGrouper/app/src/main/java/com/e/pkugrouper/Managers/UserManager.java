@@ -26,28 +26,34 @@ public class UserManager extends HttpManager implements IUserManager{
     }
 
     @Override
-    public void setMissionManager(IMissionManager _missionManager) {
-
+    public boolean setMissionManager(IMissionManager _missionManager) {
+        return false;
     }
 
     @Override
-    public void setMessageManager(IMessageManager _messageManager) {
-
+    public boolean setMessageManager(IMessageManager _messageManager) {
+        return false;
     }
 
     @Override
-    public void editInfo() {
-
+    public boolean editInfo() {
+        return false;
     }
 
     @Override
-    public void changePassword() {
-
+    public boolean editTags() {
+        return false;
     }
 
     @Override
-    public void evaluate(int missionID, int evauateeID, int score) {
-
+    public boolean changePassword() {
+        return false;
     }
+
+    @Override
+    public boolean evaluate(int missionID, int evauateeID, int score) {
+        return false;
+    }
+
 
 }

@@ -16,12 +16,13 @@ public interface IUserManager {
     IUser userLogIn(IUser currentUser);                     // user/login
     IUser userRegister(IUser currentUser);                  // user/register
 
-    void setMissionManager(IMissionManager _missionManager);
-    void setMessageManager(IMessageManager _messageManager);
+    boolean setMissionManager(IMissionManager _missionManager);
+    boolean setMessageManager(IMessageManager _messageManager);
 
 
-    void editInfo();                                        // user/info
-    void changePassword();                                  // user/code
-    void evaluate(int missionID, int evauateeID,int score); // evaluation
+    boolean editInfo();                                        // user/info
+    boolean editTags();                                        // user/tags
+    boolean changePassword();                                  // user/code
+    boolean evaluate(int missionID, int evauateeID,int score); // evaluation
 
 }

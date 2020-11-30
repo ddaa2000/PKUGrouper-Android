@@ -52,4 +52,9 @@ public class User implements IUser{
     public List<Integer> getEvaluationIDs() {
         return null;
     }
+
+    @Override
+    public List<String> getTags() {
+        return null;
+    }
 }

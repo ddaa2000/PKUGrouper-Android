@@ -14,6 +14,7 @@ public interface IUser {
     void setIdentification(IIdentification _identification);
     List<Integer> getMessageIDs();
     List<Integer> getEvaluationIDs();
+    List<String> getTags();
 
 
 }
