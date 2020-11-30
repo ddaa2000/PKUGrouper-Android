@@ -1,6 +1,6 @@
 package com.e.pkugrouper.Models;
 
-public interface IEvaluation {
+public interface IEvaluation extends ISerializable{
     int getEvaluatorID();
     int getEvaluateeID();
     int getMissionID();

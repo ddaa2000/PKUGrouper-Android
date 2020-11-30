@@ -27,4 +27,13 @@ public class CommonUser  extends User implements ICommonUser{
     public void setAverageScore(double _averageScore) {
 
     }
+
+    @Override
+    public String toJSON(){
+        return null;
+    }
+
+    @Override
+    public void loadFromJSON(String JSONString){
+    }
 }

@@ -57,4 +57,14 @@ public class User implements IUser{
     public List<String> getTags() {
         return null;
     }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public void loadFromJSON(String JSONString) {
+
+    }
 }

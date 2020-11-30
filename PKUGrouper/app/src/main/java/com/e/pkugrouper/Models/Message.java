@@ -37,4 +37,14 @@ public class Message implements  IMessage{
     public void setMessageContent(String content) {
 
     }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public void loadFromJSON(String JSONString) {
+
+    }
 }

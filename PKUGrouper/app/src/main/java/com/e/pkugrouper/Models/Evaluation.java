@@ -42,4 +42,14 @@ public class Evaluation implements IEvaluation{
     public void setScore(double score) {
 
     }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public void loadFromJSON(String JSONString) {
+
+    }
 }

@@ -2,7 +2,7 @@ package com.e.pkugrouper.Models;
 
 import java.util.List;
 
-public interface IMission {
+public interface IMission extends ISerializable{
     int getID();
     void setID(int _missionID);
     String getContent();

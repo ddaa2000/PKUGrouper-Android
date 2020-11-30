@@ -72,4 +72,14 @@ public class Mission implements IMission{
     public void setSize(int size) {
 
     }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public void loadFromJSON(String JSONString) {
+
+    }
 }

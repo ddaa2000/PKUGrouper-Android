@@ -2,7 +2,7 @@ package com.e.pkugrouper.Models;
 
 import java.util.List;
 
-public interface IUser {
+public interface IUser extends ISerializable{
 
     String getUserName();
     String setUserName();
