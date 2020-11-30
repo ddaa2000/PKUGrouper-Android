@@ -14,7 +14,7 @@ import java.util.List;
  * 当user的信息发生变化时，UserManager应当通知MissionManager与MessageManager，为它们赋予新值
  */
 public interface IUserManager {
-    ICommonUser findMemberByID(int missionID, int userID);  // user/member
+    ICommonUser findMemberByID(int missionID, int memberID);  // user/member
     ICommonUser getSelf();                                  // user/self
     IUser userLogIn(IUser currentUser);                     // user/login
     IUser userRegister(IUser currentUser);                  // user/register
@@ -27,6 +27,6 @@ public interface IUserManager {
     boolean editInfo();                                        // user/info
     boolean editTags();                                        // user/tags
     boolean changePassword();                                  // user/code
-    boolean evaluate(int missionID, int evauateeID,int score); // user/evaluate
+    boolean evaluate(int missionID, int evaluateeID,int score); // user/evaluate
 
 }

@@ -18,7 +18,7 @@ public interface IMissionManager {
 
     boolean deleteMission(int missionID);              // mission/delete
     boolean addMission(IMission mission);              // mission/create
-    boolean editMission(IMission mission);             // mission/accept
+    boolean editMission(IMission mission);             // mission
     boolean accept(int missionID, int applicantID);    // mission/accept
     boolean fire(int missionID, int applicantID);      // mission/fire
     boolean reject(int missionID, int applicantID);    // mission/reject
