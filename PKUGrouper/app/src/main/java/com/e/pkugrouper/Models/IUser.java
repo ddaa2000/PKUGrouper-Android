@@ -13,6 +13,7 @@ public interface IUser {
     IIdentification getIdentification();
     void setIdentification(IIdentification _identification);
     List<Integer> getMessageIDs();
+    List<Integer> getEvaluationIDs();
 
 
 }

@@ -47,4 +47,9 @@ public class User implements IUser{
     public List<Integer> getMessageIDs() {
         return null;
     }
+
+    @Override
+    public List<Integer> getEvaluationIDs() {
+        return null;
+    }
 }
