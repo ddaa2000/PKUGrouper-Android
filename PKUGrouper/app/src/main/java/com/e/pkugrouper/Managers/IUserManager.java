@@ -1,7 +1,10 @@
 package com.e.pkugrouper.Managers;
 
 import com.e.pkugrouper.Models.ICommonUser;
+import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Models.IUser;
+
+import java.util.List;
 
 /**
  * @author ddaa
@@ -15,6 +18,7 @@ public interface IUserManager {
     ICommonUser getSelf();                                  // user/self
     IUser userLogIn(IUser currentUser);                     // user/login
     IUser userRegister(IUser currentUser);                  // user/register
+    List<IEvaluation> getEvaluations();                     // user/evaluations
 
     boolean setMissionManager(IMissionManager _missionManager);
     boolean setMessageManager(IMessageManager _messageManager);
@@ -23,6 +27,6 @@ public interface IUserManager {
     boolean editInfo();                                        // user/info
     boolean editTags();                                        // user/tags
     boolean changePassword();                                  // user/code
-    boolean evaluate(int missionID, int evauateeID,int score); // evaluation
+    boolean evaluate(int missionID, int evauateeID,int score); // user/evaluate
 
 }
