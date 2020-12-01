@@ -3,6 +3,7 @@ package com.e.pkugrouper.Managers;
 import com.e.pkugrouper.Models.ICommonUser;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Administrator;
+import java.util.Arrays;
 
 public class UserManager extends HttpManager implements IUserManager{
     //在修改了user的属性后要重新设置missionManager和messageManager中的currentUser
@@ -16,9 +17,13 @@ public class UserManager extends HttpManager implements IUserManager{
             return null;
         } //检测user对象是否存在
 
+        if(missionID < 0 || memberID < 0) {
+            //report or throw
+            return null;
+        }
         //读取要查找的member的JSON序列
-        List<String> parameters = [user.getUserID(), String.ValueOf(missionID),
-                String.ValueOf(memberID)];
+        List<String> parameters = Arrays.asList(user.getUserID(), String.ValueOf(missionID),
+                String.ValueOf(memberID));
         String url = "/user/member";
         String Member_JSON = self.httpGet(url, parameters, null);
 
@@ -29,7 +34,7 @@ public class UserManager extends HttpManager implements IUserManager{
         }
         //生成member对应的ICommonUser对象
         else {
-            ICommonUser member = new ICommonUser;
+            ICommonUser member = new ICommonUser();
             member.loadFromJSON(Member_JSON);
             //return member;
             return null;
@@ -38,13 +43,23 @@ public class UserManager extends HttpManager implements IUserManager{
 
     @Override
     public ICommonUser getSelf() {
+        if(user == null) {
+            //report or throw;
+            return null;
+        } //检测user对象是否存在
+
         //根据给定的userID生成对象
-        List<String> parameters = [String.ValueOf(userID)];
+        List<String> parameters = Arrays.asList(String.ValueOf(userID));
         String url = "/user/self";
         String User_JSON = self.httpGet(url, parameters, null);
 
+        if(User_JSON == null) {
+            //report or throw
+            return null;
+        }
+
         //从返回的JSON字符串中得到当前使用的User对象
-        ICommonUser Self = new ICommonUser;
+        ICommonUser Self = new ICommonUser();
         Self.loadFromJSON(User_JSON);
         //return Self;
         return null;
@@ -52,6 +67,12 @@ public class UserManager extends HttpManager implements IUserManager{
 
     @Override
     public IUser userLogIn(IUser currentUser) {
+        //检查currentUser是否存在
+        if(currentUser == null) {
+            //report or throw
+            return null;
+        }
+
         //生成登录产生的JSON字符串
         String url = "/user/login";
         String User_JSON = currentUser.toJSON();
@@ -64,7 +85,7 @@ public class UserManager extends HttpManager implements IUserManager{
         }
 
         //生成登陆后的user对象
-        IUser User_Login = new IUser;
+        IUser User_Login = new IUser();
         User_Login.loadFromJSON(User_Login_JSON);
         user = User_Login;
 
@@ -84,13 +105,25 @@ public class UserManager extends HttpManager implements IUserManager{
 
     @Override
     public IUser userRegister(IUser currentUser) {
+        //检查currentUser是否为null
+        if(currentUser == null) {
+            //report or throw
+            return null;
+        }
+
         //生成注册产生的JSON字符串
         String url = "/user/register";
         String User_JSON = currentUser.toJSON();
         String User_Register_JSON = self.httpPost(url, null, User_JSON);
 
+        //检查User_Register_JSON是否为空
+        if(User_Register_JSON == null) {
+            //report or throw
+            return null;
+        }
+
         //生成注册后的User对象
-        IUser User_Register = new IUser;
+        IUser User_Register = new IUser();
         User_Register.loadFromJSON(User_Register_JSON);
         user = User_Register;
 
@@ -142,13 +175,13 @@ public class UserManager extends HttpManager implements IUserManager{
 
         //用Put修改用户的信息
         String url = "/user/info";
-        List<String> parameters = [user.getUserID()];
+        List<String> parameters = Arrays.asList(user.getUserID());
         String User_JSON = user.toJSON();
         String EditInfo_JSON = self.httpPut(url, parameters, User_JSON);
 
         //如果成功修改了信息，用修改后返回的JSON更新当前用户的信息
         if(EditInfo_JSON != null) {
-            user.loadFronJSON(EditInfo_JSON);
+            user.loadFromJSON(EditInfo_JSON);
             return true;
         }
         else {
@@ -167,7 +200,7 @@ public class UserManager extends HttpManager implements IUserManager{
 
         //修改用户的Tags
         String url = "/user/tags";
-        List<String> parameters = [user.getUserID()];
+        List<String> parameters = Arrays.asList(user.getUserID());
         List<String> tags = user.getTags();
         String taglist = "";
         for (String tag: tags){
@@ -196,7 +229,7 @@ public class UserManager extends HttpManager implements IUserManager{
 
         //修改用户的password
         String url = '/user/code';
-        List<String> parameters = [user.getUserID()];
+        List<String> parameters = Arrays.asList(user.getUserID());
         String Password = null;
         String password_JSON = self.httpPut(url, parameters, Password);
 
@@ -220,11 +253,16 @@ public class UserManager extends HttpManager implements IUserManager{
             return false;
         }
 
-        String url = "/user/evalute";
-        List<String> parameters = [user.getUserID(), String.ValueOf(missionID),
-                String.ValueOf(evaluateeID)];
+        if(missionID < 0 || evaluateeID < 0 || score < 0) {
+            //report or throw exception
+            return false;
+        }
 
-        Evaluation evaluation = new Evaluation;
+        String url = "/user/evalute";
+        List<String> parameters = Arrays.asList(user.getUserID(), String.ValueOf(missionID),
+                String.ValueOf(evaluateeID));
+
+        Evaluation evaluation = new Evaluation();
         evaluation.setEvaluateeID(evaluateeID);
         evaluation.setMissionID(missionID);
         evaluation.setScore(score);

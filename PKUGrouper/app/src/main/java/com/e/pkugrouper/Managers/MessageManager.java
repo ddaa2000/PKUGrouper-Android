@@ -2,8 +2,9 @@ package com.e.pkugrouper.Managers;
 
 import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.IUser;
-
+import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MessageManager extends HttpManager implements IMessageManager{
     private IUser currentUser;
@@ -11,7 +12,7 @@ public class MessageManager extends HttpManager implements IMessageManager{
     @Override
     public void setCurrentUser(IUser _currentUser) {
         if (_currentUser == null) {
-            //throw
+            //report or throw
         }
         else {
             currentUser = _currentUser;
@@ -28,7 +29,7 @@ public class MessageManager extends HttpManager implements IMessageManager{
 
         //得到currentUser的信息
         String url = "/message";
-        List<String> parameters = [currentUser.getUserID()];
+        List<String> parameters = Arrays.asList(currentUser.getUserID());
         String Message_JSON_All = self.httpGet(url, parameters, null);
 
         //如果得不到信息
@@ -38,13 +39,14 @@ public class MessageManager extends HttpManager implements IMessageManager{
         }
 
         //下一步是分割的问题 暂时得不到解决
-        List<String> Message_JSON_List;
-        List<IMessage> Message_List;
+        /*
+        List<String> Message_JSON_List = new ArrayList<>();
+        List<IMessage> Message_List = new ArrayList<>();
         for (String Message_JSON: Message_JSON_List){
             IMessage current_message = new IMessage;
             current_message.loadFromJSON(Message_JSON);
             Message_List.add(current_message);
-        }
+        }*/
         //return Message_List;
         return null;
     }
@@ -57,9 +59,15 @@ public class MessageManager extends HttpManager implements IMessageManager{
             return false;
         }
 
+        //检查参数
+        if(bug == null) {
+            //report or throw
+            return false;
+        }
+
         //报告bug
         String url = "/message/bug";
-        List<String> parameters = [currentUser.getUserID()];
+        List<String> parameters = Arrays.asList(currentUser.getUserID());
         String bug_JSON = bug.toJSON();
         String bug_final_JSON = self.httpPost(url, parameters, bug_JSON);
 
@@ -78,13 +86,19 @@ public class MessageManager extends HttpManager implements IMessageManager{
     public boolean report(IMessage report) {
         //检查currentUser
         if(currentUser == null){
-            //throw
+            //report or throw
+            return false;
+        }
+
+        //检查参数
+        if(report == null){
+            //report or throw;
             return false;
         }
 
         //报告
         String url = "/message/report";
-        List<String> parameters = [currentUser.getUserID()];
+        List<String> parameters = Arrays.asList(currentUser.getUserID());
         String report_JSON = report.toJSON();
         String report_final_JSON = self.httpPost(url, parameters, report_JSON);
 
