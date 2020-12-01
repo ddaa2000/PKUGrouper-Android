@@ -24,13 +24,13 @@ public class MessageManager extends HttpManager implements IMessageManager{
         //判断currentUser是否存在
         if(currentUser == null){
             //report or throw exception
-            return false;
+            return null;
         }
 
         //得到currentUser的信息
         String url = "/message";
-        List<String> parameters = Arrays.asList(currentUser.getUserID());
-        String Message_JSON_All = self.httpGet(url, parameters, null);
+        List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
+        String Message_JSON_All = httpGet(url, parameters, null);
 
         //如果得不到信息
         if(Message_JSON_All == null){
@@ -67,9 +67,9 @@ public class MessageManager extends HttpManager implements IMessageManager{
 
         //报告bug
         String url = "/message/bug";
-        List<String> parameters = Arrays.asList(currentUser.getUserID());
+        List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
         String bug_JSON = bug.toJSON();
-        String bug_final_JSON = self.httpPost(url, parameters, bug_JSON);
+        String bug_final_JSON = httpPost(url, parameters, bug_JSON);
 
         //检查是否报告成功
         if(bug_final_JSON == null){
@@ -79,7 +79,6 @@ public class MessageManager extends HttpManager implements IMessageManager{
         else{
             return true;
         }
-        return false;
     }
 
     @Override
@@ -98,9 +97,9 @@ public class MessageManager extends HttpManager implements IMessageManager{
 
         //报告
         String url = "/message/report";
-        List<String> parameters = Arrays.asList(currentUser.getUserID());
+        List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
         String report_JSON = report.toJSON();
-        String report_final_JSON = self.httpPost(url, parameters, report_JSON);
+        String report_final_JSON = httpPost(url, parameters, report_JSON);
 
         //检查是否报告成功
         if(report_final_JSON == null){
@@ -110,7 +109,6 @@ public class MessageManager extends HttpManager implements IMessageManager{
         else {
             return true;
         }
-        return false;
     }
 
 }
