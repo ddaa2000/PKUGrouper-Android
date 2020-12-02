@@ -658,6 +658,40 @@ body=
 
 
 
+删除任务请求
+
+只有在申请期内且任务发布者才能删除任务
+
+```json
+URL : /mission/delete/{ID}/{missionID}
+
+request body = none
+
+response:
+OK:
+status_code = 200
+body=
+"OK"
+
+user Not Found:
+status_code = 404
+body=
+"user Not Found"
+
+mission Not Found:
+status_code = 404
+body=
+"mission Not Found"
+
+Forbidden:
+status_code = 403
+body=
+"Forbidden"
+//无效的情况
+```
+
+
+
 退出任务请求
 
 只有在申请期内且非任务发布者才能退出任务
