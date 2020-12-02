@@ -10,6 +10,14 @@ import java.util.List;
 public class MissionManager extends HttpManager implements IMissionManager{
 
     private IUser currentUser;
+
+    private final String user_not_found = "\"user Not Found\"";
+    private final String mission_not_found = "\"mission Not Found\"";
+    private final String bad_request = "\"Bad Request\"";
+    private final String forbidden = "\"Forbidden\"";
+    private final String ok = "\"OK\"";
+    private final String invalid_time = "\"invalid time\"";
+    private final String applicant_not_found = "\"applicant Not Found\"";
     @Override
     public void setCurrentUser(IUser _currentUser) {
         if (_currentUser == null){
@@ -28,7 +36,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0) {
+        if(missionID <= 0) {
             //report or throw
             return null;
         }
@@ -39,20 +47,25 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID));
         String Mission_JSON = httpGet(url, parameters, null);
 
-        //检查是否返回JSON序列
-        if(Mission_JSON == null) {
-            //report or throw
+        //未返回合法的mission的JSON序列
+        if(Mission_JSON.equals(user_not_found)) {
+            //report user not found
+            return null;
+        }
+
+        if(Mission_JSON.equals(mission_not_found)){
+            //report mission not found
             return null;
         }
 
         IMission mission = new Mission();
         mission.loadFromJSON(Mission_JSON);
-        //return mission
-        return null;
+        return mission;
     }
 
     @Override
     public List<IMission> findMissionByDescription(String description, List<String> tags) {
+        //详细api文档中tags和keywords 这里是description和tags
         //检查currentUser是否为空
         if(currentUser == null){
             //throw
@@ -74,14 +87,20 @@ public class MissionManager extends HttpManager implements IMissionManager{
             body += tag + " ";
         }
         body += description;
-        String Mission_JSON_List = httpGet(url, parameters, body);
+        String Missions_JSON = httpGet(url, parameters, body);
 
-        //check 返回信息
-        if(Mission_JSON_List == null) {
-            //report or throw
+        //获取任务列表失败
+        if(Missions_JSON.equals(user_not_found)) {
+            //report user not found
             return null;
         }
 
+        if(Missions_JSON.equals(bad_request)){
+            //bad request
+            return null;
+        }
+
+        //分割问题再看 就是从返回的json中读取missionID数组 根据每一个missionID得到一个mission
         return null;
     }
 
@@ -94,7 +113,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if (missionID < 0) {
+        if (missionID <= 0) {
             //report or throw;
             return false;
         }
@@ -134,13 +153,24 @@ public class MissionManager extends HttpManager implements IMissionManager{
         String mission_JSON = mission.toJSON();
         String add_response = httpPost(url, parameters, mission_JSON);
 
-        if(add_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //创建任务成功
+        if(add_response.equals(ok)){
+            //report success
             return true;
         }
+
+        //创建任务失败
+        if(add_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(add_response.equals(invalid_time)){
+            //invalid time
+            return false;
+        }
+
+        return false;
     }
 
     @Override
@@ -183,8 +213,13 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0 || applicantID < 0) {
-            //report or throw
+        if(missionID <= 0) {
+            //report invalid missionID
+            return false;
+        }
+
+        if(applicantID <= 0) {
+            //report invalid applicantID
             return false;
         }
 
@@ -194,13 +229,34 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID), String.valueOf(applicantID));
         String accept_response = httpPost(url, parameters, null);
 
-        if(accept_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //接受成员成功
+        if(accept_response.equals(ok)){
+            //report accept success
             return true;
         }
+
+        //接受成员失败
+        if(accept_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(accept_response.equals(mission_not_found)){
+            //mission not found
+            return false;
+        }
+
+        if(accept_response.equals(applicant_not_found)){
+            //applicant not found
+            return false;
+        }
+
+        if(accept_response.equals(forbidden)){
+            //forbidden
+            return false;
+        }
+
+        return false;
     }
 
     @Override
@@ -212,8 +268,13 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0 || applicantID < 0) {
-            //report or throw
+        if(missionID <= 0) {
+            //report invalid missionID
+            return false;
+        }
+
+        if(applicantID <= 0) {
+            //report invalid applicantID
             return false;
         }
 
@@ -223,13 +284,34 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID), String.valueOf(applicantID));
         String fire_response = httpPost(url, parameters, null);
 
-        if(fire_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //踢出成员成功
+        if(fire_response.equals(ok)){
+            //report accept success
             return true;
         }
+
+        //踢出成员失败
+        if(fire_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(fire_response.equals(mission_not_found)){
+            //mission not found
+            return false;
+        }
+
+        if(fire_response.equals(applicant_not_found)){
+            //applicant not found
+            return false;
+        }
+
+        if(fire_response.equals(forbidden)){
+            //forbidden
+            return false;
+        }
+
+        return false;
     }
 
     @Override
@@ -241,8 +323,13 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0 || applicantID < 0) {
-            //report or throw
+        if(missionID <= 0) {
+            //report invalid missionID
+            return false;
+        }
+
+        if(applicantID <= 0) {
+            //report invalid applicantID
             return false;
         }
 
@@ -252,13 +339,34 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID), String.valueOf(applicantID));
         String reject_response = httpPost(url, parameters, null);
 
-        if(reject_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //拒绝接受成员成功
+        if(reject_response.equals(ok)){
+            //report reject success
             return true;
         }
+
+        //拒绝接受成员失败
+        if(reject_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(reject_response.equals(mission_not_found)){
+            //mission not found
+            return false;
+        }
+
+        if(reject_response.equals(applicant_not_found)){
+            //applicant not found
+            return false;
+        }
+
+        if(reject_response.equals(forbidden)){
+            //forbidden
+            return false;
+        }
+
+        return false;
     }
 
     @Override
@@ -270,7 +378,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0) {
+        if(missionID <= 0) {
             //report or throw
             return false;
         }
@@ -281,13 +389,28 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID));
         String join_response = httpPost(url, parameters, null);
 
-        if(join_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //加入成功
+        if(join_response.equals(ok)){
+            //report join success
             return true;
         }
+
+        //加入失败
+        if(join_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(join_response.equals(mission_not_found)){
+            //mission not found
+            return false;
+        }
+
+        if(join_response.equals(forbidden)){
+            //forbidden
+            return false;
+        }
+        return false;
     }
 
     @Override
@@ -299,7 +422,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0) {
+        if(missionID <= 0) {
             //report or throw
             return false;
         }
@@ -310,13 +433,29 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID));
         String quit_response = httpPost(url, parameters, null);
 
-        if(quit_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //退出任务成功
+        if(quit_response.equals(ok)){
+            //report quit success
             return true;
         }
+
+        //退出任务失败
+        if(quit_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(quit_response.equals(mission_not_found)){
+            //mission not found
+            return false;
+        }
+
+        if(quit_response.equals(forbidden)){
+            //forbidden
+            return false;
+        }
+
+        return false;
     }
 
     @Override
@@ -328,7 +467,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0) {
+        if(missionID <= 0) {
             //report or throw
             return false;
         }
@@ -339,13 +478,29 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID));
         String start_response = httpPost(url, parameters, null);
 
-        if(start_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //开始任务成功
+        if(start_response.equals(ok)){
+            //report start success
             return true;
         }
+
+        //开始任务失败
+        if(start_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(start_response.equals(mission_not_found)){
+            //mission not found
+            return false;
+        }
+
+        if(start_response.equals(forbidden)){
+            //forbidden
+            return false;
+        }
+
+        return false;
     }
 
     @Override
@@ -357,7 +512,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(missionID < 0) {
+        if(missionID <= 0) {
             //report or throw
             return false;
         }
@@ -368,12 +523,28 @@ public class MissionManager extends HttpManager implements IMissionManager{
                 String.valueOf(missionID));
         String finish_response = httpPost(url, parameters, null);
 
-        if(finish_response == null){
-            //report or throw
-            return false;
-        }
-        else{
+        //结束任务成功
+        if(finish_response.equals(ok)){
+            //report finish success
             return true;
         }
+
+        //结束任务失败
+        if(finish_response.equals(user_not_found)){
+            //user not found
+            return false;
+        }
+
+        if(finish_response.equals(mission_not_found)){
+            //mission not found
+            return false;
+        }
+
+        if(finish_response.equals(forbidden)){
+            //forbidden
+            return false;
+        }
+
+        return false;
     }
 }

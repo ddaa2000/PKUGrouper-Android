@@ -19,6 +19,7 @@ public interface IUserManager {
     IUser userLogIn(IUser currentUser);                     // user/login
     IUser userRegister(IUser currentUser);                  // user/register
     List<IEvaluation> getEvaluations();                     // user/evaluations
+    IEvaluation findEvaluationByID(int evaluationID);
 
     boolean setMissionManager(IMissionManager _missionManager);
     boolean setMessageManager(IMessageManager _messageManager);
