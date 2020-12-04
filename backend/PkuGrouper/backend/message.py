@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from .models import *
 from django.utils import timezone
+from .someFuncs import *
 
 class DealMessages(APIView):#获取message
     #（这个应该是给出user_ID，返回一个此user未查看的message的数组）

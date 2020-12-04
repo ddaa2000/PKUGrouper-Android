@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
 from django.utils import timezone
+from .someFuncs import *
 
 class DealSelf(APIView):#获取个人信息
     @staticmethod
@@ -46,7 +47,7 @@ class DealEvaluate(APIView):#评分
     def post(request, evaluater_ID, mission_ID, evaluatee_ID):#evaluater是评分人，evaluatee是被评分人
         return Response("This is a POST of user/evaluate/{evaluater_ID}/{mission_ID}/{evaluatee_ID}")
 
-class DealCaptcha(APIView):#注册
+class DealCaptcha(APIView):#获取验证码
     @staticmethod
     def post(request):#request body:user(regiter information only)
         return Response(['This is a POST of user/captcha', request.data])
