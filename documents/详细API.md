@@ -12,6 +12,53 @@ CODE:
 
 500 : Internal Server Error     （这个东西会由django框架自动给出）
 
+------
+
+我们的网址是http://62.234.0.67:8000/
+
+例如我要获取123的个人信息，我就往http://62.234.0.67:8000/user/self/123/这个网址get一下
+
+------
+
+这是后端的三人需要注意的：
+
+任务人员或者状态啥的发生变动的时候，都会产生一个由id=1的user发送给对应人的一个message，type为Notice
+
+这个具体哪些时候要发，你们觉得什么时候要发就在那里写吧。。反正这就是一个通知而已。。。
+
+------
+
+
+
+```json
+除了获取验证码，注册和登录，其它的request body里都要加两项"senderID"和"passwordAfterRSA"
+例如获取个人信息的/user/self/{ID}，他的request body在下面写的是none
+那么它其实应该是
+{
+    "senderID" : 123,
+    "passwordAfterRSA" : "xxxxxx"
+}
+
+例如修改个人信息/user/info/{ID}的request body在下面写的是
+{
+    "username" : "abc",
+    "tele" : "QQ1xxx"
+}
+那么它其实应该是
+{
+    "senderID" : 123,
+    "passwordAfterRSA" : "xxxxxx",
+    "username" : "abc",
+    "tele" : "QQ1xxx"
+}
+
+如果出现senderID找不到人，password错误，senderID和URL上的发起者不一致等情况都会返回
+response:
+status_code = 401
+body:
+"Unauthorized"
+```
+
 
 
 ------
@@ -33,11 +80,12 @@ status_code = 200
 body =
 {
 	"mailbox" : "xxxxx@pku.edu.cn",    //string
+    "username" : "abc",
+    "tele" : "QQ1xxxx",   //这个是联系方式，让用户填的string
 	"missionIDs" : [123, 456],
     "evaluationIDs" : [123, 456], //这里的evaluationIDs是用户被做过的评价
-    "violationIDs" : [123, 456],
+    "violationIDs" : [123, 456],  //被举报记录
     "averageScore" : 9.87,
-    "tags" : ["abc", "def"]
 }
 
 Not Found:
@@ -61,12 +109,12 @@ OK:
 status_code = 200
 body =
 {
-    "missionStatus" : "mail can be seen",    //string   //or "mail can not be seen"
-    "mailbox" : "xxxxx@pku.edu.cn",      //string,如果"mail can not be seen"则没有这项  //话说我们组队人用邮箱联系？
+    "missionStatus" : "tele can be seen",    //string   //or "tele can not be seen"
+    "tele" : "QQ1xxx",      //string,如果"tele can not be seen"则没有这项
     "averageScore" : 9.87
 }
-//当两人在mission_ID的任务里时"mail can be seen"
-//当getter不在mission_ID的任务里，gettee在mission_ID的任务里时"mail can not be seen"
+//当两人在mission_ID的任务里时"tele can be seen"
+//当getter不在mission_ID的任务里，gettee在mission_ID的任务里时"tele can not be seen"
 
 getter Not Found:
 status_code = 404
@@ -129,7 +177,6 @@ URL : /user/evaluation/{evaluationID}
 request body = none
 
 response:
-response:
 OK:
 status_code = 200
 body=
@@ -174,7 +221,7 @@ body=
     "applicationEndTime" : "2020-12-01 18:23:30",
     "executionStartTime" : "2020-12-01 18:23:30",
     "executionEndTime" : "2020-12-01 18:23:30",
-    "tag" : ["abc", "def"]
+    "channels" : ["abc", "def"]
 }
 
 user Not Found:
@@ -186,8 +233,6 @@ mission Not Found:
 status_code = 404
 body=
 "mission Not Found"
-
-//我想了想这个请求没有权限问题，因为任何一个任务的所有信息任何一个人都可以看
 ```
 
 
@@ -199,10 +244,18 @@ URL : /missions/{ID}
 
 request body:
 {
-    "tags" : ["123", "456"],
-	"keywords" : ["abc", "def"]
-	//如果为空则tags = []或keyword = []
-	//为空表示全体任务
+    "channels" : ["123", "456"],
+	"keywords" : ["abc", "def"],
+	//如果为空则tags = []或keywords = []
+	//两个都为空表示全体任务
+    //一个为空则只看另一个
+    //channels是判等于，keywords是判contain
+    //多个channel或keyword是并起来，而不是交
+    "startNumber" : 1,
+    "endNumber" : 30
+    //取得的missions按ID从大到小排序，取第startNumber个到第endNumber个
+    //如果startNumber>总数，返回空表
+    //endNumber对总数取min
 }
 
 response:
@@ -226,8 +279,6 @@ body=
 
 获取message列表（这里是获取被通知的message的）
 
-获取过一次的消息再获取会不会再给？
-
 ```json
 URL : /messages/{userID}
 
@@ -238,6 +289,7 @@ OK:
 status_code = 200
 body=
 [123, 456]
+//按message的发布时间戳从大到小排序，返回前50个（不足50个就全返回）
 
 user Not Found:
 status_code = 404
@@ -287,23 +339,15 @@ PUT类
 
 
 
-修改个人信息（我突然发现我们没有要修改的信息？）
+修改个人信息
 
 ```json
-
-```
-
-
-
-修改密码
-
-```json
-URL : /user/code/{ID}
+URL : user/info/{ID}
 
 request body:
 {
-    "oldPassword" : "xxxxxx",
-    "newPassword" : "xxxxxx"
+    "username" : "abc",
+    "tele" : "QQ1xxx"
 }
 
 response:
@@ -316,28 +360,19 @@ Not Found:
 status_code = 404
 body=
 "user Not Found"
-
-Unauthorized:
-status_code = 403
-body=
-"wrong old password"
-
-Bad Request:
-status_code = 400
-body=
-"invalid new password"
 ```
 
 
 
-修改tagList
+修改密码
 
 ```json
-URL : /user/tags/{ID}
+URL : /user/code/{ID}
 
 request body:
-["abc", "def"]
-//这个操作会用request bdoy覆盖user的tagList而不是新增，所以请传完整
+{
+    "newPasswordAfterRSA" : "xxxxxx"
+}
 
 response:
 OK:
@@ -360,12 +395,12 @@ URL : /mission/{ID}/{missionID}
 
 request body:
 {
-	//"title" : "xxxxx", //标题能否修改？
+	"title" : "xxxxx",
 	"content" : "xxxxx",
     "applicationEndTime" : "2020-12-01 18:23:30",
     "executionStartTime" : "2020-12-01 18:23:30",
     "executionEndTime" : "2020-12-01 18:23:30",
-    "tag" : ["abc", "def"]
+    "channels" : ["abc", "def"]
 }
 //这是覆盖操作，请传完整
 
@@ -416,7 +451,7 @@ request body:
     "applicationEndTime" : "2020-12-01 18:23:30",
     "executionStartTime" : "2020-12-01 18:23:30",
     "executionEndTime" : "2020-12-01 18:23:30",
-    "tag" : ["abc", "def"]
+    "channels" : ["abc", "def"]
 }
 
 response:
@@ -768,6 +803,8 @@ body=
 
 报告bug
 
+这个操作会向id=1的user发一个message
+
 ```json
 URL : /message/bug/{ID}
 
@@ -791,6 +828,8 @@ body=
 
 
 举报
+
+这个操作会向id=1的user发一个message
 
 ```json
 URL : /message/bug/{ID}/{reporteeID}
@@ -848,9 +887,12 @@ URL /user/register
 request body:
 {
 	"mailbox" : "xxx@pku.edu.cn",
-	"password" : "xxxxxx",
+    "username" : "abc",
+	"passwordAfterRSA" : "xxxxxx",
+    //后端把这个东西解密成原文，再加密成MD5存到数据库中
     "captchaCode" : "xxxxxx"
 }
+//注册后初始产生的tele为空
 
 response:
 OK:
@@ -860,7 +902,12 @@ body=
     "UID" : 123
 }
 
-//还有BadRequest
+status_code = 400
+body=
+"bad username"
+//这个表示username重名了
+
+//还有其它BadRequest
 ```
 
 
@@ -873,14 +920,16 @@ URL : /user/login
 request body:
 {
     "mailbox" : "xxx@pku.edu.cn",
-    "password" : "xxxxxx"
+    "passwordAfterRSA" : "xxxxxx"
 }
 
 response:
 OK:
 status_code = 200
 body=
-"OK"
+{
+    "UID" : 123
+}
 
 Forbidden:
 status_code = 403

@@ -4,7 +4,9 @@ from django.db import models
 
 class User(models.Model):
     mailbox = models.EmailField()
-    password = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
+    tele = models.CharField(max_length=200)
+    passwordAfterMD5 = models.CharField(max_length=200)
     def __str__(self):
         return self.mailbox
 
@@ -32,22 +34,16 @@ class Applicantship(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
 
-class Tag(models.Model):
-    users = models.ManyToManyField(User, through='UserTagship',
-                                   related_name='tags')
-    missions = models.ManyToManyField(Mission, through='MissionTagship',
-                                      related_name='tags')
+class Channel(models.Model):
+    missions = models.ManyToManyField(Mission, through='MissionChannelship',
+                                      related_name='channels')
     content = models.CharField(max_length=200)
     def __str__(self):
         return self.content
 
-class UserTagship(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
-class MissionTagship(models.Model):
+class MissionChannelship(models.Model):
     mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
 
 class Evaluation(models.Model):
     evaluationScore = models.FloatField()
