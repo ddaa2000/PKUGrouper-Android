@@ -2,7 +2,7 @@ package com.e.pkugrouper.Models;
 
 import java.util.List;
 
-public class Message implements  IMessage{
+public class Message implements IMessage{
     @Override
     public int getPublisherID() {
         return 0;
@@ -36,6 +36,17 @@ public class Message implements  IMessage{
     @Override
     public void setMessageContent(String content) {
 
+    }
+
+    @Override
+    public void setReporteeID(int _reporteeID) {
+
+    }
+
+
+    @Override
+    public int getReporteeID() {
+        return 0;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.e.pkugrouper.Managers;
 
+import com.alibaba.fastjson.JSONObject;
 import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Message;
@@ -38,23 +39,36 @@ public class MessageManager extends HttpManager implements IMessageManager{
         //得到currentUser的信息
         String url = "/messages";
         List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
-        String Message_JSON_All = httpGet(url, parameters, null);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",currentUser.getUserID());
+        request_body.put("passwordAfterRSA", currentUser.getPassword());
+        String Message_JSON_All = httpGet(url, parameters, request_body.toJSONString());
 
         //如果得不到信息
-        if(Message_JSON_All == null){
-            //report
+        if(Message_JSON_All.equals(user_not_found)){
+            //report user not found
+            return null;
+        }
+        else if(Message_JSON_All.equals(bad_request)){
+            //report bad request
             return null;
         }
 
-        //下一步是分割的问题 暂时得不到解决
-        //return Message_List;
-        return null;
+        List<Integer> message_id_list = JSONObject.parseArray(Message_JSON_All, Integer.class);
+        if(message_id_list.size() == 0)
+            return null;
+        List<IMessage> message_list = new ArrayList<>();
+        for(int message_id: message_id_list){
+            IMessage message = findMessageByID(message_id);
+            if(message != null){
+                message_list.add(message);
+            }
+        }
+        return message_list;
     }
 
     @Override
     public boolean reportBug(IMessage bug) {
-        // 两份api文档不一致，是否要加reportee的ID，怎么获取这个ID，
-        // request body是bug的JSON模式 还是{"messageContent": "xxx"}
         //检查currentUser
         if(currentUser == null){
             //throw
@@ -70,16 +84,16 @@ public class MessageManager extends HttpManager implements IMessageManager{
         //报告bug
         String url = "/message/bug";
         List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
-        String bug_JSON = bug.toJSON();
-        String bug_response = httpPost(url, parameters, bug_JSON);
+        JSONObject request_body = new JSONObject();
+        request_body.put("messageContent", bug.getMessageContent());
+        String bug_response = httpPost(url, parameters, request_body.toJSONString());
 
         //检查是否报告成功
         if (bug_response.equals(ok)){
             //report bug success
             return true;
         }
-
-        if (bug_response.equals(user_not_found)){
+        else if (bug_response.equals(user_not_found)){
             //report user not found
             return false;
         }
@@ -89,7 +103,6 @@ public class MessageManager extends HttpManager implements IMessageManager{
 
     @Override
     public boolean report(IMessage report) {
-        //和reportBug一样的问题
         //检查currentUser
         if(currentUser == null){
             //report or throw
@@ -97,16 +110,20 @@ public class MessageManager extends HttpManager implements IMessageManager{
         }
 
         //检查参数
-        if(report == null){
+        if(report == null || report.getType() != 0){ //目前是0，后面根据report类型对应的数字更换
             //report or throw;
             return false;
         }
 
         //报告
         String url = "/message/report";
-        List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
-        String report_JSON = report.toJSON();
-        String report_response = httpPost(url, parameters, report_JSON);
+        List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()),
+                String.valueOf(report.getReporteeID()));
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",currentUser.getUserID());
+        request_body.put("passwordAfterRSA", currentUser.getPassword());
+        request_body.put("messageContent", report.getMessageContent());
+        String report_response = httpPost(url, parameters, request_body.toJSONString());
 
         //检查是否报告成功
         if(report_response.equals(ok)){
@@ -118,8 +135,7 @@ public class MessageManager extends HttpManager implements IMessageManager{
             //user not found
             return false;
         }
-
-        if(report_response.equals(reportee_not_found)){
+        else if(report_response.equals(reportee_not_found)){
             //reportee not found
             return false;
         }
@@ -130,14 +146,22 @@ public class MessageManager extends HttpManager implements IMessageManager{
     @Override
     public IMessage findMessageByID(int messageID) {
         //检查参数
+        if(currentUser == null){
+            //report currentUser is not found
+            return null;
+        }
+
         if(messageID <= 0){
-            //report
+            //report invalid messageID
             return null;
         }
 
         String url = "/message";
         List<String> parameters = Arrays.asList(String.valueOf(messageID));
-        String message_JSON = httpGet(url, parameters, null);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",currentUser.getUserID());
+        request_body.put("passwordAfterRSA", currentUser.getPassword());
+        String message_JSON = httpGet(url, parameters, request_body.toJSONString());
 
         //成功得到信息
         if(message_JSON.equals(ok)){
@@ -147,7 +171,7 @@ public class MessageManager extends HttpManager implements IMessageManager{
         }
 
         //获取Message失败
-        if(message_JSON.equals(message_not_found)){
+        else if(message_JSON.equals(message_not_found)){
             //report message not found
             return null;
         }

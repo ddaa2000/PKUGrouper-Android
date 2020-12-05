@@ -9,6 +9,9 @@ import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Administrator;
 import com.e.pkugrouper.Models.User;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +28,7 @@ public class UserManager extends HttpManager implements IUserManager{
     private final String gettee_not_found = "\"gettee Not Found\"";
     private final String bad_request = "\"Bad Request\"";
     private final String forbidden = "\"Forbidden\"";
+    private final String bad_username = "\"bad username\"";
     private final String ok = "\"OK\"";
     private final String wrong_password = "\"wrong old password\"";
     private final String invalid_password = "\"invalid new password\"";
@@ -49,40 +53,36 @@ public class UserManager extends HttpManager implements IUserManager{
         List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()),
                 String.valueOf(missionID), String.valueOf(memberID));
         String url = "/user/member";
-        String Member_JSON = httpGet(url, parameters, null);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        String Member_JSON = httpGet(url, parameters, request_body.toJSONString());
 
-        //如果查找者不存在
+        //查找信息失败
         if(Member_JSON.equals(getter_not_found)) {
             //report getter not Found
             return null;
         }
-
-        //如果任务不存在
-        if(Member_JSON.equals(mission_not_found)){
+        else if(Member_JSON.equals(mission_not_found)){
             //report mission Not Found
             return null;
         }
-
-        //如果被查询者不存在
-        if(Member_JSON.equals(gettee_not_found)){
+        else if(Member_JSON.equals(gettee_not_found)){
             //report gettee Not Found
             return null;
         }
-
-        //如果自己查看自己的信息
-        if(Member_JSON.equals(bad_request)){
+        else if(Member_JSON.equals(bad_request)){
             //report bad request
             return null;
         }
-
-        //如果被查询者不在该任务中
-        if(Member_JSON.equals(forbidden)){
+        else if(Member_JSON.equals(forbidden)){
             //report forbidden
             return null;
         }
 
         //生成member对应的ICommonUser对象
         ICommonUser member = new CommonUser();
+        member.setUserID(memberID);
         member.loadFromJSON(Member_JSON);
         return member;
     }
@@ -97,7 +97,11 @@ public class UserManager extends HttpManager implements IUserManager{
         //根据给定的userID生成对象
         List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()));
         String url = "/user/self";
-        String User_JSON = httpGet(url, parameters, null);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        String User_JSON = httpGet(url, parameters, request_body.toJSONString());
+
 
         //如果当前用户不存在
         if(User_JSON.equals(user_not_found)) {
@@ -111,6 +115,10 @@ public class UserManager extends HttpManager implements IUserManager{
         return Self;
     }
 
+    /*
+        现在登录和注册的流程还需要进一步细化，究竟什么时候将UserManager的user设置为正在登录的user
+        什么时候发送验证码，什么时候得到反馈的验证码，整套流程要详细规划
+     */
     @Override
     public IUser userLogIn(IUser currentUser) {
         //检查currentUser是否存在
@@ -121,20 +129,21 @@ public class UserManager extends HttpManager implements IUserManager{
 
         //生成登录产生的JSON字符串
         String url = "/user/login";
-        String User_JSON = currentUser.toJSON();
-        String User_Login_JSON = httpPost(url, null, User_JSON);
+        JSONObject User_JSON = new JSONObject();
+        User_JSON.put("mailbox", currentUser.getMailBox());
+        User_JSON.put("passwordAfterRSA", currentUser.getPassword());
+        String User_Login_JSON = httpPost(url, null, User_JSON.toJSONString());
 
         //如果登录失败
         if(User_Login_JSON.equals(forbidden)){
             //report login failed
             return null;
         }
-
-        if(User_Login_JSON.equals(ok)) {
+        else{
             //生成登陆后的user对象
-            IUser User_Login = new User();
-            User_Login.loadFromJSON(User_Login_JSON);
-            user = User_Login;//存在疑惑
+            int User_ID = JSONObject.parseObject(User_Login_JSON).getInteger("UID");
+            currentUser.setUserID(User_ID);
+            user = currentUser;
 
             //更新messageManager和missionMagager中的currentUser
             if (messageManager == null) {
@@ -148,14 +157,13 @@ public class UserManager extends HttpManager implements IUserManager{
                 return null;
             }
             missionManager.setCurrentUser(user);
-            return User_Login;
+            return currentUser;
         }
-
-        return null;
     }
 
     @Override
     public IUser userRegister(IUser currentUser) {
+        //注册的细节问题需要考量一下 首先是注册和发送验证码的嵌套 其次是设置user的位置
         //检查currentUser是否为null
         if(currentUser == null) {
             //report or throw
@@ -164,37 +172,34 @@ public class UserManager extends HttpManager implements IUserManager{
 
         //生成注册产生的JSON字符串
         String url = "/user/register";
-        String User_JSON = currentUser.toJSON();
-        String User_Register_JSON = httpPost(url, null, User_JSON);
+        JSONObject User_JSON = new JSONObject();
+        User_JSON.put("mailbox", currentUser.getMailBox());
+        User_JSON.put("username", currentUser.getUserName());
+        User_JSON.put("passwordAfterRSA", currentUser.getPassword());
+        User_JSON.put("captchaCode", "");
+        String User_Register_JSON = httpPost(url, null, User_JSON.toJSONString());
 
         //检查注册是否失败
-        if(User_Register_JSON.equals(forbidden)) {
+        if(User_Register_JSON.equals(bad_request)) {
             //report register failed
             return null;
         }
 
+        if(User_Register_JSON.equals(bad_username)){
+            //report bad username
+            return null;
+        }
         //生成注册后的User对象
         IUser User_Register = new User();
+        User_Register.setUserID(JSONObject.parseObject(User_Register_JSON).getInteger("UID"));
         User_Register.loadFromJSON(User_Register_JSON);
         user = User_Register;
-
-        //更新messageManager和missionManager的currentUser
-        if(messageManager == null){
-            return null;
-        }
-        messageManager.setCurrentUser(user);
-
-        if(missionManager == null) {
-            return null;
-        }
-        missionManager.setCurrentUser(user);
 
         return User_Register;
     }
 
     @Override
     public List<IEvaluation> getEvaluations() {
-        //问题是返回的是evaluation的id列表不能通过这个生成Evaluation列表
         //检查user
         if(user == null){
             //report or throw
@@ -204,7 +209,10 @@ public class UserManager extends HttpManager implements IUserManager{
         //尝试获取信息
         String url = "/user/evaluation";
         List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()));
-        String evaluations_id_list = httpGet(url, parameters, null);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        String evaluations_id_list = httpGet(url, parameters, request_body.toJSONString());
 
         //如果user not found
         if(evaluations_id_list.equals(user_not_found)){
@@ -212,11 +220,13 @@ public class UserManager extends HttpManager implements IUserManager{
             return null;
         }
 
-        //生成Evaluations 先采用简单的split 似乎不适用
+        //生成Evaluations
+        List<Integer> evaluation_ids = JSONObject.parseArray(evaluations_id_list, Integer.class);
+        if(evaluation_ids.size() == 0)
+            return null;
         List<IEvaluation> Evaluations = new ArrayList<>();
-        List<String> evaluation_ids = JSONObject.parseArray(evaluations_id_list, String.class);
-        for (String evaluation_id : evaluation_ids){
-            IEvaluation evaluation = findEvaluationByID(Integer.valueOf(evaluation_id));
+        for (int evaluation_id : evaluation_ids){
+            IEvaluation evaluation = findEvaluationByID(evaluation_id);
             if(evaluation != null)
                 Evaluations.add(evaluation);
         }
@@ -226,6 +236,10 @@ public class UserManager extends HttpManager implements IUserManager{
     @Override
     public IEvaluation findEvaluationByID(int evaluationID) {
         //检查参数
+        if(user == null){
+            //report user null
+            return null;
+        }
         if(evaluationID <= 0){
             //report
             return null;
@@ -234,7 +248,10 @@ public class UserManager extends HttpManager implements IUserManager{
         //获取evaluation
         String url = "/user/evaluation";
         List<String> parameters = Arrays.asList(String.valueOf(evaluationID));
-        String evaluation_JSON = httpGet(url,parameters,null);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        String evaluation_JSON = httpGet(url,parameters,request_body.toJSONString());
 
         //获取失败
         if(evaluation_JSON.equals(evaluation_not_found)){
@@ -282,23 +299,30 @@ public class UserManager extends HttpManager implements IUserManager{
         //用Put修改用户的信息
         String url = "/user/info";
         List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()));
-        String User_JSON = user.toJSON();
-        String EditInfo_JSON = httpPut(url, parameters, User_JSON);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        request_body.put("username", user.getUserName());
+        request_body.put("tele", user.getIdentification());
+        String editinfo_response = httpPut(url, parameters, request_body.toJSONString());
 
-        //修改密码请求失败
-        if(EditInfo_JSON.equals(bad_request)) {
+        //修改信息请求失败
+        if(editinfo_response.equals(user_not_found)){
+            //report user not found
             return false;
         }
 
-        //如果成功修改了信息，用修改后返回的JSON更新当前用户的信息
-        //之后是否要更新messageManager和missionManager中的user?
-        user.loadFromJSON(EditInfo_JSON);
+        if(editinfo_response.equals(bad_request)) {
+            //report bad request
+            return false;
+        }
+
         return true;
     }
 
     @Override
     public boolean editTags() {
-        //新的tags从哪里得到
+        //目前认为这个过程是先在user对象里设置tags再调用这个函数
         //判断user是否存在
         if(user == null){
             //report or throw exception
@@ -309,14 +333,14 @@ public class UserManager extends HttpManager implements IUserManager{
         String url = "/user/tags";
         List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()));
         List<String> tags = user.getTags();//怎么得到新的标签集合
-        JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(tags));
-        String tag_list = jsonArray.toJSONString();//把标签集合转换成JSON对应的string
+        JSONArray tagsArray = JSONArray.parseArray(JSON.toJSONString(tags));
+        //需要验证转换的tagsArray是否是符合要求的格式
+        String tag_list = tagsArray.toJSONString();//把标签集合转换成JSON对应的string
         String tags_response = httpPut(url, parameters, tag_list);
 
         //修改tags成功
         if(tags_response.equals(ok)){
             //report success
-            //修改user里的tags
             //之后是否要更新messageManager和missionManager中的user?
             return true;
         }
@@ -326,8 +350,7 @@ public class UserManager extends HttpManager implements IUserManager{
             //report bad request
             return false;
         }
-
-        if(tags_response.equals(user_not_found)){
+        else if(tags_response.equals(user_not_found)){
             //user not found
             return false;
         }
@@ -347,8 +370,11 @@ public class UserManager extends HttpManager implements IUserManager{
         //修改用户的password
         String url = "/user/code";
         List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()));
-        String Password = null;
-        String password_response = httpPut(url, parameters, Password);
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+
+        String password_response = httpPut(url, parameters, request_body.toJSONString());
 
         //修改密码成功
         if(password_response.equals(ok)){
@@ -361,12 +387,10 @@ public class UserManager extends HttpManager implements IUserManager{
             //report bad request
             return false;
         }
-
-        if(password_response.equals(user_not_found)){
+        else if(password_response.equals(user_not_found)){
             //user not found
             return false;
         }
-
         //旧密码错误 和 新密码无效
         if(password_response.equals(wrong_password)){
             //report wrong old password
@@ -399,19 +423,17 @@ public class UserManager extends HttpManager implements IUserManager{
             return false;
         }
 
-        String url = "/user/evalute";
+        String url = "/user/evaluate";
         List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()),
                 String.valueOf(missionID), String.valueOf(evaluateeID));
 
-        //设置评价信息
-        IEvaluation evaluation = new Evaluation();
-        evaluation.setEvaluateeID(evaluateeID);
-        evaluation.setMissionID(missionID);
-        evaluation.setScore(score);
-        String evaluation_JSON = evaluation.toJSON(); //request body的正确形式 {"score" : num}
-        //实际上要把score转换成json形式
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        request_body.put("score", score);
 
-        String evaluate_response = httpPost(url, parameters, evaluation_JSON);
+        //对evaluation_JSON.toJSONString的结果进行测试
+        String evaluate_response = httpPost(url, parameters, request_body.toJSONString());
 
         //评价成功
         if(evaluate_response.equals(ok)){
@@ -420,36 +442,43 @@ public class UserManager extends HttpManager implements IUserManager{
         }
 
         //评价失败
-        //如果查找者不存在
         if(evaluate_response.equals(evaluator_not_found)) {
             //report evaluator not Found
             return false;
         }
-
-        //如果任务不存在
-        if(evaluate_response.equals(mission_not_found)){
+        else if(evaluate_response.equals(mission_not_found)){
             //report mission Not Found
             return false;
         }
-
-        //如果被查询者不存在
-        if(evaluate_response.equals(evaluatee_not_found)){
+        else if(evaluate_response.equals(evaluatee_not_found)){
             //report evaluatee Not Found
             return false;
         }
-
-        //如果自己查看自己的信息
-        if(evaluate_response.equals(bad_request)){
+        else if(evaluate_response.equals(bad_request)){
             //report bad request
             return false;
         }
-
-        //如果被查询者不在该任务中
-        if(evaluate_response.equals(forbidden)){
+        else if(evaluate_response.equals(forbidden)){
             //report forbidden
             return false;
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean sendCaptcha(String mailbox) {
+        String url = "/user/captcha";
+        JSONObject request_body = new JSONObject();
+        request_body.put("mailbox", mailbox);
+        String send_response = httpPost(url, null, request_body.toJSONString());
+
+        if(send_response.equals(ok)){
+            return true;
+        }
+        else if(send_response.equals(bad_request)){
+            return false;
+        }
         return false;
     }
 }

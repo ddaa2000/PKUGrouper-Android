@@ -10,4 +10,6 @@ public interface IMessage extends ISerializable{
     List<Integer> getRecipientIDs();
     String getMessageContent();
     void setMessageContent(String content);
+    void setReporteeID(int _reporteeID);
+    int getReporteeID();
 }

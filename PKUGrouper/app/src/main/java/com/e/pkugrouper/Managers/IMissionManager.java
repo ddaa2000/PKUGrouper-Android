@@ -14,7 +14,8 @@ public interface IMissionManager {
     void setCurrentUser(IUser _currentUser);
 
     IMission findMissionByID(int missionID);        // /mission
-    List<IMission> findMissionByDescription(String description,List<String> tags);  // /missions
+    List<IMission> findMissionByDescription(String description,List<String> channels,
+                                            int startNumber, int endNumber);  // /missions
 
     boolean deleteMission(int missionID);              // mission/delete
     boolean addMission(IMission mission);              // mission/create
