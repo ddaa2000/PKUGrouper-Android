@@ -6,6 +6,9 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
+import com.e.pkugrouper.HelloWorldFragment;
+import com.e.pkugrouper.R;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

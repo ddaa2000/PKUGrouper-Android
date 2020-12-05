@@ -6,42 +6,38 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.e.pkugrouper.Models.IMission;
-import com.e.pkugrouper.Models.Mission;
-import com.e.pkugrouper.Models.TestMission;
+import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.TestUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MissionListFragment#newInstance} factory method to
+ * Use the {@link MissionDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MissionListFragment extends Fragment {
+public class MissionDetailFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private RecyclerView recyclerView;
+    private List<IUser> members = new ArrayList<IUser>();
+    private UserCardAdapter userCardAdapter;
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    private List<String> stringArrayList = new ArrayList<String>();
-    private MissionAdapter missionAdapter;
-    private ListView listView;
-    private RecyclerView missionRecyclerView;
-    private List<IMission> missions = new ArrayList<IMission>();
-
-    public MissionListFragment() {
+    public MissionDetailFragment() {
         // Required empty public constructor
     }
 
@@ -51,11 +47,11 @@ public class MissionListFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MissionListFragment.
+     * @return A new instance of fragment MissionDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MissionListFragment newInstance(String param1, String param2) {
-        MissionListFragment fragment = new MissionListFragment();
+    public static MissionDetailFragment newInstance(String param1, String param2) {
+        MissionDetailFragment fragment = new MissionDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,7 +62,6 @@ public class MissionListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("list added","list added");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -77,18 +72,18 @@ public class MissionListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.e("list added","list added");
-        View v = inflater.inflate(R.layout.fragment_mission_list, container, false);
-        for(int i = 0;i<40;i++){
-            missions.add(new TestMission());
+
+
+        View v = inflater.inflate(R.layout.fragment_mission_detail, container, false);
+        for(int i = 0;i<5;i++){
+            members.add(new TestUser());
         }
-        missionAdapter = new MissionAdapter(missions,getActivity());
-        missionRecyclerView = v.findViewById(R.id.mission_list);
-        missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        missionRecyclerView.setAdapter(missionAdapter);
-        //listView = v.findViewById(R.id.mission_list);
-        //listView.setAdapter(missionAdapter);
-        Log.e("list added","list added");
+        recyclerView = v.findViewById(R.id.mission_detail_members_recyclerView);
+        userCardAdapter = new UserCardAdapter(members,getActivity());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(userCardAdapter);
+        recyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
+
         return v;
     }
 }

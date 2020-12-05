@@ -1,5 +1,6 @@
 package com.e.pkugrouper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,21 +9,38 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.e.pkugrouper.Models.IMission;
+import com.e.pkugrouper.Models.Mission;
 
 import java.util.List;
 
-public class MissionAdapter extends ArrayAdapter<String> {
-    int viewID;
-    public MissionAdapter(@NonNull Context context, int resourceID, List<String> objects) {
-        super(context, resourceID,objects);
-        viewID = resourceID;
+public class MissionAdapter extends RecyclerView.Adapter<MissionHolder> {
+
+    private List<IMission> missions;
+    private Activity activity;
+
+    public MissionAdapter(List<IMission> missions, Activity activity){
+        this.missions = missions;
+        this.activity = activity;
+    }
+
+    @NonNull
+    @Override
+    public MissionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(activity);
+        return new MissionHolder(layoutInflater, parent,activity);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
-        View view = LayoutInflater.from(getContext()).inflate(viewID,null);
-        TextView textView = view.findViewById(R.id.mission_list_mission_name);
-        textView.setText(getItem(position));
-        return view;
+    public void onBindViewHolder(@NonNull MissionHolder holder, int position) {
+        IMission mission = missions.get(position);
+        holder.bind(mission);
+    }
+
+    @Override
+    public int getItemCount() {
+        return missions.size();
     }
 }
