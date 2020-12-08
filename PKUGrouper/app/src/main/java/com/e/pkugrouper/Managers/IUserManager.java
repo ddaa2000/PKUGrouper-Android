@@ -17,7 +17,7 @@ public interface IUserManager {
     ICommonUser findMemberByID(int missionID, int memberID);  // user/member
     ICommonUser getSelf();                                  // user/self
     IUser userLogIn(IUser currentUser);                     // user/login
-    IUser userRegister(IUser currentUser);                  // user/register
+    IUser userRegister(IUser currentUser, String captcha);  // user/register
     List<IEvaluation> getEvaluations();                     // user/evaluations
     IEvaluation findEvaluationByID(int evaluationID);
 
@@ -25,9 +25,9 @@ public interface IUserManager {
     boolean setMessageManager(IMessageManager _messageManager);
 
 
-    boolean editInfo();                                        // user/info
-    boolean editTags();                                        // user/tags
-    boolean changePassword();                                  // user/code
+    boolean editInfo(String username, String tele);                                        // user/info
+    //boolean editTags();                                        // user/tags
+    boolean changePassword(String password);                    // user/code
     boolean evaluate(int missionID, int evaluateeID,int score); // user/evaluate
     boolean sendCaptcha(String mailbox);                        //user/captcha
 }
