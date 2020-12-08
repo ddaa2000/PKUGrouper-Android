@@ -1,8 +1,14 @@
 package com.e.pkugrouper.Models;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 
-public class Message implements  IMessage{
+public class Message implements IMessage{
+    private String type;
+    private String messageContent;
+    private int ReporteeID;
     @Override
     public int getPublisherID() {
         return 0;
@@ -14,13 +20,13 @@ public class Message implements  IMessage{
     }
 
     @Override
-    public int getType() {
-        return 0;
+    public String getType() {
+        return type;
     }
 
     @Override
-    public void setType(int _type) {
-
+    public void setType(String _type) {
+        type = _type;
     }
 
     @Override
@@ -30,12 +36,23 @@ public class Message implements  IMessage{
 
     @Override
     public String getMessageContent() {
-        return null;
+        return messageContent;
     }
 
     @Override
     public void setMessageContent(String content) {
+        messageContent = content;
+    }
 
+    @Override
+    public void setReporteeID(int _reporteeID) {
+        ReporteeID = _reporteeID;
+    }
+
+
+    @Override
+    public int getReporteeID() {
+        return ReporteeID;
     }
 
     @Override
@@ -45,6 +62,8 @@ public class Message implements  IMessage{
 
     @Override
     public void loadFromJSON(String JSONString) {
-
+        JSONObject message_json = JSONObject.parseObject(JSONString);
+        setMessageContent(message_json.getString("messageContent"));
+        setType(message_json.getString("type"));
     }
 }
