@@ -104,9 +104,6 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:divider="@drawable/line_divider_for_layout"
-                    android:showDividers="middle"
-                    android:dividerPadding="1.5dp"
-                    android:padding="5dp"
                     android:layout_height="wrap_content">
 
 
@@ -148,9 +145,6 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:divider="@drawable/line_divider_for_layout"
-                    android:showDividers="middle"
-                    android:dividerPadding="1.5dp"
-                    android:padding="5dp"
                     android:layout_height="wrap_content">
 
 

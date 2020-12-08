@@ -72,7 +72,7 @@ public class MissionManageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mission_manage, container, false);
-        for(int i = 0;i<5;i++){
+        for(int i = 0;i<20;i++){
             members.add(new TestUser());
             applicants.add(new TestUser());
         }
