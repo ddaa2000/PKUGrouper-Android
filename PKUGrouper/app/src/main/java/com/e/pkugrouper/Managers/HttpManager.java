@@ -3,6 +3,7 @@ package com.e.pkugrouper.Managers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -32,7 +33,6 @@ public class HttpManager implements IHttpManager{
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("Charsert", "UTF-8");
-            connection.setRequestProperty("Authorization", body);
 
             // 配置本次连接的Content-type，json是"application/json"
             connection.setRequestProperty("Content-Type", "application/json");
@@ -75,7 +75,7 @@ public class HttpManager implements IHttpManager{
     @Override
     public String httpPost(String url, List<String> parameters, String body) {
         String result = "";
-        PrintWriter out = null;
+        OutputStreamWriter out=null;
         BufferedReader in = null;
         HttpURLConnection connection = null;
         if(parameters!=null && parameters.size()>0){
@@ -90,10 +90,9 @@ public class HttpManager implements IHttpManager{
             connection = (HttpURLConnection) posturl.openConnection();
 
             // 在connect之前，设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("accept", "application/json");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("Charsert", "UTF-8");
-            connection.setRequestProperty("Authorization", body);
 
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(60000);
@@ -110,8 +109,8 @@ public class HttpManager implements IHttpManager{
 
             // 参数要放在http正文内
             //1.获取URLConnection对象对应的输出流
-            out = new PrintWriter(connection.getOutputStream());
-            out.print(parameters);
+            out=new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
+            out.write(body);
             out.flush();
 
             // 定义BufferedReader输入流来读取URL的响应
@@ -146,7 +145,7 @@ public class HttpManager implements IHttpManager{
 
     @Override
     public String httpPut(String url, List<String> parameters, String body) {
-        PrintWriter out = null;
+        OutputStreamWriter out=null;
         BufferedReader in = null;
         String result = "";
         HttpURLConnection connection = null;
@@ -162,7 +161,7 @@ public class HttpManager implements IHttpManager{
             connection = (HttpURLConnection) puturl.openConnection();
 
             // 在connect之前，设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("accept", "application/json");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("Charsert", "UTF-8");
             connection.setRequestProperty("Authorization", body);
@@ -177,8 +176,8 @@ public class HttpManager implements IHttpManager{
             // 发送PUT请求必须设置如下两行，参数要放在http正文内
             connection.setDoOutput(true);
             connection.setDoInput(true);
-            out = new PrintWriter(connection.getOutputStream());
-            out.print(parameters);
+            out=new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
+            out.write(body);
             out.flush();
             if (connection.getResponseCode() == 200) {
 
@@ -194,7 +193,7 @@ public class HttpManager implements IHttpManager{
                     result += line;
                 }
             } else {
-                
+
             }
         } catch (Exception e) {
             System.out.println("发送 PUT 请求出现异常！" + e);
