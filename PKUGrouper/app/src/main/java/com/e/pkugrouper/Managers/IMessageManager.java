@@ -15,5 +15,5 @@ public interface IMessageManager {
     List<IMessage> getCurrentUserMessages();    // messages
     boolean reportBug(IMessage bug);               // message/bug
     boolean report(IMessage report);               // message/report
-
+    IMessage findMessageByID(int messageID);       // message
 }
