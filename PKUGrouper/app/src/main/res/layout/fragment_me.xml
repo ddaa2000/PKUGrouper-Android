@@ -87,7 +87,7 @@
                 android:text="概览"
                 android:textAlignment="viewStart"
                 android:padding="10dp"
-                android:textAppearance="?attr/textAppearanceHeadline4"/>
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

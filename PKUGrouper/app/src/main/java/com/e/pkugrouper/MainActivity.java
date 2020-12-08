@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import com.e.pkugrouper.HelloWorldFragment;
+import com.e.pkugrouper.Managers.MessageManager;
+import com.e.pkugrouper.Managers.MissionManager;
+import com.e.pkugrouper.Managers.UserManager;
 import com.e.pkugrouper.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,6 +18,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        GlobalObjects.userManager = new UserManager();
+        GlobalObjects.missionManager = new MissionManager();
+        GlobalObjects.messageManager = new MessageManager();
+        GlobalObjects.currentUser = null;
+        GlobalObjects.currentMember = null;
+        GlobalObjects.currentMessage = null;
+        GlobalObjects.currentMission = null;
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.main_frame);

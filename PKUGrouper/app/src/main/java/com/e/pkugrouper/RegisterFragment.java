@@ -1,5 +1,6 @@
 package com.e.pkugrouper;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +29,8 @@ public class RegisterFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private Button registerButton;
+    private Button registerButton,getVerificationButton;
+    private TextInputEditText userNameText, passwordText, passwordDoubleText, verificationText, mailText;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -65,15 +69,82 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_register, container, false);
 
+        getVerificationButton = v.findViewById(R.id.registerGetVerificationButton);
         registerButton = v.findViewById(R.id.registerButton);
+
+        userNameText = v.findViewById(R.id.registerUserNameEditText);
+        verificationText = v.findViewById(R.id.registerVerificationEditText);
+        passwordText = v.findViewById(R.id.registerPasswordEditText);
+        passwordDoubleText = v.findViewById(R.id.registerPasswordDoubleCheckEditText);
+        mailText = v.findViewById(R.id.registerEmailEditText);
+
         registerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                Fragment fragment = new MainViewFragment();
-                fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
+
+                if(!passwordDoubleText.getText().toString().equals(passwordText.getText().toString())){
+                    //这里需要显示错误信息
+                    return;
+                }
+                RegisterParams params = new RegisterParams();
+
+                params.userName = userNameText.getText().toString();
+                params.mailNum = mailText.getText().toString();
+                params.password = passwordText.getText().toString();
+                params.verificationCode = verificationText.getText().toString();
+
+                new RegisterTask().execute(params);
+
+
             }
         });
         return v;
     }
+
+    private void registerSucceeded(){
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        Fragment fragment = new MainViewFragment();
+        fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
+    }
+
+    private void getVerificationCodeSucceeded(){
+
+    }
+
+
+
+    private enum FailCode{
+        TIME_EXCEEDED,WRONG_VERIFICATION,UNKNOWN_FAILURE,SERVER_FAILURE,MAIL_EXIST
+    }
+
+    private void registerFailed(FailCode failCode){
+
+    }
+
+    private void getVerificationFailed(FailCode failCode){
+
+    }
+
+    private class RegisterParams{
+        public String userName, mailNum, verificationCode, password;
+    }
+
+
+    private class RegisterTask extends AsyncTask<RegisterParams,Void,Void>{
+
+        @Override
+        protected Void doInBackground(RegisterParams... params) {
+            registerSucceeded();
+            return null;
+        }
+    }
+
+    private class GetVerificationTask extends AsyncTask<String,Void,Void>{
+
+        @Override
+        protected Void doInBackground(String... mail) {
+            return null;
+        }
+    }
+
 }

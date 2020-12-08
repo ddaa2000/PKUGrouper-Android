@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,17 @@ public class MissionListFragment extends Fragment {
     private ListView listView;
     private RecyclerView missionRecyclerView;
     private List<IMission> missions = new ArrayList<IMission>();
+
+
+    public Handler mHandler = new Handler() {
+        public void handleMessage (Message msg) {//此方法在ui线程运行
+            setMissions((List<IMission>)msg.obj);
+        }
+    };
+
+    public void setMissions(List<IMission> newMissions){
+        missionAdapter.reloadData(newMissions);
+    }
 
     public MissionListFragment() {
         // Required empty public constructor
@@ -79,13 +92,16 @@ public class MissionListFragment extends Fragment {
         // Inflate the layout for this fragment
         Log.e("list added","list added");
         View v = inflater.inflate(R.layout.fragment_mission_list, container, false);
-        for(int i = 0;i<40;i++){
+        for(int i = 0;i<5;i++){
             missions.add(new TestMission());
         }
         missionAdapter = new MissionAdapter(missions,getActivity());
         missionRecyclerView = v.findViewById(R.id.mission_list);
         missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         missionRecyclerView.setAdapter(missionAdapter);
+        for(int i = 0;i<5;i++){
+            missions.add(new TestMission());
+        }
         //listView = v.findViewById(R.id.mission_list);
         //listView.setAdapter(missionAdapter);
         Log.e("list added","list added");

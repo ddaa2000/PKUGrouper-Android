@@ -104,6 +104,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:divider="@drawable/line_divider_for_layout"
+                    android:padding="10dp"
                     android:layout_height="wrap_content">
 
 
@@ -113,24 +114,17 @@
                         android:text="成员"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="description of the mission"
-                        android:textAppearance="?attr/textAppearanceBody2" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="5/10"
-                        android:textAppearance="?attr/textAppearanceBody2" />
 
+                    <View
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/mission_detail_members_recyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="200dp">
 
                     </androidx.recyclerview.widget.RecyclerView>
 
@@ -145,6 +139,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:divider="@drawable/line_divider_for_layout"
+                    android:padding="10dp"
                     android:layout_height="wrap_content">
 
 
@@ -154,24 +149,17 @@
                         android:text="申请"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="description of the mission"
-                        android:textAppearance="?attr/textAppearanceBody2" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="5/10"
-                        android:textAppearance="?attr/textAppearanceBody2" />
 
+                    <View
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/mission_detail_applicants_recyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="200dp">
 
                     </androidx.recyclerview.widget.RecyclerView>
 

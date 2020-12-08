@@ -26,6 +26,12 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionHolder> {
         this.activity = activity;
     }
 
+    public void reloadData(List<IMission> newMissions){
+        this.missions.clear();
+        this.missions.addAll(newMissions);
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public MissionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -39,6 +39,7 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.tabs.TabLayout
+            android:id="@+id/squareChannelTab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -73,7 +74,7 @@
 
 
         <fragment
-            android:id="@+id/fragment2"
+            android:id="@+id/squareMissionListFragment"
             android:name="com.e.pkugrouper.MissionListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
