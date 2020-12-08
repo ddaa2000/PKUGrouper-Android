@@ -12,16 +12,21 @@ import java.util.ArrayList;
 public class MessageManager extends HttpManager implements IMessageManager{
     private IUser currentUser;
 
+
     private final String user_not_found = "\"user Not Found\"";
     private final String bad_request = "\"Bad Request\"";
     private final String ok = "\"OK\"";
     private final String reportee_not_found = "\"reportee Not Found\"";
     private final String message_not_found = "\"message Not Found\"";
 
+    public IUser getCurrentUser(){
+        return currentUser;
+    }
+
     @Override
     public void setCurrentUser(IUser _currentUser) {
         if (_currentUser == null) {
-            //report or throw
+            throw new RuntimeException("currentUser is null!");
         }
         else {
             currentUser = _currentUser;
@@ -32,8 +37,7 @@ public class MessageManager extends HttpManager implements IMessageManager{
     public List<IMessage> getCurrentUserMessages() {
         //判断currentUser是否存在
         if(currentUser == null){
-            //report or throw exception
-            return null;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //得到currentUser的信息
@@ -46,12 +50,10 @@ public class MessageManager extends HttpManager implements IMessageManager{
 
         //如果得不到信息
         if(Message_JSON_All.equals(user_not_found)){
-            //report user not found
-            return null;
+            throw new RuntimeException("User is not found!");
         }
         else if(Message_JSON_All.equals(bad_request)){
-            //report bad request
-            return null;
+            throw new RuntimeException("Get messages is bad request!");
         }
 
         List<Integer> message_id_list = JSONObject.parseArray(Message_JSON_All, Integer.class);
@@ -71,20 +73,20 @@ public class MessageManager extends HttpManager implements IMessageManager{
     public boolean reportBug(IMessage bug) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
-        if(bug == null) {
-            //report or throw
-            return false;
+        if(bug == null || !bug.getType().equals("Bug")) {
+            throw new RuntimeException("You should send a bug!");
         }
 
         //报告bug
         String url = "/message/bug";
         List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
         JSONObject request_body = new JSONObject();
+        request_body.put("senderID", currentUser.getUserID());
+        request_body.put("passwordAfterRSA", currentUser.getPassword());
         request_body.put("messageContent", bug.getMessageContent());
         String bug_response = httpPost(url, parameters, request_body.toJSONString());
 
@@ -94,10 +96,8 @@ public class MessageManager extends HttpManager implements IMessageManager{
             return true;
         }
         else if (bug_response.equals(user_not_found)){
-            //report user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
-
         return false;
     }
 
@@ -105,14 +105,12 @@ public class MessageManager extends HttpManager implements IMessageManager{
     public boolean report(IMessage report) {
         //检查currentUser
         if(currentUser == null){
-            //report or throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
-        if(report == null || report.getType() != 0){ //目前是0，后面根据report类型对应的数字更换
-            //report or throw;
-            return false;
+        if(report == null || !report.getType().equals("Report")){ //目前是0，后面根据report类型对应的数字更换
+            throw new RuntimeException("You should send a Report!");
         }
 
         //报告
@@ -132,12 +130,10 @@ public class MessageManager extends HttpManager implements IMessageManager{
         }
 
         if(report_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(report_response.equals(reportee_not_found)){
-            //reportee not found
-            return false;
+            throw new RuntimeException("Reportee is not found!");
         }
 
         return false;
@@ -147,13 +143,11 @@ public class MessageManager extends HttpManager implements IMessageManager{
     public IMessage findMessageByID(int messageID) {
         //检查参数
         if(currentUser == null){
-            //report currentUser is not found
-            return null;
+            throw new RuntimeException("currentUser is null!");
         }
 
         if(messageID <= 0){
-            //report invalid messageID
-            return null;
+            throw new RuntimeException("messageID should be greater than 0!");
         }
 
         String url = "/message";
@@ -163,20 +157,17 @@ public class MessageManager extends HttpManager implements IMessageManager{
         request_body.put("passwordAfterRSA", currentUser.getPassword());
         String message_JSON = httpGet(url, parameters, request_body.toJSONString());
 
+
+
+        //获取Message失败
+        if(message_JSON.equals(message_not_found)){
+            throw new RuntimeException("message is not found!");
+        }
         //成功得到信息
-        if(message_JSON.equals(ok)){
+        else{
             IMessage message = new Message();
             message.loadFromJSON(message_JSON);
             return message;
         }
-
-        //获取Message失败
-        else if(message_JSON.equals(message_not_found)){
-            //report message not found
-            return null;
-        }
-
-        return null;
     }
-
 }

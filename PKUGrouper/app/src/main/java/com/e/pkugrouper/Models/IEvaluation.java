@@ -9,4 +9,5 @@ public interface IEvaluation extends ISerializable{
     void setEvaluateeID(int evaluateeID);
     void setMissionID(int missionID);
     void setScore(double score);
+    void setEvaluatorID(int evaluatorID);
 }

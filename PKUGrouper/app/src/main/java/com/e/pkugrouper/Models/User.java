@@ -3,14 +3,18 @@ package com.e.pkugrouper.Models;
 import java.util.List;
 
 public class User implements IUser{
+    private int UserID = 0;
+    private String password;
+    private String Username;
+    private String tele;
     @Override
     public String getUserName() {
-        return null;
+        return Username;
     }
 
     @Override
-    public String setUserName() {
-        return null;
+    public void setUserName(String username) {
+        Username = username;
     }
 
     @Override
@@ -19,23 +23,33 @@ public class User implements IUser{
     }
 
     @Override
-    public void setMainBox(String _mainBox) {
+    public void setMailBox(String _mailBox) {
 
+    }
+
+    @Override
+    public String getTele() {
+        return tele;
+    }
+
+    @Override
+    public void setTele(String Tele) {
+        tele = Tele;
     }
 
     @Override
     public int getUserID() {
-        return 0;
+        return UserID;
     }
 
     @Override
     public void setUserID(int _userID) {
-
+        UserID = _userID;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
@@ -61,6 +75,11 @@ public class User implements IUser{
     @Override
     public List<String> getTags() {
         return null;
+    }
+
+    @Override
+    public void setPassword(String _password) {
+        password = _password;
     }
 
     @Override

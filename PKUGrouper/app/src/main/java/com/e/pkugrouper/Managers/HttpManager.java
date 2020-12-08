@@ -1,5 +1,6 @@
 package com.e.pkugrouper.Managers;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,23 @@ import java.util.List;
 使用HttpURLConnection实现
  */
 public class HttpManager implements IHttpManager{
+    private final String user_not_found = "\"user Not Found\"";
+    private final String getter_not_found = "\"getter Not Found\"";
+    private final String mission_not_found = "\"mission Not Found\"";
+    private final String gettee_not_found = "\"gettee Not Found\"";
+    private final String bad_request = "\"Bad Request\"";
+    private final String forbidden = "\"Forbidden\"";
+    private final String bad_username = "\"bad username\"";
+    private final String ok = "\"OK\"";
+    private final String wrong_password = "\"wrong old password\"";
+    private final String invalid_password = "\"invalid new password\"";
+    private final String evaluator_not_found = "\"evaluater Not Found\"";
+    private final String evaluatee_not_found = "\"evaluatee Not Found\"";
+    private final String evaluation_not_found = "\"evaluation Not Found\"";
+    private final String reportee_not_found = "\"reportee Not Found\"";
+    private final String message_not_found = "\"message Not Found\"";
+    private final String invalid_time = "\"invalid time\"";
+    private final String applicant_not_found = "\"applicant Not Found\"";
     @Override
     public String httpGet(String url, List<String> parameters, String body) {
         String result="";

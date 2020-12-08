@@ -21,10 +21,15 @@ public class MissionManager extends HttpManager implements IMissionManager{
     private final String ok = "\"OK\"";
     private final String invalid_time = "\"invalid time\"";
     private final String applicant_not_found = "\"applicant Not Found\"";
+
+    public IUser getCurrentUser(){
+        return currentUser;
+    }
+
     @Override
     public void setCurrentUser(IUser _currentUser) {
         if (_currentUser == null){
-            //report or throw
+            throw new RuntimeException("currentUser is null!");
         }
         else
             currentUser = _currentUser;
@@ -34,14 +39,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public IMission findMissionByID(int missionID) {
         //检查currentUser是否存在
         if(currentUser == null){
-            //throw
-            return null;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report or throw
-            return null;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         //获得Mission的JSON序列
@@ -55,12 +58,10 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //未返回合法的mission的JSON序列
         if(Mission_JSON.equals(user_not_found)) {
-            //report user not found
-            return null;
+            throw new RuntimeException("User is not found!");
         }
         else if(Mission_JSON.equals(mission_not_found)){
-            //report mission not found
-            return null;
+            throw new RuntimeException("mission is not found!");
         }
 
         IMission mission = new Mission();
@@ -74,14 +75,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
         //详细api文档中tags和keywords 这里是description和tags
         //检查currentUser是否为空
         if(currentUser == null){
-            //throw
-            return null;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(description == null || channels == null) {
-            //report or throw
-            return null;
+            throw new RuntimeException("description and channels should not be null!");
         }
 
         //得到Mission的JSON序列
@@ -99,12 +98,10 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //获取任务列表失败
         if(Missions_JSON.equals(user_not_found)) {
-            //report user not found
-            return null;
+            throw new RuntimeException("User is not found!");
         }
         else if(Missions_JSON.equals(bad_request)){
-            //bad request
-            return null;
+            throw new RuntimeException("find mission is bad request!");
         }
 
         List<Integer> mission_id_list = JSONObject.parseArray(Missions_JSON, Integer.class);
@@ -121,16 +118,15 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
     @Override
     public boolean deleteMission(int missionID) {
+
         //检查currentUser是否为空
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if (missionID <= 0) {
-            //report or throw;
-            return false;
+            throw new RuntimeException("missionID should be great than 0!");
         }
 
         //删除信息
@@ -148,32 +144,27 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         if(delete_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(delete_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(delete_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("delete is forbidden!");
         }
         return false;
     }
 
     @Override
     public boolean addMission(IMission mission) {
-        //检查currentUser
+        //检查currentUser是否为空
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
-        if(mission == null) {
-            //report or throw
-            return false;
+        if (mission == null) {
+            throw new RuntimeException("mission should not be null!");
         }
 
         //添加Mission
@@ -188,12 +179,10 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //创建任务失败
         if(add_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(add_response.equals(invalid_time)){
-            //invalid time
-            return false;
+            throw new RuntimeException("this time is invalid to add mission!");
         }
 
         //创建任务成功
@@ -204,16 +193,14 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
     @Override
     public boolean editMission(IMission mission) {
-        //检查currentUser
+        //检查currentUser是否为空
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
-        if(mission == null) {
-            //report or throw
-            return false;
+        if (mission == null) {
+            throw new RuntimeException("mission should not be null!");
         }
 
         //修改Mission
@@ -232,18 +219,14 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         if(edit_response.equals(user_not_found)){
-            //report user not found;
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(edit_response.equals(mission_not_found)){
-            //report mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(edit_response.equals(invalid_time)){
-            //report invalid time
-            return false;
+            throw new RuntimeException("this time is invalid to edit mission!");
         }
-
         return false;
     }
 
@@ -251,19 +234,16 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public boolean accept(int missionID, int applicantID) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report invalid missionID
-            return false;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         if(applicantID <= 0) {
-            //report invalid applicantID
-            return false;
+            throw new RuntimeException("applicantID should be greater than 0!");
         }
 
         //接受成员
@@ -283,22 +263,17 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //接受成员失败
         if(accept_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(accept_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(accept_response.equals(applicant_not_found)){
-            //applicant not found
-            return false;
+            throw new RuntimeException("applicant is not found!");
         }
         else if(accept_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("accept applicant is forbidden!");
         }
-
         return false;
     }
 
@@ -306,19 +281,16 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public boolean fire(int missionID, int applicantID) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report invalid missionID
-            return false;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         if(applicantID <= 0) {
-            //report invalid applicantID
-            return false;
+            throw new RuntimeException("applicantID should be greater than 0!");
         }
 
         //踢出参与者
@@ -338,22 +310,17 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //踢出成员失败
         if(fire_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(fire_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(fire_response.equals(applicant_not_found)){
-            //applicant not found
-            return false;
+            throw new RuntimeException("applicant is not found!");
         }
         else if(fire_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("fire applicant is forbidden!");
         }
-
         return false;
     }
 
@@ -361,19 +328,16 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public boolean reject(int missionID, int applicantID) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report invalid missionID
-            return false;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         if(applicantID <= 0) {
-            //report invalid applicantID
-            return false;
+            throw new RuntimeException("applicantID should be greater than 0!");
         }
 
         //拒绝参与者申请
@@ -393,22 +357,17 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //拒绝接受成员失败
         if(reject_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(reject_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(reject_response.equals(applicant_not_found)){
-            //applicant not found
-            return false;
+            throw new RuntimeException("applicant is not found!");
         }
         else if(reject_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("reject applicant is forbidden!");
         }
-
         return false;
     }
 
@@ -416,14 +375,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public boolean join(int missionID) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report or throw
-            return false;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         //申请加入某个任务
@@ -443,16 +400,13 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //加入失败
         if(join_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(join_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(join_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("join mission is forbidden!");
         }
         return false;
     }
@@ -461,14 +415,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public boolean quit(int missionID) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report or throw
-            return false;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         //退出任务
@@ -488,18 +440,14 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //退出任务失败
         if(quit_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(quit_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(quit_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("quit mission is forbidden!");
         }
-
         return false;
     }
 
@@ -507,14 +455,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public boolean start(int missionID) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report or throw
-            return false;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         //开始任务
@@ -534,18 +480,14 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //开始任务失败
         if(start_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(start_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(start_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("start mission is forbidden!");
         }
-
         return false;
     }
 
@@ -553,14 +495,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
     public boolean finish(int missionID) {
         //检查currentUser
         if(currentUser == null){
-            //throw
-            return false;
+            throw new RuntimeException("currentUser is null!");
         }
 
         //检查参数
         if(missionID <= 0) {
-            //report or throw
-            return false;
+            throw new RuntimeException("missionID should be greater than 0!");
         }
 
         //结束任务
@@ -580,18 +520,14 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         //结束任务失败
         if(finish_response.equals(user_not_found)){
-            //user not found
-            return false;
+            throw new RuntimeException("User is not found!");
         }
         else if(finish_response.equals(mission_not_found)){
-            //mission not found
-            return false;
+            throw new RuntimeException("mission is not found!");
         }
         else if(finish_response.equals(forbidden)){
-            //forbidden
-            return false;
+            throw new RuntimeException("finish mission is forbidden!");
         }
-
         return false;
     }
 }

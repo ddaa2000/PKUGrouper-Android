@@ -39,28 +39,29 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.tabs.TabLayout
+            android:id="@+id/squareChannelTab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="精选" />
+                android:text="全部" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="常用" />
+                android:text="专业课" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="关注" />
+                android:text="选修课" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="瞎编" />
+                android:text="生活" />
 
         </com.google.android.material.tabs.TabLayout>
 
@@ -73,18 +74,20 @@
 
 
         <fragment
-            android:id="@+id/fragment2"
+            android:id="@+id/squareMissionListFragment"
             android:name="com.e.pkugrouper.MissionListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floating_action_button"
+            android:id="@+id/add_mission_floatingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_launcher_foreground">
+            app:maxImageSize="50dp"
+            app:tint="@color/white"
+            app:srcCompat="@mipmap/ic_add_foreground">
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     </FrameLayout>
