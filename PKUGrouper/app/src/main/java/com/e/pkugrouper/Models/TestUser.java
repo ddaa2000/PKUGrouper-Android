@@ -9,9 +9,10 @@ public class TestUser implements IUser{
     }
 
     @Override
-    public String setUserName() {
-        return null;
+    public void setUserName(String username) {
+
     }
+
 
     @Override
     public String getMailBox() {
@@ -19,9 +20,20 @@ public class TestUser implements IUser{
     }
 
     @Override
-    public void setMainBox(String _mainBox) {
+    public void setMailBox(String _mailBox) {
 
     }
+
+    @Override
+    public String getTele() {
+        return null;
+    }
+
+    @Override
+    public void setTele(String Tele) {
+
+    }
+
 
     @Override
     public int getUserID() {
@@ -31,6 +43,11 @@ public class TestUser implements IUser{
     @Override
     public void setUserID(int _userID) {
 
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
     }
 
     @Override
@@ -56,6 +73,11 @@ public class TestUser implements IUser{
     @Override
     public List<String> getTags() {
         return null;
+    }
+
+    @Override
+    public void setPassword(String _password) {
+
     }
 
     @Override
