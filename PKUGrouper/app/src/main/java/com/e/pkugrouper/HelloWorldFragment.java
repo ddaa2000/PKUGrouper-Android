@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class HelloWorldFragment extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static HelloWorldFragment newInstance(String param1, String param2) {
+        Log.e("new instance","new instance");
         HelloWorldFragment fragment = new HelloWorldFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -60,6 +62,7 @@ public class HelloWorldFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("hello on created","hello on created");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -70,6 +73,7 @@ public class HelloWorldFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.e("hello created","hello created");
         View v = inflater.inflate(R.layout.fragment_hello_world, container, false);
 
         viewPager = v.findViewById(R.id.logInRegisterViewPager);
@@ -81,6 +85,8 @@ public class HelloWorldFragment extends Fragment {
         logInRegisterTab = v.findViewById(R.id.logInRegisterTab);
         logInRegisterTab.setupWithViewPager(viewPager);
 
+
+        Log.e("setup over","hello created");
         /*
         helloButton = v.findViewById(R.id.HelloButton);
         helloButton.setOnClickListener(new View.OnClickListener(){

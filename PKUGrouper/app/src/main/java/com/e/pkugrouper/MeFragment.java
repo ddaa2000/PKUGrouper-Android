@@ -1,12 +1,26 @@
 package com.e.pkugrouper;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.e.pkugrouper.Models.IMessage;
+import com.e.pkugrouper.Models.Message;
+import com.e.pkugrouper.Models.TestMission;
+import com.e.pkugrouper.Models.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +37,14 @@ public class MeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView messageRecycler;
+
+    private MessageAdapter messageAdapter;
+    private List<IMessage> messages;
+
+    private TextView userNameText, userEmailText, userContactText; //userDescriptionText;
+    private Button logOutButton, editPasswordButton, editInfoButton;
 
     public MeFragment() {
         // Required empty public constructor
@@ -59,6 +81,61 @@ public class MeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_me, container, false);
+        View v =  inflater.inflate(R.layout.fragment_me, container, false);
+
+        messageRecycler = v.findViewById(R.id.me_messageRecycler);
+
+        messages = new ArrayList<IMessage>();
+        for(int i = 0;i<5;i++){
+            messages.add(new Message());
+        }
+        messageAdapter = new MessageAdapter(messages,getActivity());
+        messageRecycler= v.findViewById(R.id.me_messageRecycler);
+        messageRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        messageRecycler.setAdapter(messageAdapter);
+
+
+
+        userNameText = v.findViewById(R.id.me_userName);
+        userContactText = v.findViewById(R.id.me_contact);
+        //userDescriptionText = v.findViewById(R.id.me_selfDescription);
+        userEmailText = v.findViewById(R.id.me_Email);
+
+        logOutButton = v.findViewById(R.id.me_logOut);
+        editPasswordButton = v.findViewById(R.id.me_EditPassword);
+        editInfoButton = v.findViewById(R.id.me_editSelf);
+
+        new UserLoadTask().execute();
+
+        return v;
+    }
+
+    private void userLoadSucceeded(){
+        userNameText.setText(GlobalObjects.currentUser.getUserName());
+        userContactText.setText("暂无联系方式");
+        userEmailText.setText(GlobalObjects.currentUser.getMailBox());
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalObjects.currentUser = null;
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                Fragment fragment = new HelloWorldFragment();
+                fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
+            }
+        });
+    }
+
+    private class UserLoadTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            GlobalObjects.currentUser = new User();
+            userLoadSucceeded();
+        }
     }
 }

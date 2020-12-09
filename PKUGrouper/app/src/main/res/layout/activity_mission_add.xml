@@ -49,6 +49,7 @@
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/missionAdd_missionTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -62,6 +63,7 @@
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/missionAdd_mssionContent"
                     android:layout_width="match_parent"
                     android:lines="6"
                     android:layout_height="wrap_content" />
@@ -74,22 +76,26 @@
                 android:layout_height="wrap_content"
                 android:text="频道"/>
             <CheckBox
+                android:id="@+id/missionAdd_channelProfessional"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="专业课"/>
             <CheckBox
+                android:id="@+id/missionAdd_channelGeneral"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="通选课"/>
             <CheckBox
+                android:id="@+id/missionAdd_channelLife"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="生活"/>
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="其他"/>
+<!--            <CheckBox-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="其他"/>-->
             <Button
+                android:id="@+id/missionAdd_missionCreate"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
