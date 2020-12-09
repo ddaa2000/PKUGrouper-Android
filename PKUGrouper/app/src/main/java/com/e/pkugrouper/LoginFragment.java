@@ -87,15 +87,38 @@ public class LoginFragment extends Fragment {
 
 
 
+        private IUserManager userManager;
+        private IUser currentUser;
+        Boolean isLogin=Boolean.FALSE;
+        String failureType;
         /**
          * 执行登录请求，如果成功，调用logInSuccessfully，如果失败，调用logInFailed并设置错误码参数
-         * @param voids
+         * @param params
          * @return
          */
         @Override
-        protected Void doInBackground(LogInParams... voids) {
-            logInSuccessfully();
-            return null;
+        protected Void doInBackground(LogInParams ...params) {
+            LogInParams param=params[0];
+            currentUser.setMailBox(param.userName);
+            currentUser.setPassword(param.password);
+            try{
+                currentUser=userManager.userLogIn(currentUser);
+            }catch (Exception e) {
+                failureType=e.getMessage();
+            }
+            isLogin=Boolean.TRUE;
+            Void aVoid=null;
+            return aVoid;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isLogin==Boolean.TRUE){
+                logInSuccessfully();
+            }
+            else{
+                logInFailed(failureType);
+            }
         }
     }
 
