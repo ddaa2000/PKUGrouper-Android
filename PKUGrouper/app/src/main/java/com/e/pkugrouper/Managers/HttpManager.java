@@ -125,6 +125,43 @@ public class HttpManager implements IHttpManager{
             List<Integer> evaluation_ids = Arrays.asList(5,6,7);
             return com.alibaba.fastjson.JSON.toJSONString(evaluation_ids);
         }
+
+        if(url.equals("/mission")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0){
+                return user_not_found;
+            }
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1")){
+                return mission_not_found;
+            }
+            else if(missionID.equals("2")){
+                JSONObject mission_JSON = new JSONObject();
+                mission_JSON.put("title", "new mission");
+                mission_JSON.put("content", "new mission");
+                return mission_JSON.toJSONString();
+            }
+            String[] contents = {"Masiwei", "KnowKnow", "KeyNG"};
+            String[] titles = {"CDC", "Higher Brothers", "Woken Day"};
+            int missionid = Integer.parseInt(missionID);
+            JSONObject mission_JSON = new JSONObject();
+            mission_JSON.put("title", titles[missionid-3]);
+            mission_JSON.put("content", contents[missionid-3]);
+            return mission_JSON.toJSONString();
+        }
+
+        if(url.equals("/missions")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0){
+                return user_not_found;
+            }
+            else if(UID == 1){
+                return bad_request;
+            }
+            List<Integer> missionIDs = Arrays.asList(3, 4, 5);
+            return com.alibaba.fastjson.JSON.toJSONString(missionIDs);
+        }
         return null;
     }
 
@@ -210,6 +247,136 @@ public class HttpManager implements IHttpManager{
             }
             return ok;
         }
+
+        if(url.equals("/mission/delete")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+            return ok;
+        }
+
+        if(url.equals("/mission/join")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+            return ok;
+        }
+
+        if(url.equals("/mission/quit")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+            return ok;
+        }
+
+        if(url.equals("/mission/start")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+            return ok;
+        }
+
+        if(url.equals("/mission/finish")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+            return ok;
+        }
+
+        if(url.equals("/mission/create")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return invalid_time;
+            JSONObject mission_json = new JSONObject();
+            mission_json.put("missionID", 12);
+            return mission_json.toJSONString();
+        }
+
+        if(url.equals("/mission/accept")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+
+            String applicantID = parameters.get(2);
+            if(applicantID.equals("1"))
+                return applicant_not_found;
+
+            return ok;
+        }
+
+        if(url.equals("/mission/fire")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+
+            String applicantID = parameters.get(2);
+            if(applicantID.equals("1"))
+                return applicant_not_found;
+
+            return ok;
+        }
+
+        if(url.equals("/mission/reject")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return forbidden;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1"))
+                return mission_not_found;
+
+            String applicantID = parameters.get(2);
+            if(applicantID.equals("1"))
+                return applicant_not_found;
+
+            return ok;
+        }
         return null;
     }
 
@@ -248,6 +415,20 @@ public class HttpManager implements IHttpManager{
             }
             else
                 return ok;
+        }
+
+        if(url.equals("/mission")){
+            int UID = JSON.getInteger("senderID");
+            if(UID == 0)
+                return user_not_found;
+            else if(UID == 1)
+                return invalid_time;
+
+            String missionID = parameters.get(1);
+            if(missionID.equals("1")){
+                return mission_not_found;
+            }
+            return ok;
         }
         return null;
     }
