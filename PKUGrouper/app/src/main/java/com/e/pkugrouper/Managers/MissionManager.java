@@ -119,6 +119,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
     @Override
     public boolean deleteMission(int missionID) {
+
         //检查currentUser是否为空
         if(currentUser == null){
             throw new RuntimeException("currentUser is null!");
@@ -227,7 +228,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(edit_response.equals(invalid_time)){
             throw new RuntimeException("this time is invalid to edit mission!");
         }
-
         return false;
     }
 
@@ -275,7 +275,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(accept_response.equals(forbidden)){
             throw new RuntimeException("accept applicant is forbidden!");
         }
-
         return false;
     }
 
@@ -323,7 +322,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(fire_response.equals(forbidden)){
             throw new RuntimeException("fire applicant is forbidden!");
         }
-
         return false;
     }
 
@@ -371,7 +369,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(reject_response.equals(forbidden)){
             throw new RuntimeException("reject applicant is forbidden!");
         }
-
         return false;
     }
 
@@ -452,7 +449,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(quit_response.equals(forbidden)){
             throw new RuntimeException("quit mission is forbidden!");
         }
-
         return false;
     }
 
@@ -493,7 +489,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(start_response.equals(forbidden)){
             throw new RuntimeException("start mission is forbidden!");
         }
-
         return false;
     }
 
@@ -534,7 +529,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(finish_response.equals(forbidden)){
             throw new RuntimeException("finish mission is forbidden!");
         }
-
         return false;
     }
 }

@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PKUGrouper">
+        <activity android:name=".TestThemeActivity"></activity>
+        <activity android:name=".MissionAddActivity" />
+        <activity android:name=".UserDetailActivity" />
+        <activity android:name=".MissionDetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

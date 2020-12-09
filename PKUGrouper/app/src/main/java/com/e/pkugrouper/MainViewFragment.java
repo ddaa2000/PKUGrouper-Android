@@ -88,14 +88,11 @@ public class MainViewFragment extends Fragment implements BottomNavigationView.O
             case R.id.page_square:
                 selected_item = 0;
                 break;
-            case R.id.page_channel:
+            case R.id.page_mission:
                 selected_item = 1;
                 break;
-            case R.id.page_mission:
-                selected_item = 2;
-                break;
             case R.id.page_me:
-                selected_item = 3;
+                selected_item = 2;
                 break;
         }
         if(selected_item == present_item)
@@ -108,12 +105,9 @@ public class MainViewFragment extends Fragment implements BottomNavigationView.O
             fragment = new SquareFragment();
         }
         else if(present_item == 1){
-            fragment = new ChannelFragment();
-        }
-        else if(present_item == 2){
             fragment = new MissionFragment();
         }
-        else if(present_item == 3){
+        else if(present_item == 2){
             fragment = new MeFragment();
         }
 

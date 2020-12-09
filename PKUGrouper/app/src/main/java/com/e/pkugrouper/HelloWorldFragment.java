@@ -1,15 +1,18 @@
 package com.e.pkugrouper;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ViewFlipper;
+
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +31,9 @@ public class HelloWorldFragment extends Fragment {
     private String mParam2;
 
     private Button helloButton;
+    private TabLayout logInRegisterTab;
+    private ViewPager viewPager;
+    private LogInRegisterAdpater logInRegisterAdpater;
 
     public HelloWorldFragment() {
         // Required empty public constructor
@@ -65,6 +71,17 @@ public class HelloWorldFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_hello_world, container, false);
+
+        viewPager = v.findViewById(R.id.logInRegisterViewPager);
+        logInRegisterAdpater = new LogInRegisterAdpater(getActivity().getSupportFragmentManager());
+        viewPager.setAdapter(logInRegisterAdpater);
+        //FragmentManager fm = getActivity().getSupportFragmentManager();
+        //Fragment fragment = new LoginFragment();
+       // fm.beginTransaction().replace(R.id.logInFrame,fragment).commit();
+        logInRegisterTab = v.findViewById(R.id.logInRegisterTab);
+        logInRegisterTab.setupWithViewPager(viewPager);
+
+        /*
         helloButton = v.findViewById(R.id.HelloButton);
         helloButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -74,6 +91,7 @@ public class HelloWorldFragment extends Fragment {
                 fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
             }
         });
+        */
         return v;
     }
 

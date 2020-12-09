@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class MessageManager extends HttpManager implements IMessageManager{
     private IUser currentUser;
 
+
     private final String user_not_found = "\"user Not Found\"";
     private final String bad_request = "\"Bad Request\"";
     private final String ok = "\"OK\"";
@@ -97,7 +98,6 @@ public class MessageManager extends HttpManager implements IMessageManager{
         else if (bug_response.equals(user_not_found)){
             throw new RuntimeException("User is not found!");
         }
-
         return false;
     }
 
@@ -170,5 +170,4 @@ public class MessageManager extends HttpManager implements IMessageManager{
             return message;
         }
     }
-
 }

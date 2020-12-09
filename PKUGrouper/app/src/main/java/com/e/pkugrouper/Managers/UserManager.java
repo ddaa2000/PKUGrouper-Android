@@ -12,10 +12,12 @@ import com.e.pkugrouper.Models.User;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.alibaba.fastjson.JSONArray;
+
 public class UserManager extends HttpManager implements IUserManager{
     //在修改了user的属性后要重新设置missionManager和messageManager中的currentUser
     private IMissionManager missionManager;
@@ -77,6 +79,7 @@ public class UserManager extends HttpManager implements IUserManager{
         member.setUserID(memberID);
         member.loadFromJSON(Member_JSON);
         return member;
+
     }
 
     @Override
@@ -363,7 +366,6 @@ public class UserManager extends HttpManager implements IUserManager{
         else if(password_response.equals(invalid_password)){
             throw new RuntimeException("New password is invalid!");
         }
-
         return false;
     }
 
@@ -417,7 +419,6 @@ public class UserManager extends HttpManager implements IUserManager{
         else if(evaluate_response.equals(forbidden)){
             throw new RuntimeException("Evaluate is forbidden!");
         }
-
         return false;
     }
 

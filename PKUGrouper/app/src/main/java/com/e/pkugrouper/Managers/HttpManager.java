@@ -1,11 +1,18 @@
 package com.e.pkugrouper.Managers;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
+/*
+使用HttpURLConnection实现
+ */
 public class HttpManager implements IHttpManager{
     private final String user_not_found = "\"user Not Found\"";
     private final String getter_not_found = "\"getter Not Found\"";
@@ -26,410 +33,206 @@ public class HttpManager implements IHttpManager{
     private final String applicant_not_found = "\"applicant Not Found\"";
     @Override
     public String httpGet(String url, List<String> parameters, String body) {
-        JSONObject JSON = JSONObject.parseObject(body);
-
-        if(url.equals("/user/evaluation")){
-            int UID = JSON.getInteger("senderID");
-            String evaluationID = parameters.get(0);
-            if(evaluationID.equals("1")){
-                return evaluation_not_found;
+        String result="";
+        BufferedReader in=null;
+        HttpURLConnection connection=null;
+        if(parameters!=null && parameters.size()>0){
+            for (String str:parameters){
+                str='/'+str;
+                url=url+str;
             }
-            else {
-                JSONObject evaluation = new JSONObject();
-                evaluation.put("evaluationScore", evaluationID);
-                evaluation.put("evaluatorID", UID);
-                return evaluation.toJSONString();
+        }//根据参数修改url
+        try{
+            URL geturl=new URL(url);
+            // 打开和URL之间的连接
+            connection = (HttpURLConnection) geturl.openConnection();
+
+            // 在connect之前，设置通用的请求属性
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("Charsert", "UTF-8");
+
+            // 配置本次连接的Content-type，json是"application/json"
+            connection.setRequestProperty("Content-Type", "application/json");
+            // 设置连接主机服务器的超时时间：15000毫秒
+            connection.setConnectTimeout(15000);
+            // 设置读取远程返回的数据时间：60000毫秒
+            connection.setReadTimeout(60000);
+            // 设置连接方式：get
+            connection.setRequestMethod("GET");
+            // 建立实际的连接，可不写，注意connection.getOutputStream会隐含的进行connect。
+            connection.connect();
+
+            // 定义BufferedReader输入流来读取URL的响应
+            if (connection.getResponseCode() == 200) {
+                in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
+                }
+            }
+        }catch(Exception e){
+            System.out.println("发送GET请求出现异常！"+e);
+            e.printStackTrace();
+        }finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (connection != null) {
+                    //关闭连接
+                    connection.disconnect();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
             }
         }
-
-        if(url.equals("/user/evaluations")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 1){
-                return user_not_found;
-            }
-            else {
-                List<Integer> evaluation_ids = Arrays.asList(2,3,4,5,6);
-                return com.alibaba.fastjson.JSON.toJSONString(evaluation_ids);
-            }
-        }
-
-        if(url.equals("/user/self")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 16)
-                return user_not_found;
-            else{
-                JSONObject Common_JSON = new JSONObject();
-                Common_JSON.put("mailbox","1800013014");
-                Common_JSON.put("username", "myx");
-                return Common_JSON.toJSONString();
-            }
-        }
-
-        if(url.equals("/user/member")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 16){
-                return getter_not_found;
-            }
-            else if(UID == 18){
-                return bad_request;
-            }
-            else if(UID == 19){
-                return forbidden;
-            }
-
-            String mission = parameters.get(1);
-            if(mission.equals("1")){
-                return mission_not_found;
-            }
-
-            String member = parameters.get(2);
-            if(member.equals("1")){
-                return gettee_not_found;
-            }
-
-            JSONObject member_JSON = new JSONObject();
-            member_JSON.put("mailbox", "1800013014");
-            member_JSON.put("username", "myx");
-            member_JSON.put("averageScore", 5);
-            return member_JSON.toJSONString();
-        }
-
-        if(url.equals("/message")){
-            String messageID = parameters.get(0);
-            if(messageID.equals("2")){
-                return message_not_found;
-            }
-            if(messageID.equals("3")) {
-                JSONObject message_JSON = new JSONObject();
-                message_JSON.put("messageContent", "How are you?");
-                message_JSON.put("type", "Notice");
-                return message_JSON.toJSONString();
-            }
-            int messageid = Integer.parseInt(messageID);
-            String[] types={"Report", "Bug", "Notice"};
-            String[] Contents = {"Hello", "Hi", "Are you OK?"};
-            JSONObject message_JSON = new JSONObject();
-            message_JSON.put("messageContent", Contents[messageid-5]);
-            message_JSON.put("type", types[messageid-5]);
-            return message_JSON.toJSONString();
-        }
-
-        if(url.equals("/messages")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 1){
-                return user_not_found;
-            }
-            else if(UID == 2){
-                return bad_request;
-            }
-            List<Integer> evaluation_ids = Arrays.asList(5,6,7);
-            return com.alibaba.fastjson.JSON.toJSONString(evaluation_ids);
-        }
-
-        if(url.equals("/mission")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0){
-                return user_not_found;
-            }
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1")){
-                return mission_not_found;
-            }
-            else if(missionID.equals("2")){
-                JSONObject mission_JSON = new JSONObject();
-                mission_JSON.put("title", "new mission");
-                mission_JSON.put("content", "new mission");
-                return mission_JSON.toJSONString();
-            }
-            String[] contents = {"Masiwei", "KnowKnow", "KeyNG"};
-            String[] titles = {"CDC", "Higher Brothers", "Woken Day"};
-            int missionid = Integer.parseInt(missionID);
-            JSONObject mission_JSON = new JSONObject();
-            mission_JSON.put("title", titles[missionid-3]);
-            mission_JSON.put("content", contents[missionid-3]);
-            return mission_JSON.toJSONString();
-        }
-
-        if(url.equals("/missions")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0){
-                return user_not_found;
-            }
-            else if(UID == 1){
-                return bad_request;
-            }
-            List<Integer> missionIDs = Arrays.asList(3, 4, 5);
-            return com.alibaba.fastjson.JSON.toJSONString(missionIDs);
-        }
-        return null;
+        return result;
     }
 
     @Override
     public String httpPost(String url, List<String> parameters, String body) {
-        JSONObject JSON = JSONObject.parseObject(body);
-
-        if(url.equals("/user/register")){
-            String captha = JSON.getString("captchaCode");
-            if(captha == null)
-                return null;
-            if(captha.equals("1")){
-                return bad_request;
-            }
-            else if(captha.equals("2")){
-                return bad_username;
-            }
-            else if(captha.equals("3")){
-                JSONObject UID_JSON = new JSONObject();
-                UID_JSON.put("UID", 12);
-                return UID_JSON.toJSONString();
+        String result = "";
+        OutputStreamWriter out=null;
+        BufferedReader in = null;
+        HttpURLConnection connection = null;
+        if(parameters!=null && parameters.size()>0){
+            for (String str:parameters){
+                str='/'+str;
+                url=url+str;
             }
         }
-        if(url.equals("/user/login")){
-            String password = JSON.getString("passwordAfterRSA");
-            if(password.equals("fuck")){
-                return forbidden;
+        try {
+            URL posturl = new URL(url);
+            // 打开和URL之间的连接
+            connection = (HttpURLConnection) posturl.openConnection();
+
+            // 在connect之前，设置通用的请求属性
+            connection.setRequestProperty("accept", "application/json");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("Charsert", "UTF-8");
+
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(60000);
+            // 发送POST请求必须设置如下两行，参数要放在http正文内
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            // 默认是 GET方式
+            connection.setRequestMethod("POST");
+            // Post 请求不使用缓存
+            connection.setUseCaches(false);
+            // 配置本次连接的Content-type，json是"application/json"
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.connect();
+
+            // 参数要放在http正文内
+            //1.获取URLConnection对象对应的输出流
+            out=new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
+            out.write(body);
+            out.flush();
+
+            // 定义BufferedReader输入流来读取URL的响应
+            if (connection.getResponseCode() == 200) {
+                in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result =result+line;
+                }
             }
-            else{
-                JSONObject UID_JSON = new JSONObject();
-                UID_JSON.put("UID", 12);
-                return UID_JSON.toJSONString();
+        } catch (Exception e) {
+            System.out.println("发送 POST 请求出现异常！" + e);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+                if (connection != null) {
+                    //关闭连接
+                    connection.disconnect();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
-        if(url.equals("/user/captcha")){
-            String mailbox = JSON.getString("mailbox");
-            if(mailbox.equals("abcd"))
-                return bad_request;
-            else
-                return ok;
-        }
-
-        if(url.equals("/user/evaluate")){
-            String evaluator = parameters.get(0);
-            if(evaluator.equals("16")){
-                return evaluator_not_found;
-            }
-            else if(evaluator.equals("18")){
-                return bad_request;
-            }
-            else if(evaluator.equals("19")){
-                return forbidden;
-            }
-
-            String mission = parameters.get(1);
-            if(mission.equals("1")){
-                return mission_not_found;
-            }
-
-            String evaluatee = parameters.get(2);
-            if(evaluatee.equals("1")){
-                return evaluatee_not_found;
-            }
-            return ok;
-        }
-
-        if(url.equals("/message/bug")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 1)
-                return user_not_found;
-            else
-                return ok;
-        }
-
-        if(url.equals("/message/report")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 1)
-                return user_not_found;
-
-            String reporteeID = parameters.get(1);
-            if(reporteeID.equals("1")){
-                return reportee_not_found;
-            }
-            return ok;
-        }
-
-        if(url.equals("/mission/delete")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-            return ok;
-        }
-
-        if(url.equals("/mission/join")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-            return ok;
-        }
-
-        if(url.equals("/mission/quit")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-            return ok;
-        }
-
-        if(url.equals("/mission/start")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-            return ok;
-        }
-
-        if(url.equals("/mission/finish")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-            return ok;
-        }
-
-        if(url.equals("/mission/create")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return invalid_time;
-            JSONObject mission_json = new JSONObject();
-            mission_json.put("missionID", 12);
-            return mission_json.toJSONString();
-        }
-
-        if(url.equals("/mission/accept")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-
-            String applicantID = parameters.get(2);
-            if(applicantID.equals("1"))
-                return applicant_not_found;
-
-            return ok;
-        }
-
-        if(url.equals("/mission/fire")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-
-            String applicantID = parameters.get(2);
-            if(applicantID.equals("1"))
-                return applicant_not_found;
-
-            return ok;
-        }
-
-        if(url.equals("/mission/reject")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return forbidden;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1"))
-                return mission_not_found;
-
-            String applicantID = parameters.get(2);
-            if(applicantID.equals("1"))
-                return applicant_not_found;
-
-            return ok;
-        }
-        return null;
+        return result;
     }
 
     @Override
     public String httpPut(String url, List<String> parameters, String body) {
-        JSONObject JSON = JSONObject.parseObject(body);
-        if(url.equals("/user/code")){
-            int UID = JSON.getInteger("senderID");
-            System.out.println(UID);
-            if(UID == 10){
-                return bad_request;
+        OutputStreamWriter out=null;
+        BufferedReader in = null;
+        String result = "";
+        HttpURLConnection connection = null;
+        if(parameters!=null && parameters.size()>0){
+            for (String str:parameters){
+                str='/'+str;
+                url=url+str;
             }
-            else if(UID == 11){
-                return user_not_found;
-            }
-
-            String old_password = JSON.getString("passwordAfterRSA");
-            if(old_password.equals("hzh")){
-                return wrong_password;
-            }
-
-            String new_password = JSON.getString("newPasswordAfterRSA");
-            if(new_password.equals("myx")){
-                return invalid_password;
-            }
-            return ok;
         }
+        try {
+            URL puturl = new URL(url);
+            // 打开和URL之间的连接
+            connection = (HttpURLConnection) puturl.openConnection();
 
-        if(url.equals("/user/info")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 16){
-                return user_not_found;
+            // 在connect之前，设置通用的请求属性
+            connection.setRequestProperty("accept", "application/json");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("Charsert", "UTF-8");
+            connection.setRequestProperty("Authorization", body);
+            // 默认是 GET方式
+            connection.setRequestMethod("PUT");
+            // 配置本次连接的Content-type，json是"application/json"
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.connect();
+
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(60000);
+            // 发送PUT请求必须设置如下两行，参数要放在http正文内
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            out=new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
+            out.write(body);
+            out.flush();
+            if (connection.getResponseCode() == 200) {
+
+                // 定义BufferedReader输入流来读取URL的响应
+
+                in = new BufferedReader(new InputStreamReader(
+
+                        connection.getInputStream()));
+
+                String line;
+
+                while ((line = in.readLine()) != null) {
+                    result += line;
+                }
+            } else {
+
             }
-            else if(UID == 17){
-                return bad_request;
+        } catch (Exception e) {
+            System.out.println("发送 PUT 请求出现异常！" + e);
+            e.printStackTrace();
+        }finally{
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+                if (connection != null) {
+                    //关闭连接
+                    connection.disconnect();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-            else
-                return ok;
         }
-
-        if(url.equals("/mission")){
-            int UID = JSON.getInteger("senderID");
-            if(UID == 0)
-                return user_not_found;
-            else if(UID == 1)
-                return invalid_time;
-
-            String missionID = parameters.get(1);
-            if(missionID.equals("1")){
-                return mission_not_found;
-            }
-            return ok;
-        }
-        return null;
+        return result;
     }
+
 }

@@ -6,11 +6,6 @@
         android:icon="@drawable/ic_launcher_foreground"
         android:title="广场"/>
     <item
-        android:id="@+id/page_channel"
-        android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
-        android:title="频道"/>
-    <item
         android:id="@+id/page_mission"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
