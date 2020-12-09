@@ -5,6 +5,7 @@ import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Mission;
+import com.e.pkugrouper.Models.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         //检查参数
-        if(description == null || channels == null) {
+        if(description == null && channels == null) {
             throw new RuntimeException("description and channels should not be null!");
         }
 
