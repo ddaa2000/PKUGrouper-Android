@@ -91,6 +91,7 @@ public class MissionListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.e("list added","list added");
+
         View v = inflater.inflate(R.layout.fragment_mission_list, container, false);
         for(int i = 0;i<5;i++){
             missions.add(new TestMission());

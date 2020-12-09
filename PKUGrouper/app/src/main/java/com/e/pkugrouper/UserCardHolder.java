@@ -16,6 +16,7 @@ public class UserCardHolder extends RecyclerView.ViewHolder implements View.OnCl
     private TextView missionTitleText;
     private TextView missionDescriptionText;
     private Activity activity;
+    private IUser user;
     public UserCardHolder(LayoutInflater inflater, ViewGroup parent, Activity activity) {
         super(inflater.inflate(R.layout.user_card,parent,false));
         this.activity = activity;
@@ -25,11 +26,13 @@ public class UserCardHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
 
     public void bind(IUser user){
+        this.user = user;
     }
 
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(activity,UserDetailActivity.class);
+        GlobalObjects.currentMember = user;
         activity.startActivity(intent);
     }
 
