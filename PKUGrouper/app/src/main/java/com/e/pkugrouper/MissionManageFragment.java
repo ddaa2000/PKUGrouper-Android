@@ -198,7 +198,13 @@ public class MissionManageFragment extends Fragment {
     private enum FailCode{
         SERVER_ERROR,
         TIME_OUT,
-        NO_LONGER_IN_MISSION
+        NO_LONGER_IN_MISSION,
+        USERNF,
+        MISSIONNF,
+        MISSIONID,
+        MISSIONSF,
+        MISSIONFF,
+        DELETEFB
     }
 
     private void missionLoadFailed(FailCode failCode){
@@ -233,8 +239,39 @@ public class MissionManageFragment extends Fragment {
 
 
     private class MissionLoadTask extends AsyncTask<Void, Void, Void>{
+        private List<IUser> member;
+        private List<IUser> applicant;
+        private IMission mission;
+        Boolean isload=Boolean.FALSE;
+        FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
+            try{
+                mission=GlobalObjects.currentMission;
+                GlobalObjects.currentMission=GlobalObjects.missionManager.findMissionByID(mission.getID());
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else{
+                    failure= FailCode.MISSIONID;
+                }
+            }
+            int userid=GlobalObjects.currentUser.getUserID();
+            if(userid==mission.getPublisher()){
+                List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
+                List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
+                int missionid=GlobalObjects.currentMission.getID();
+                for(Integer i:list1){
+                    member.add(GlobalObjects.userManager.findMemberByID(missionid,i));
+                }
+                for(Integer i:list2){
+                    applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
+                }
+                isload=Boolean.TRUE;
+            }
 
             //这里应该从服务器再次获取当前的任务，以防任务发生了变化，当前的任务在GlobalObjects中，新获取的任务应该覆盖GlobalObjects中的currentMission
             //同时，应当返回所有的成员和申请（当当前用户是当前任务的管理员时）的信息
@@ -245,47 +282,118 @@ public class MissionManageFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            missionLoadSucceeded(null,null);
+            if(isload){
+                missionLoadSucceeded(member,applicant);
+            }else{
+                missionLoadFailed(failure);
+            }
+
         }
     }
 
     private class MissionStart extends AsyncTask<Void, Void, Void>{
 
+        Boolean isstart=Boolean.FALSE;
+        FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                GlobalObjects.missionManager.start(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONSF;
+                }
+            }
+            isstart=Boolean.TRUE;
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            missionStartSucceeded();
+            if(isstart){
+                missionStartSucceeded();
+            }else{
+                missionStartFailed(failure);
+            }
+
         }
     }
 
     private class MissionStop extends AsyncTask<Void, Void, Void>{
 
+        Boolean isstop=Boolean.FALSE;
+        FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
-
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                GlobalObjects.missionManager.finish(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONFF;
+                }
+            }
+            isstop=Boolean.TRUE;
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            missionStopSucceeded();
+            if(isstop){
+                missionStopSucceeded();
+            }else{
+                missionStopFailed(failure);
+            }
         }
     }
 
     private class MissionDelete extends AsyncTask<Void, Void, Void>{
 
+        Boolean isdelete=Boolean.FALSE;
+        FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                GlobalObjects.missionManager.deleteMission(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.DELETEFB;
+                }
+            }
+            isdelete=Boolean.TRUE;
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            missionDeleteSucceeded();
+            if(isdelete){
+                missionDeleteSucceeded();
+            }else{
+                missionDeleteFailed(failure);
+            }
         }
     }
 
