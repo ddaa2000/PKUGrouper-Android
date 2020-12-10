@@ -87,7 +87,6 @@ public class LoginFragment extends Fragment {
 
 
 
-        private IUserManager userManager;
         private IUser currentUser;
         Boolean isLogin=Boolean.FALSE;
         String failureType;
@@ -102,13 +101,12 @@ public class LoginFragment extends Fragment {
             currentUser.setMailBox(param.userName);
             currentUser.setPassword(param.password);
             try{
-                currentUser=userManager.userLogIn(currentUser);
+                GlobalObjects.userManager.userLogIn(currentUser);
             }catch (Exception e) {
                 failureType=e.getMessage();
             }
             isLogin=Boolean.TRUE;
-            Void aVoid=null;
-            return aVoid;
+            return null;
         }
 
         @Override
