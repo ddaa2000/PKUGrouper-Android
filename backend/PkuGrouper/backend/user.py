@@ -80,8 +80,8 @@ class DealMember(APIView):  # 获取他人信息
             score = 0
             for evaluation in gettee.evaluationsAsEvaluatee.all():
                 score += evaluation.evaluationScore
-            if gettee.evaluationsAsEvaluatee.all().couunt() is not 0:
-                score /= gettee.evaluationsAsEvaluatee.all().couunt()
+            if gettee.evaluationsAsEvaluatee.all().count() is not 0:
+                score /= gettee.evaluationsAsEvaluatee.all().count()
             if Mission.objects.get(id=mission_ID).members.filter(id=getter_ID).count() is not 0 \
                     or Mission.objects.get(id=mission_ID).publisher.id is getter_ID:
                 tele = gettee.tele
@@ -141,9 +141,15 @@ class DealInfo(APIView):  # 修改个人信息
             response = Response("User Not Found", 404)
         else:
             user = User.objects.get(id=user_ID)
-            user.username = request.data.get('username')
-            user.tele = request.data.get('tele')
-            response = Response("OK", 200)
+            username = request.data.get('username', "")
+            tele = request.data.get('tele', "")
+            if username == "" or type(username) != str or tele == "" or type(tele) != str:
+                response = Response("Bad Request", 400)
+            else:
+                user.username = username
+                user.tele = tele
+                user.save()
+                response = Response("OK", 200)
         return response
 
 
@@ -157,8 +163,13 @@ class DealCode(APIView):  # 修改密码
             response = Response("User Not Found", 404)
         else:
             user = User.objects.get(id=user_ID)
-            user.passwordAfterMD5 = passwordToMD5(RSAdecypt(request.get('passwordAfterRSA')))
-            response = Response("OK", 200)
+            passwordAfterRSA = request.data.get('newPasswordAfterRSA', "")
+            if passwordAfterRSA == "" or type(passwordAfterRSA) != str:
+                response = Response("Bad Request", 400)
+            else:
+                user.passwordAfterMD5 = passwordToMD5(RSAdecypt(passwordAfterRSA))
+                user.save()
+                response = Response("OK", 200)
         return response
 
 
@@ -174,6 +185,8 @@ class DealEvaluate(APIView):  # 评分
             response = Response("mission Not Found", 404)
         elif User.objects.filter(id=evaluatee_ID).count() == 0:
             response = Response("evaluatee Not Found", 404)
+        elif evaluatee_ID == evaluater_ID:
+            response = Response("Forbidden", 403)
         else:
             #  judge whether this evaluation has been made once
             mission = Mission.objects.get(id=mission_ID)
@@ -182,11 +195,22 @@ class DealEvaluate(APIView):  # 评分
             if evaluatee.evaluationsAsEvaluatee.filter(evaluater=evaluater).count() != 0 and\
                 evaluatee.evaluationsAsEvaluatee.filter(mission=mission).count() != 0:
                 response = Response("Forbidden", 403)
+            elif mission.publisher.id != evaluater_ID and mission.members.filter(id=evaluater_ID).count() == 0:
+                response = Response("Forbidden", 403)
+            elif mission.publisher.id != evaluatee_ID and mission.members.filter(id=evaluatee_ID).count() == 0:
+                response = Response("Forbidden", 403)
             else:
                 Evaluation.objects.create(evaluationScore=request.data.get('score'), timeStamp=datetime.datetime.now(),
                                           evaluater=evaluater, evaluatee=evaluatee, mission=mission)
                 response = Response("OK", 200)
         return response
+
+
+# This is omitted for now
+class DealTags(APIView):#修改tagList
+    @staticmethod
+    def put(request, user_ID):#request body:tagList
+        return Response(['This is a PUT of user/tags/{user_ID}', request.data])
 
 
 class DealCaptcha(APIView):  # 获取验证码
