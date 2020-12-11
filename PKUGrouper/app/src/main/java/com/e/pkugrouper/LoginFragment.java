@@ -101,7 +101,7 @@ public class LoginFragment extends Fragment {
             currentUser.setMailBox(param.userName);
             currentUser.setPassword(param.password);
             try{
-                GlobalObjects.userManager.userLogIn(currentUser);
+                GlobalObjects.currentUser=GlobalObjects.userManager.userLogIn(currentUser);
             }catch (Exception e) {
                 failureType=e.getMessage();
             }
