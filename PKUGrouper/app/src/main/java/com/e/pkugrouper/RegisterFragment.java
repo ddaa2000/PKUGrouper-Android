@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.User;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
@@ -133,7 +134,7 @@ public class RegisterFragment extends Fragment {
 
     private class RegisterTask extends AsyncTask<RegisterParams,Void,Void>{
 
-        private IUser currentUser;
+        private IUser currentUser = new User();
 
         Boolean isRegister=Boolean.FALSE;
         FailCode failureType;

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.Mission;
 import com.e.pkugrouper.Models.TestUser;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -240,9 +241,9 @@ public class MissionManageFragment extends Fragment {
 
 
     private class MissionLoadTask extends AsyncTask<Void, Void, Void>{
-        private List<IUser> member;
-        private List<IUser> applicant;
-        private IMission mission;
+        private List<IUser> member=new ArrayList<IUser>() ;
+        private List<IUser> applicant=new ArrayList<IUser>() ;
+        private IMission mission=new Mission();
         Boolean isload=Boolean.FALSE;
         FailCode failure;
         @Override
