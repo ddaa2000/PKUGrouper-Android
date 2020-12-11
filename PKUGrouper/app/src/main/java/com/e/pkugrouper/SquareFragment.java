@@ -34,14 +34,15 @@ public class SquareFragment extends Fragment {
 
     private FloatingActionButton addMissionButton;
     private TabLayout channelTab;
-    private MissionListFragment squareMissionListFragment;
     private SearchView searchView;
+    private MissionListFragment squareMissionListFragment;
 
     private String presentContent = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
     private ChannelSearchTask channelSearchTask;
 
     public SquareFragment() {
@@ -98,6 +99,24 @@ public class SquareFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        ChannelSearchParams params = new ChannelSearchParams();
+        switch(channelTab.getSelectedTabPosition()){
+            case 0:
+                params.channel = Channel.ALL;
+                break;
+            case 1:
+                params.channel = Channel.PROFESSIONAL_COURSE;
+                break;
+            case 2:
+                params.channel = Channel.GENERAL_COURSE;
+                break;
+            case 3:
+                params.channel = Channel.LIFE;
+                break;
+        }
+        params.keywords = null;
+        channelSearchTask.execute(params);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

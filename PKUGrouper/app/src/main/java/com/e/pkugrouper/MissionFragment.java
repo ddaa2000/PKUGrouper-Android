@@ -1,16 +1,23 @@
 package com.e.pkugrouper;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.e.pkugrouper.Models.IMission;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +32,10 @@ public class MissionFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private FloatingActionButton addMissionButton;
+    private TabLayout statusTab;
+    private MissionListFragment missionListFragment;
+
+    private StatusSearchTask statusSearchTask;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -72,7 +83,12 @@ public class MissionFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_mission, container, false);
 
-        addMissionButton = v.findViewById(R.id.add_mission_floatingButton);
+        statusTab = v.findViewById(R.id.mission_statusTab);
+        statusTab.addOnTabSelectedListener(new ChannelChange());
+
+        missionListFragment = (MissionListFragment)getChildFragmentManager().findFragmentById(R.id.mission_missionListFragment);
+
+        addMissionButton = v.findViewById(R.id.mission_addMissionFloat);
         addMissionButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -81,6 +97,82 @@ public class MissionFragment extends Fragment {
             }
         });
 
+        ChannelSearchParams params = new ChannelSearchParams();
+        switch(statusTab.getSelectedTabPosition()){
+            case 0:
+                params.channel = Channel.PRESENT;
+                break;
+            case 1:
+                params.channel = Channel.APPLYING;
+                break;
+            case 2:
+                params.channel = Channel.COMPLETED;
+                break;
+        }
+        params.keywords = null;
+        statusSearchTask = new StatusSearchTask();
+        statusSearchTask.execute(params);
+
+
         return v;
     }
+
+    private class ChannelChange implements TabLayout.OnTabSelectedListener{
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            ChannelSearchParams params = new ChannelSearchParams();
+            params.keywords = null;
+            switch (tab.getPosition()){
+                case 0:
+                    params.channel = Channel.PRESENT;
+                    break;
+                case 1:
+                    params.channel = Channel.APPLYING;
+                    break;
+                case 2:
+                    params.channel = Channel.COMPLETED;
+                    break;
+            }
+            statusSearchTask.cancel(false);
+            statusSearchTask = new StatusSearchTask();
+            statusSearchTask.execute(params);
+            Log.e("sss","selected");
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
+        }
+    }
+
+
+
+    private void changeMissionList(List<IMission> missions){
+        Message msg = new Message();
+        msg.obj = missions;
+        missionListFragment.mHandler.sendMessage(msg);
+    }
+
+    private enum Channel{
+        PRESENT, APPLYING, COMPLETED
+    }
+    private class ChannelSearchParams{
+        String keywords;  //注意，可能为null或者""
+        Channel channel;
+    }
+
+    private class StatusSearchTask extends AsyncTask<ChannelSearchParams, Void, Void> {
+
+        @Override
+        protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
+            changeMissionList(new ArrayList<IMission>());
+            return null;
+        }
+    }
+
 }

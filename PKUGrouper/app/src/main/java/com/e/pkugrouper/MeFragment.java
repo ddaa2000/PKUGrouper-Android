@@ -1,5 +1,6 @@
 package com.e.pkugrouper;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -16,7 +17,6 @@ import android.widget.TextView;
 
 import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.Message;
-import com.e.pkugrouper.Models.TestMission;
 import com.e.pkugrouper.Models.User;
 
 import java.util.ArrayList;
@@ -110,10 +110,15 @@ public class MeFragment extends Fragment {
         return v;
     }
 
-    private void userLoadSucceeded(){
+    private void userLoadSucceeded(List<IMessage> messages){
         userNameText.setText(GlobalObjects.currentUser.getUserName());
         userContactText.setText("暂无联系方式");
         userEmailText.setText(GlobalObjects.currentUser.getMailBox());
+
+        messageAdapter.reloadData(messages);
+
+
+        logOutButton.setVisibility(View.GONE);
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,6 +128,28 @@ public class MeFragment extends Fragment {
                 fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
             }
         });
+
+        editInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),EditMeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        editPasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), EditPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+    private enum FailCode{
+
+    }
+    private void userLoadFailed(FailCode failCode){
+
     }
 
     private class UserLoadTask extends AsyncTask<Void, Void, Void>{
@@ -135,7 +162,7 @@ public class MeFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             GlobalObjects.currentUser = new User();
-            userLoadSucceeded();
+            userLoadSucceeded(new ArrayList<IMessage>());
         }
     }
 }
