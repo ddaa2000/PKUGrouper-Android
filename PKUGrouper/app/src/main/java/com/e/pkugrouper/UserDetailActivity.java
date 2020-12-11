@@ -144,7 +144,7 @@ public class UserDetailActivity extends AppCompatActivity {
         String missiontotal;
         double average=0.0;
         Boolean isapplicant;
-        private HttpManager http;
+        private HttpManager http=new HttpManager();
         @Override
         protected Void doInBackground(Void... voids) {
             try{
