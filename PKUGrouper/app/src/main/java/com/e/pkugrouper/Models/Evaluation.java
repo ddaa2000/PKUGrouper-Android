@@ -85,11 +85,21 @@ public class Evaluation implements IEvaluation{
     @Override
     public void loadFromJSON(String JSONString) {
         JSONObject object=JSON.parseObject(JSONString);
-
-        timeStamp=object.getString("timeStamp");
-        evaluaterID=object.getIntValue("evaluaterID");
-        evaluateeID=object.getIntValue("evaluateeID");
-        missionID=object.getIntValue("missionID");
-        score=object.getDoubleValue("evaluationScore");
+        
+        if(object.containsKey("timeStamp")) {
+        	timeStamp=object.getString("timeStamp");
+        }
+        if(object.containsKey("evaluaterID")) {
+        	evaluaterID=object.getIntValue("evaluaterID");
+        }
+        if(object.containsKey("evaluateeID")) {
+        	evaluateeID=object.getIntValue("evaluateeID");
+        }
+        if(object.containsKey("missionID")) {
+        	missionID=object.getIntValue("missionID");
+        }
+        if(object.containsKey("evaluationScore")) {
+        	score=object.getDoubleValue("evaluationScore");
+        }
     }
 }

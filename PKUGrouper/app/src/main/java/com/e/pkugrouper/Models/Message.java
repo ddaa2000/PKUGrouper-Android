@@ -96,11 +96,21 @@ public class Message implements  IMessage{
     @Override
     public void loadFromJSON(String JSONString) {
         JSONObject object=JSON.parseObject(JSONString);
-
-        timeStamp=object.getString("timeStamp");
-        publisherID=object.getIntValue("publisherID");
-        messageType=object.getString("type");
-        messageContent=object.getString("messageContent");
-        reporteeID=object.getIntValue("reportee");
+        
+        if(object.containsKey("timeStamp")) {
+        	timeStamp=object.getString("timeStamp");
+        }
+        if(object.containsKey("publisherID")) {
+        	publisherID=object.getIntValue("publisherID");
+        }
+        if(object.containsKey("type")) {
+        	messageType=object.getString("type");
+        }
+        if(object.containsKey("messageContent")){
+        	messageContent=object.getString("messageContent");
+        }
+        if(object.containsKey("reportee")) {
+        	reporteeID=object.getIntValue("reportee");
+        }
     }
 }

@@ -137,11 +137,21 @@ public class User implements IUser{
     @Override
     public void loadFromJSON(String JSONString) {
         JSONObject object=JSON.parseObject(JSONString);
-
-        mailBox=object.getString("mailbox");
-        missionIDs=JSON.parseArray(object.getJSONArray("missionIDs").toJSONString(),Integer.class);
-        evaluationIDs=JSON.parseArray(object.getJSONArray("evaluationIDs").toJSONString(),Integer.class);
-        violationIDs=JSON.parseArray(object.getJSONArray("violationIDs").toJSONString(),Integer.class);
-        averageScore=object.getDoubleValue("averageScore");
+        
+        if(object.containsKey("mailbox")) {
+        	mailBox=object.getString("mailbox");
+        }
+        if(object.containsKey("missionIDs")) {
+        	missionIDs=JSON.parseArray(object.getJSONArray("missionIDs").toJSONString(),Integer.class);
+        }
+        if(object.containsKey("evaluationIDs")) {
+        	evaluationIDs=JSON.parseArray(object.getJSONArray("evaluationIDs").toJSONString(),Integer.class);
+        }
+        if(object.containsKey("violationIDs")) {
+        	violationIDs=JSON.parseArray(object.getJSONArray("violationIDs").toJSONString(),Integer.class);
+        }
+        if(object.containsKey("averageScore")) {
+        	averageScore=object.getDoubleValue("averageScore");
+        }
     }
 }

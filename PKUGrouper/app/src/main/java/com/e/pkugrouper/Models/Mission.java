@@ -153,7 +153,7 @@ public class Mission implements IMission{
         object.put("applicationEndTime",applicationEndTime);
         object.put("executionStartTime",executionStartTime);
         object.put("executionEndTime",executionEndTime);
-        object.put("tag",channels);
+        object.put("channels",channels);
 
         String objStr=JSON.toJSONString(object);
         return objStr;
@@ -162,17 +162,39 @@ public class Mission implements IMission{
     @Override
     public void loadFromJSON(String JSONString) {
         JSONObject object=JSON.parseObject(JSONString);
-
-        title=object.getString("title");
-        content=object.getString("content");
-        publisher=object.getIntValue("publisherID");
-        memberIDs=JSON.parseArray(object.getJSONArray("memberIDs").toJSONString(),Integer.class);
-        applicantIDs=JSON.parseArray(object.getJSONArray("applicantIDs").toJSONString(),Integer.class);
-        state=object.getString("state");
-        publishTime=object.getString("publishTime");
-        applicationEndTime=object.getString("applicationEndTime");
-        executionStartTime=object.getString("executionStartTime");
-        executionEndTime=object.getString("executionEndTime");
-        channels=JSON.parseArray(object.getJSONArray("tag").toJSONString(),String.class);
+        
+        if(object.containsKey("title")) {
+        	title=object.getString("title");
+        }
+        if(object.containsKey("content")) {
+        	content=object.getString("content");
+        }
+        if(object.containsKey("publisherID")) {
+        	publisher=object.getIntValue("publisherID");
+        }
+        if(object.containsKey("memberIDs")) {
+        	memberIDs=JSON.parseArray(object.getJSONArray("memberIDs").toJSONString(),Integer.class);
+        }
+        if(object.containsKey("applicantIDs")) {
+        	applicantIDs=JSON.parseArray(object.getJSONArray("applicantIDs").toJSONString(),Integer.class);
+        }
+        if(object.containsKey("state")) {
+        	state=object.getString("state");
+        }
+        if(object.containsKey("publishTime")) {
+        	publishTime=object.getString("publishTime");
+        }
+        if(object.containsKey("applicationEndTime")) {
+        	applicationEndTime=object.getString("applicationEndTime");
+        }
+        if(object.containsKey("executionStartTime")) {
+        	executionStartTime=object.getString("executionStartTime");
+        }
+        if(object.containsKey("executionEndTime")) {
+        	executionEndTime=object.getString("executionEndTime");
+        }
+        if(object.containsKey("channels")) {
+        	channels=JSON.parseArray(object.getJSONArray("channels").toJSONString(),String.class);
+        }
     }
 }
