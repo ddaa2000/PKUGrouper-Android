@@ -146,6 +146,7 @@ public class RegisterFragment extends Fragment {
             currentUser.setPassword(param.password);
             try{
                 GlobalObjects.userManager.userRegister(currentUser,param.verificationCode);
+                isRegister=Boolean.TRUE;
             }catch (Exception e) {
                 String s=e.getMessage();
                 if(s.equals("Register is bad request!")){
@@ -154,13 +155,12 @@ public class RegisterFragment extends Fragment {
                     failureType=FailCode.UNKNOWN_FAILURE;
                 }
             }
-            isRegister=Boolean.TRUE;
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(isRegister==Boolean.TRUE){
+            if(isRegister){
                 registerSucceeded();
             }
             else{
@@ -178,17 +178,17 @@ public class RegisterFragment extends Fragment {
             String mailbox=mail[0];
             try{
                 GlobalObjects.userManager.sendCaptcha(mailbox);
+                isMail=Boolean.TRUE;
             }catch(Exception e){
                 failureType=FailCode.TIME_EXCEEDED;
                 e.printStackTrace();
             }
-            isMail=Boolean.TRUE;
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(isMail==Boolean.TRUE){
+            if(isMail){
                 getVerificationCodeSucceeded();
             }
             else{
