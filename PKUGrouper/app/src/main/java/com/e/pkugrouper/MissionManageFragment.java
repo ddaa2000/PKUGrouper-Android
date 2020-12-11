@@ -260,7 +260,7 @@ public class MissionManageFragment extends Fragment {
                 }
             }
             int userid=GlobalObjects.currentUser.getUserID();
-            if(userid==mission.getPublisher()){
+            if(userid==GlobalObjects.currentMission.getPublisher()){
                 List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
                 List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
                 int missionid=GlobalObjects.currentMission.getID();
