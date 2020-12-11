@@ -24,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.User;
 import com.e.pkugrouper.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -87,7 +89,7 @@ public class LoginFragment extends Fragment {
 
 
 
-        private IUser currentUser;
+        private IUser currentUser = new User();
         Boolean isLogin=Boolean.FALSE;
         String failureType;
         /**
