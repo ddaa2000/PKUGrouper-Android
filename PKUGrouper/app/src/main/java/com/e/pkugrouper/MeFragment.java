@@ -146,7 +146,7 @@ public class MeFragment extends Fragment {
         });
     }
     private enum FailCode{
-
+        USERNF,ERROR
     }
     private void userLoadFailed(FailCode failCode){
 
@@ -154,15 +154,34 @@ public class MeFragment extends Fragment {
 
     private class UserLoadTask extends AsyncTask<Void, Void, Void>{
 
+        List<IMessage> messagelist=new ArrayList<>();
+        Boolean isload=Boolean.FALSE;
+        FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
+            GlobalObjects.currentUser=GlobalObjects.userManager.getSelf();
+            try{
+                messagelist=GlobalObjects.messageManager.getCurrentUserMessages();
+                isload=Boolean.TRUE;
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("currentUser is null")||s.equals("User is not found!")){
+                    failure= FailCode.USERNF;
+                }else{
+                    failure=FailCode.ERROR;
+                }
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            GlobalObjects.currentUser = new User();
-            userLoadSucceeded(new ArrayList<IMessage>());
+            if(isload){
+                userLoadSucceeded(messagelist);
+            }else{
+                userLoadFailed(failure);
+            }
+
         }
     }
 }
