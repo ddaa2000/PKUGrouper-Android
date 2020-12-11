@@ -168,10 +168,25 @@ public class MissionFragment extends Fragment {
 
     private class StatusSearchTask extends AsyncTask<ChannelSearchParams, Void, Void> {
 
+        private List<IMission>missionList=new ArrayList<IMission>();
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
-            changeMissionList(new ArrayList<IMission>());
+            ChannelSearchParams param=channelSearchParams[0];
+            String channel=param.channel.toString();
+            List<String>channels=new ArrayList<String>();
+            channels.add(channel);
+            try{
+                missionList=GlobalObjects.missionManager.findMissionByDescription(param.keywords,channels,1,20);
+            }catch(Exception e){
+                String s=e.getMessage();
+                System.out.println(s);
+            }
+
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            changeMissionList(missionList);
         }
     }
 
