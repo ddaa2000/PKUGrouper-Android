@@ -145,11 +145,11 @@ public class UserDetailActivity extends AppCompatActivity {
         double average=0.0;
         Boolean isapplicant;
         private HttpManager http;
-        private CommonUser member;
         @Override
         protected Void doInBackground(Void... voids) {
             try{
                 GlobalObjects.currentMission=GlobalObjects.missionManager.findMissionByID(GlobalObjects.currentMission.getID());
+                GlobalObjects.currentUser=GlobalObjects.userManager.getSelf();
                 int memberid=GlobalObjects.currentMember.getUserID();
                 List<Integer> list=GlobalObjects.currentMission.getApplicantIDs();
                 if(list.contains(memberid)){
@@ -182,7 +182,7 @@ public class UserDetailActivity extends AppCompatActivity {
                     average=average/evaluationlist.size();
                     averagescore=String.valueOf(average);
                 }
-                int length=member.getMissionIDs().size();
+                int length=evaluationlist.size();
                 missiontotal=String.valueOf(length);
             }catch(Exception e){
                 String s=e.getMessage();
