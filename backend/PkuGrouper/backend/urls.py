@@ -36,7 +36,8 @@ urlpatterns = [
     path('message/<int:message_ID>/', message.DealMessage.as_view(), name='message/'),
     path('message/bug/<int:user_ID>/', message.DealBug.as_view(), name='message/bug/'),
     path('message/report/<int:user_ID>/<int:reportee_ID>/', message.DealReport.as_view(), name='message/report/'),
-
+    path('message/debug', message.debug.as_view(), name='message/debug'),
+    path('message/debug_clear', message.debug_clear.as_view(), name='message/debug_clear'),
     #下面是上面的path去掉末尾'/'的复制
     
     #path for user
