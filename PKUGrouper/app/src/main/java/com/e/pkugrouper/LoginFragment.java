@@ -104,16 +104,16 @@ public class LoginFragment extends Fragment {
             currentUser.setPassword(param.password);
             try{
                 GlobalObjects.currentUser=GlobalObjects.userManager.userLogIn(currentUser);
+                isLogin=Boolean.TRUE;
             }catch (Exception e) {
                 failureType=e.getMessage();
             }
-            isLogin=Boolean.TRUE;
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(isLogin==Boolean.TRUE){
+            if(isLogin){
                 logInSuccessfully();
             }
             else{
