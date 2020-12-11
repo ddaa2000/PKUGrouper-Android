@@ -19,5 +19,6 @@ public interface IUser extends ISerializable{
     List<Integer> getEvaluationIDs();
     List<String> getTags();
     void setPassword(String _password);
-
+    double getAverageScore();
+    void setAverageScore(double _averageScore);
 }
