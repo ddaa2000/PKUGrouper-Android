@@ -73,6 +73,7 @@ public class MissionAddActivity extends AppCompatActivity {
             mission=iMissions[0];
             try{
                 GlobalObjects.missionManager.addMission(mission);
+                isadded=Boolean.TRUE;
             }catch(Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -83,7 +84,6 @@ public class MissionAddActivity extends AppCompatActivity {
                     failure=FailCode.MISSIONID;
                 }
             }
-            isadded=Boolean.TRUE;
             return null;
         }
 
