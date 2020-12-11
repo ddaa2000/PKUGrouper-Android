@@ -1,5 +1,7 @@
 package com.e.pkugrouper.Models;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 
 public class User implements IUser{
@@ -7,6 +9,7 @@ public class User implements IUser{
     private String password;
     private String Username;
     private String tele;
+    private double averageScore;
     @Override
     public String getUserName() {
         return Username;
@@ -89,6 +92,22 @@ public class User implements IUser{
 
     @Override
     public void loadFromJSON(String JSONString) {
+        JSONObject user_JSON = JSONObject.parseObject(JSONString);
+        if(user_JSON.getString("mailbox") != null)
+            setMailBox(user_JSON.getString("mailbox"));
+        if(user_JSON.getString("username") != null)
+            setUserName(user_JSON.getString("username"));
+        if(user_JSON.getDouble("averageScore") != null)
+            setAverageScore(user_JSON.getDouble("averageScore"));
+    }
 
+    @Override
+    public double getAverageScore(){
+        return averageScore;
+    }
+
+    @Override
+    public void setAverageScore(double _averageScore){
+        averageScore=_averageScore;
     }
 }
