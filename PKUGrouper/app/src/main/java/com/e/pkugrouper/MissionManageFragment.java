@@ -251,6 +251,19 @@ public class MissionManageFragment extends Fragment {
             try{
                 mission=GlobalObjects.currentMission;
                 GlobalObjects.currentMission=GlobalObjects.missionManager.findMissionByID(mission.getID());
+                int userid=GlobalObjects.currentUser.getUserID();
+                if(userid==GlobalObjects.currentMission.getPublisher()){
+                    List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
+                    List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
+                    int missionid=GlobalObjects.currentMission.getID();
+                    for(Integer i:list1){
+                        member.add(GlobalObjects.userManager.findMemberByID(missionid,i));
+                    }
+                    for(Integer i:list2){
+                        applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
+                    }
+                    isload=Boolean.TRUE;
+                }
             }catch(Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -261,19 +274,7 @@ public class MissionManageFragment extends Fragment {
                     failure= FailCode.MISSIONID;
                 }
             }
-            int userid=GlobalObjects.currentUser.getUserID();
-            if(userid==GlobalObjects.currentMission.getPublisher()){
-                List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
-                List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
-                int missionid=GlobalObjects.currentMission.getID();
-                for(Integer i:list1){
-                    member.add(GlobalObjects.userManager.findMemberByID(missionid,i));
-                }
-                for(Integer i:list2){
-                    applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
-                }
-                isload=Boolean.TRUE;
-            }
+            
 
             //这里应该从服务器再次获取当前的任务，以防任务发生了变化，当前的任务在GlobalObjects中，新获取的任务应该覆盖GlobalObjects中的currentMission
             //同时，应当返回所有的成员和申请（当当前用户是当前任务的管理员时）的信息
@@ -302,6 +303,7 @@ public class MissionManageFragment extends Fragment {
             int missionid=GlobalObjects.currentMission.getID();
             try{
                 GlobalObjects.missionManager.start(missionid);
+                isstart=Boolean.TRUE;
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -314,7 +316,6 @@ public class MissionManageFragment extends Fragment {
                     failure=FailCode.MISSIONSF;
                 }
             }
-            isstart=Boolean.TRUE;
             return null;
         }
 
@@ -338,6 +339,7 @@ public class MissionManageFragment extends Fragment {
             int missionid=GlobalObjects.currentMission.getID();
             try{
                 GlobalObjects.missionManager.finish(missionid);
+                isstop=Boolean.TRUE;
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -350,7 +352,6 @@ public class MissionManageFragment extends Fragment {
                     failure=FailCode.MISSIONFF;
                 }
             }
-            isstop=Boolean.TRUE;
             return null;
         }
 
@@ -373,6 +374,7 @@ public class MissionManageFragment extends Fragment {
             int missionid=GlobalObjects.currentMission.getID();
             try{
                 GlobalObjects.missionManager.deleteMission(missionid);
+                isdelete=Boolean.TRUE;
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -385,7 +387,6 @@ public class MissionManageFragment extends Fragment {
                     failure=FailCode.DELETEFB;
                 }
             }
-            isdelete=Boolean.TRUE;
             return null;
         }
 
