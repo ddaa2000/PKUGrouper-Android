@@ -54,7 +54,7 @@ public class EditMeActivity extends AppCompatActivity {
     }
 
     private enum FailCode{
-
+        USERNF,ERROR,USERNAMENULL
     }
     private void userEditFailed(FailCode failCode){
 
