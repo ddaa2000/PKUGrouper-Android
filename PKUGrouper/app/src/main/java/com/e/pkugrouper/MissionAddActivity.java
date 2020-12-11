@@ -43,7 +43,7 @@ public class MissionAddActivity extends AppCompatActivity {
     }
 
     private enum FailCode{
-
+        USERNF,MISSIONID,TIMEINVALID
     }
 
     private void addMissionSucceeded(){
@@ -65,14 +65,34 @@ public class MissionAddActivity extends AppCompatActivity {
 
     private class AddMissionTask extends AsyncTask<IMission, Void, Void>{
 
+        Boolean isadded=Boolean.FALSE;
+        FailCode failure;
         @Override
         protected Void doInBackground(IMission... iMissions) {
-            return null;
+            IMission mission=iMissions[0];
+            try{
+                GlobalObjects.missionManager.addMission(mission);
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure=FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure=FailCode.TIMEINVALID;
+                }else{
+                    failure=FailCode.MISSIONID;
+                }
+            }
+            isadded=Boolean.TRUE;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            addMissionSucceeded();
+            if(isadded){
+                addMissionSucceeded();
+            }else{
+                addMissionFailed(failure);
+            }
+
         }
     }
 }

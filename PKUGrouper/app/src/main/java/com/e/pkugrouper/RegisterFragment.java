@@ -132,7 +132,6 @@ public class RegisterFragment extends Fragment {
 
     private class RegisterTask extends AsyncTask<RegisterParams,Void,Void>{
 
-        private IUserManager userManager;
         private IUser currentUser;
 
         Boolean isRegister=Boolean.FALSE;
@@ -144,7 +143,7 @@ public class RegisterFragment extends Fragment {
             currentUser.setMailBox(param.mailNum);
             currentUser.setPassword(param.password);
             try{
-                currentUser=userManager.userRegister(currentUser,param.verificationCode);
+                GlobalObjects.userManager.userRegister(currentUser,param.verificationCode);
             }catch (Exception e) {
                 String s=e.getMessage();
                 if(s.equals("Register is bad request!")){
@@ -171,13 +170,12 @@ public class RegisterFragment extends Fragment {
     private class GetVerificationTask extends AsyncTask<String,Void,Void>{
 
         Boolean isMail=Boolean.FALSE;
-        private IUserManager userManager;
         FailCode failureType;
         @Override
         protected Void doInBackground(String... mail) {
             String mailbox=mail[0];
             try{
-                userManager.sendCaptcha(mailbox);
+                GlobalObjects.userManager.sendCaptcha(mailbox);
             }catch(Exception e){
                 failureType=FailCode.TIME_EXCEEDED;
                 e.printStackTrace();

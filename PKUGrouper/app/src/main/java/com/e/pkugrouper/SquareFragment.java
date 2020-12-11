@@ -204,7 +204,6 @@ public class SquareFragment extends Fragment {
 
     private class ChannelSearchTask extends AsyncTask<ChannelSearchParams, Void, Void>{
 
-        private IMissionManager missionManager;
         private List<IMission>missionList=new ArrayList<IMission>();
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
@@ -213,7 +212,7 @@ public class SquareFragment extends Fragment {
             List<String>channels=new ArrayList<String>();
             channels.add(channel);
             try{
-                missionList=missionManager.findMissionByDescription(param.keywords,channels,1,20);
+                missionList=GlobalObjects.missionManager.findMissionByDescription(param.keywords,channels,1,20);
             }catch(Exception e){
                 String s=e.getMessage();
                 System.out.println(s);
