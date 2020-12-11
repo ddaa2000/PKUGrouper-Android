@@ -47,7 +47,7 @@ public class EditPasswordActivity extends AppCompatActivity {
     }
 
     private enum FailCode{
-
+        OLDPWRONG,OLDNEWSAME,USERNF,INVALIDPW,ERROR
     }
     private void userEditPasswordFailed(FailCode failCode){
 
