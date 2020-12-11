@@ -69,7 +69,8 @@ public class MissionAddActivity extends AppCompatActivity {
         FailCode failure;
         @Override
         protected Void doInBackground(IMission... iMissions) {
-            IMission mission=iMissions[0];
+            IMission mission=new Mission();
+            mission=iMissions[0];
             try{
                 GlobalObjects.missionManager.addMission(mission);
             }catch(Exception e){
