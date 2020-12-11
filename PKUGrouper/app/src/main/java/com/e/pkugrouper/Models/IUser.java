@@ -10,8 +10,8 @@ public interface IUser extends ISerializable{
     void setMailBox(String _mailBox);
     int getUserID();
     void setUserID(int _userID);
-    String getContactInformation();
-    void setContactInformation(String _contactInformation);
+    String getTele();
+    void setTele(String _contactInformation);
     double getAverageScore();
     void setAverageScore(double _averageScore);
     

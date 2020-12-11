@@ -9,7 +9,7 @@ public class User implements IUser{
     private String userName;
     private int userID;
     private String password;
-    private String contactInformation;
+    private String tele;
     private double averageScore;
 
 
@@ -62,13 +62,13 @@ public class User implements IUser{
     }
 
     @Override
-    public String getContactInformation() {
-        return contactInformation;
+    public String getTele() {
+        return tele;
     }
 
     @Override
-    public void setContactInformation(String _contactInformation) {
-        contactInformation=_contactInformation;
+    public void setTele(String _contactInformation) {
+        tele =_contactInformation;
     }
 
     @Override

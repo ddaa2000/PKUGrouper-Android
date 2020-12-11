@@ -2,12 +2,9 @@ package com.e.pkugrouper.Managers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.e.pkugrouper.Models.CommonUser;
 import com.e.pkugrouper.Models.Evaluation;
-import com.e.pkugrouper.Models.ICommonUser;
 import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Models.IUser;
-import com.e.pkugrouper.Models.Administrator;
 import com.e.pkugrouper.Models.User;
 import java.security.KeyFactory;
 import java.security.PublicKey;
@@ -38,7 +35,7 @@ public class UserManager extends HttpManager implements IUserManager{
     private final String evaluation_not_found = "\"evaluation Not Found\"";
 
     @Override
-    public ICommonUser findMemberByID(int missionID, int memberID) {
+    public IUser findMemberByID(int missionID, int memberID) {
         if(user == null) {
             throw new RuntimeException("User is Null");
         } //检测user对象是否存在
@@ -75,7 +72,7 @@ public class UserManager extends HttpManager implements IUserManager{
         }
 
         //生成member对应的ICommonUser对象
-        ICommonUser member = new CommonUser();
+        IUser member = new User();
         member.setUserID(memberID);
         member.loadFromJSON(Member_JSON);
         return member;
@@ -83,7 +80,7 @@ public class UserManager extends HttpManager implements IUserManager{
     }
 
     @Override
-    public ICommonUser getSelf() {
+    public IUser getSelf() {
         if(user == null) {
             throw new RuntimeException("User is Null");
         } //检测user对象是否存在
@@ -103,7 +100,7 @@ public class UserManager extends HttpManager implements IUserManager{
         }
 
         //从返回的JSON字符串中得到当前使用的User对象
-        ICommonUser Self = new CommonUser();
+        IUser Self = new User();
         Self.loadFromJSON(User_JSON);
         return Self;
     }
