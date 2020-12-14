@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.e.pkugrouper.Managers.IHttpManager;
-import com.e.pkugrouper.Models.CommonUser;
 import com.e.pkugrouper.Models.Evaluation;
 import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Managers.HttpManager;
