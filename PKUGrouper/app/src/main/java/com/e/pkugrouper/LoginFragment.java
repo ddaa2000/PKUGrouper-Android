@@ -24,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.User;
 import com.e.pkugrouper.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -87,15 +89,36 @@ public class LoginFragment extends Fragment {
 
 
 
+        private IUser currentUser = new User();
+        Boolean isLogin=Boolean.FALSE;
+        String failureType;
         /**
          * 执行登录请求，如果成功，调用logInSuccessfully，如果失败，调用logInFailed并设置错误码参数
-         * @param voids
+         * @param params
          * @return
          */
         @Override
-        protected Void doInBackground(LogInParams... voids) {
-            logInSuccessfully();
+        protected Void doInBackground(LogInParams ...params) {
+            LogInParams param=params[0];
+            currentUser.setMailBox(param.userName);
+            currentUser.setPassword(param.password);
+            try{
+                GlobalObjects.currentUser=GlobalObjects.userManager.userLogIn(currentUser);
+                isLogin=Boolean.TRUE;
+            }catch (Exception e) {
+                failureType=e.getMessage();
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isLogin){
+                logInSuccessfully();
+            }
+            else{
+                logInFailed(failureType);
+            }
         }
     }
 

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.User;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
@@ -132,18 +134,66 @@ public class RegisterFragment extends Fragment {
 
     private class RegisterTask extends AsyncTask<RegisterParams,Void,Void>{
 
+        private IUser currentUser = new User();
+
+        Boolean isRegister=Boolean.FALSE;
+        FailCode failureType;
         @Override
-        protected Void doInBackground(RegisterParams... params) {
-            registerSucceeded();
+        protected Void doInBackground(RegisterParams...params) {
+            RegisterParams param=params[0];
+            currentUser.setUserName(param.userName);
+            currentUser.setMailBox(param.mailNum);
+            currentUser.setPassword(param.password);
+            try{
+                GlobalObjects.userManager.userRegister(currentUser,param.verificationCode);
+                isRegister=Boolean.TRUE;
+            }catch (Exception e) {
+                String s=e.getMessage();
+                if(s.equals("Register is bad request!")){
+                    failureType=FailCode.SERVER_FAILURE;
+                }else{
+                    failureType=FailCode.UNKNOWN_FAILURE;
+                }
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isRegister){
+                registerSucceeded();
+            }
+            else{
+                registerFailed(failureType);
+            }
         }
     }
 
     private class GetVerificationTask extends AsyncTask<String,Void,Void>{
 
+        Boolean isMail=Boolean.FALSE;
+        FailCode failureType;
         @Override
         protected Void doInBackground(String... mail) {
+            String mailbox=mail[0];
+            try{
+                GlobalObjects.userManager.sendCaptcha(mailbox);
+                isMail=Boolean.TRUE;
+            }catch(Exception e){
+                failureType=FailCode.TIME_EXCEEDED;
+                e.printStackTrace();
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isMail){
+                getVerificationCodeSucceeded();
+            }
+            else{
+                getVerificationFailed(failureType);
+            }
         }
     }
 
