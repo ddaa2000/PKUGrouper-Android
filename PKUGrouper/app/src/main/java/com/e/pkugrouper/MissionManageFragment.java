@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Mission;
-import com.e.pkugrouper.Models.TestUser;
+import com.e.pkugrouper.Models.User;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -86,8 +86,8 @@ public class MissionManageFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mission_manage, container, false);
         for(int i = 0;i<20;i++){
-            members.add(new TestUser());
-            applicants.add(new TestUser());
+            members.add(new User());
+            applicants.add(new User());
         }
 
 
@@ -151,7 +151,7 @@ public class MissionManageFragment extends Fragment {
         missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(GlobalObjects.currentMission.getState()==0){
+                if(GlobalObjects.currentMission.getState()=="start"){
                     new MaterialAlertDialogBuilder(getContext()).setTitle("开始任务")
                             .setMessage("任务开始后，就不可以修改任务成员了，确认要开始吗？")
                             .setNeutralButton("取消", new DialogInterface.OnClickListener() {

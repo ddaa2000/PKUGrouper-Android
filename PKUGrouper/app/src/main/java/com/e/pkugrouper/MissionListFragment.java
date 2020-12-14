@@ -16,7 +16,6 @@ import android.widget.ListView;
 
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.Mission;
-import com.e.pkugrouper.Models.TestMission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,14 +93,14 @@ public class MissionListFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_mission_list, container, false);
         for(int i = 0;i<5;i++){
-            missions.add(new TestMission());
+            missions.add(new Mission());
         }
         missionAdapter = new MissionAdapter(missions,getActivity());
         missionRecyclerView = v.findViewById(R.id.mission_list);
         missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         missionRecyclerView.setAdapter(missionAdapter);
         for(int i = 0;i<5;i++){
-            missions.add(new TestMission());
+            missions.add(new Mission());
         }
         //listView = v.findViewById(R.id.mission_list);
         //listView.setAdapter(missionAdapter);
