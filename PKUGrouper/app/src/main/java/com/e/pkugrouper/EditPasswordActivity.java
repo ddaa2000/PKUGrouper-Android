@@ -47,7 +47,7 @@ public class EditPasswordActivity extends AppCompatActivity {
     }
 
     private enum FailCode{
-
+        OLDPWRONG,OLDNEWSAME,USERNF,INVALIDPW,ERROR
     }
     private void userEditPasswordFailed(FailCode failCode){
 
@@ -56,6 +56,8 @@ public class EditPasswordActivity extends AppCompatActivity {
 
     private class UserEditPasswordTask extends AsyncTask<String, Void, Void> {
 
+        Boolean ischange=Boolean.FALSE;
+        FailCode failure;
         /**
          *
          * @param strings 依次是 旧密码，新密码
@@ -63,12 +65,43 @@ public class EditPasswordActivity extends AppCompatActivity {
          */
         @Override
         protected Void doInBackground(String... strings) {
+            String oldpassword=strings[0];
+            String newpassword=strings[1];
+            String savepassword=GlobalObjects.currentUser.getPassword();
+            if(savepassword.equals(oldpassword)){
+                if(newpassword.equals(oldpassword)){
+                    failure=FailCode.OLDNEWSAME;
+                }else{
+                    try{
+                        GlobalObjects.userManager.changePassword(newpassword);
+                        ischange=Boolean.TRUE;
+                    }catch(Exception e){
+                        String s=e.getMessage();
+                        if(s.equals("User is null")||s.equals("User is not found!")){
+                            failure=FailCode.USERNF;
+                        }else if(s.equals("New password is invalid!")){
+                            failure=FailCode.INVALIDPW;
+                        }else{
+                            failure=FailCode.ERROR;
+                        }
+                    }
+                    
+                }
+
+            }else{
+                failure=FailCode.OLDPWRONG;
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            userEditPasswordSucceeded();
+            if(ischange){
+                userEditPasswordSucceeded();
+            }else{
+                userEditPasswordFailed(failure);
+            }
+
         }
     }
 }

@@ -54,7 +54,7 @@ public class EditMeActivity extends AppCompatActivity {
     }
 
     private enum FailCode{
-
+        USERNF,ERROR,USERNAMENULL
     }
     private void userEditFailed(FailCode failCode){
 
@@ -63,6 +63,8 @@ public class EditMeActivity extends AppCompatActivity {
 
     private class UserEditTask extends AsyncTask<String, Void, Void>{
 
+        Boolean isedit=Boolean.FALSE;
+        FailCode failure;
         /**
          *
          * @param strings 依次是新的 用户名 介绍 联系方式
@@ -70,12 +72,33 @@ public class EditMeActivity extends AppCompatActivity {
          */
         @Override
         protected Void doInBackground(String... strings) {
+            String name=strings[0];
+            String tel=strings[1];
+            try{
+                GlobalObjects.userManager.editInfo(name,tel);
+                isedit=Boolean.TRUE;
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is null")||s.equals("User is not found!")){
+                    failure= FailCode.USERNF;
+                } else if(s.equals("username can't be null!")){
+                    failure= FailCode.USERNAMENULL;
+                }else{
+                    failure=FailCode.ERROR;
+                }
+            }
+            
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            userEditSucceeded();
+            if(isedit){
+                userEditSucceeded();
+            }else{
+                userEditFailed(failure);
+            }
+
         }
     }
 }
