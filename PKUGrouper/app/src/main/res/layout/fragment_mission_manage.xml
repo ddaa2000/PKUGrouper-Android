@@ -28,30 +28,31 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/mission_item_title"
+                        android:id="@+id/missionManage_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mission"
+                        android:text="任务标题"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
                     <TextView
-                        android:id="@+id/mission_item_description"
+                        android:id="@+id/missionManage_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="description of the mission"
+                        android:text="任务内容"
                         android:textAppearance="?attr/textAppearanceBody2" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="5/10"
-                        android:textAppearance="?attr/textAppearanceBody2" />
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:text="修改任务信息"/>
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:text="5/10"-->
+<!--                        android:textAppearance="?attr/textAppearanceBody2" />-->
+<!--                    <Button-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:id="@+id/missionManage_editMission"-->
+<!--                        style="@style/Widget.MaterialComponents.Button.TextButton"-->
+<!--                        android:text="修改任务信息"/>-->
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
@@ -72,6 +73,7 @@
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
                     <TextView
+                        android:id="@+id/missionManage_missionStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -81,11 +83,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <Button
+                            android:id="@+id/missionManage_startOrStopMission"
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="开始任务"/>
                         <Button
+                            android:id="@+id/missionManage_deleteMission"
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.e.pkugrouper.Models.IUser;
-import com.e.pkugrouper.Models.User;
+import com.e.pkugrouper.Models.TestUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +76,7 @@ public class MissionDetailFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_mission_detail, container, false);
         for(int i = 0;i<5;i++){
-            members.add(new User());
+            members.add(new TestUser());
         }
         recyclerView = v.findViewById(R.id.mission_detail_members_recyclerView);
         userCardAdapter = new UserCardAdapter(members,getActivity());
