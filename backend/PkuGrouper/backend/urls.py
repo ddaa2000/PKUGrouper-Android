@@ -26,7 +26,7 @@ urlpatterns = [
     path('mission/join/<int:user_ID>/<int:mission_ID>/', mission.DealJoin.as_view(), name='mission/join/'),
     path('mission/accept/<int:user_ID>/<int:mission_ID>/<int:applicant_ID>/', mission.DealAccept.as_view(), name='mission/accept/'),
     path('mission/reject/<int:user_ID>/<int:mission_ID>/<int:applicant_ID>/', mission.DealReject.as_view(), name='mission/reject/'),
-    path('mission/fire/<int:user_ID>/<int:mission_ID>/<int:applicant_ID>/', mission.DealFire.as_view(), name='mission/fire/'),
+    path('mission/fire/<int:user_ID>/<int:mission_ID>/<int:member_ID>/', mission.DealFire.as_view(), name='mission/fire/'),
     path('mission/start/<int:user_ID>/<mission_ID>/', mission.DealStart.as_view(), name='mission/start/'),
     path('mission/finish/<int:user_ID>/<mission_ID>/', mission.DealFinish.as_view(), name='mission/Finish/'),
     path('mission/quit/<int:user_ID>/<mission_ID>/', mission.DealQuit.as_view(), name='mission/Quit/'),
@@ -36,7 +36,6 @@ urlpatterns = [
     path('message/<int:message_ID>/', message.DealMessage.as_view(), name='message/'),
     path('message/bug/<int:user_ID>/', message.DealBug.as_view(), name='message/bug/'),
     path('message/report/<int:user_ID>/<int:reportee_ID>/', message.DealReport.as_view(), name='message/report/'),
-
     #下面是上面的path去掉末尾'/'的复制
     
     #path for user
@@ -60,7 +59,7 @@ urlpatterns = [
     path('mission/join/<int:user_ID>/<int:mission_ID>', mission.DealJoin.as_view(), name='mission/join'),
     path('mission/accept/<int:user_ID>/<int:mission_ID>/<int:applicant_ID>', mission.DealAccept.as_view(), name='mission/accept'),
     path('mission/reject/<int:user_ID>/<int:mission_ID>/<int:applicant_ID>', mission.DealReject.as_view(), name='mission/reject'),
-    path('mission/fire/<int:user_ID>/<int:mission_ID>/<int:applicant_ID>', mission.DealFire.as_view(), name='mission/fire'),
+    path('mission/fire/<int:user_ID>/<int:mission_ID>/<int:member_ID>', mission.DealFire.as_view(), name='mission/fire'),
     path('mission/start/<int:user_ID>/<mission_ID>', mission.DealStart.as_view(), name='mission/start'),
     path('mission/finish/<int:user_ID>/<mission_ID>', mission.DealFinish.as_view(), name='mission/Finish'),
     path('mission/quit/<int:user_ID>/<mission_ID>', mission.DealQuit.as_view(), name='mission/Quit'),
