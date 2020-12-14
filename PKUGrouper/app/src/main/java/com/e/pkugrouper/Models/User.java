@@ -1,5 +1,7 @@
 package com.e.pkugrouper.Models;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -11,7 +13,6 @@ public class User implements IUser{
     private String password;
     private String tele;
     private double averageScore;
-
 
     private List<Integer> missionIDs;
     private List<Integer> messageIDs;

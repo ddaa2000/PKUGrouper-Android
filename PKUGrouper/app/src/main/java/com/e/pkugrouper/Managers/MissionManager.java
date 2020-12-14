@@ -119,7 +119,6 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
     @Override
     public boolean deleteMission(int missionID) {
-
         //检查currentUser是否为空
         if(currentUser == null){
             throw new RuntimeException("currentUser is null!");
@@ -175,7 +174,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
         request_body.put("senderID",currentUser.getUserID());
         request_body.put("passwordAfterRSA", currentUser.getPassword());
         JSONObject mission_JSON = JSONObject.parseObject(mission.toJSON());
-        request_body.putAll(mission_JSON);
+        request_body.put("title", mission_JSON.getString("title"));
+        request_body.put("content", mission_JSON.getString("content"));
+        request_body.put("applicationEndTime", mission_JSON.getString("applicationEndTime"));
+        request_body.put("executionStartTime", mission_JSON.getString("executionStartTime"));
+        request_body.put("executionEndTime", mission_JSON.getString("executionEndTime"));
+        request_body.put("channels", mission_JSON.get("channels"));
         String add_response = httpPost(url, parameters, request_body.toJSONString());
 
         //创建任务失败
@@ -212,7 +216,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
         request_body.put("senderID",currentUser.getUserID());
         request_body.put("passwordAfterRSA", currentUser.getPassword());
         JSONObject mission_JSON = JSONObject.parseObject(mission.toJSON());
-        request_body.putAll(mission_JSON);
+        request_body.put("title", mission_JSON.getString("title"));
+        request_body.put("content", mission_JSON.getString("content"));
+        request_body.put("applicationEndTime", mission_JSON.getString("applicationEndTime"));
+        request_body.put("executionStartTime", mission_JSON.getString("executionStartTime"));
+        request_body.put("executionEndTime", mission_JSON.getString("executionEndTime"));
+        request_body.put("channels", mission_JSON.get("channels"));
         String edit_response = httpPut(url, parameters, request_body.toJSONString());
 
         if(edit_response.equals(ok)){
@@ -228,6 +237,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(edit_response.equals(invalid_time)){
             throw new RuntimeException("this time is invalid to edit mission!");
         }
+
         return false;
     }
 
@@ -275,6 +285,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(accept_response.equals(forbidden)){
             throw new RuntimeException("accept applicant is forbidden!");
         }
+
         return false;
     }
 
@@ -322,6 +333,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(fire_response.equals(forbidden)){
             throw new RuntimeException("fire applicant is forbidden!");
         }
+
         return false;
     }
 
@@ -369,6 +381,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(reject_response.equals(forbidden)){
             throw new RuntimeException("reject applicant is forbidden!");
         }
+
         return false;
     }
 
@@ -449,6 +462,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(quit_response.equals(forbidden)){
             throw new RuntimeException("quit mission is forbidden!");
         }
+
         return false;
     }
 
@@ -489,6 +503,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(start_response.equals(forbidden)){
             throw new RuntimeException("start mission is forbidden!");
         }
+
         return false;
     }
 
@@ -529,6 +544,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         else if(finish_response.equals(forbidden)){
             throw new RuntimeException("finish mission is forbidden!");
         }
+
         return false;
     }
 }

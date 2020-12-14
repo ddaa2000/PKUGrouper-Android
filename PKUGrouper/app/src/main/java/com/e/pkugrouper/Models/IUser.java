@@ -20,6 +20,7 @@ public interface IUser extends ISerializable{
 
     List<Integer> getMessageIDs();
     List<Integer> getEvaluationIDs();
+
     List<Integer> getMissionIDs();
     List<Integer> getViolationIDs();
     

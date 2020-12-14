@@ -1,19 +1,14 @@
 package com.e.pkugrouper.Managers;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.e.pkugrouper.Models.Evaluation;
 import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.User;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.alibaba.fastjson.JSONArray;
 
 public class UserManager extends HttpManager implements IUserManager{
     //在修改了user的属性后要重新设置missionManager和messageManager中的currentUser
@@ -71,12 +66,10 @@ public class UserManager extends HttpManager implements IUserManager{
             throw new RuntimeException("Find is Forbidden");
         }
 
-        //生成member对应的ICommonUser对象
         IUser member = new User();
         member.setUserID(memberID);
         member.loadFromJSON(Member_JSON);
         return member;
-
     }
 
     @Override
@@ -338,8 +331,9 @@ public class UserManager extends HttpManager implements IUserManager{
         JSONObject request_body = new JSONObject();
         request_body.put("senderID",user.getUserID());
         request_body.put("passwordAfterRSA", user.getPassword());
-        //RSAUtils rsaUtils = new RSAUtils();
-        String passwordAfterRSA = password;//rsaUtils.encrypto(password);
+        RSAUtils rsaUtils = new RSAUtils();
+        String passwordAfterRSA = password;
+        rsaUtils.encrypto(password);
         request_body.put("newPasswordAfterRSA", passwordAfterRSA);
         String password_response = httpPut(url, parameters, request_body.toJSONString());
 
@@ -363,6 +357,7 @@ public class UserManager extends HttpManager implements IUserManager{
         else if(password_response.equals(invalid_password)){
             throw new RuntimeException("New password is invalid!");
         }
+
         return false;
     }
 
@@ -416,6 +411,7 @@ public class UserManager extends HttpManager implements IUserManager{
         else if(evaluate_response.equals(forbidden)){
             throw new RuntimeException("Evaluate is forbidden!");
         }
+
         return false;
     }
 
