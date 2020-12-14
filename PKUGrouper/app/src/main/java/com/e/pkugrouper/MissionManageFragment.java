@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.e.pkugrouper.Models.IUser;
-import com.e.pkugrouper.Models.TestUser;
+import com.e.pkugrouper.Models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +73,8 @@ public class MissionManageFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mission_manage, container, false);
         for(int i = 0;i<20;i++){
-            members.add(new TestUser());
-            applicants.add(new TestUser());
+            members.add(new User());
+            applicants.add(new User());
         }
 
 

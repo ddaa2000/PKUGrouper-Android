@@ -66,7 +66,6 @@ public class UserManager extends HttpManager implements IUserManager{
             throw new RuntimeException("Find is Forbidden");
         }
 
-        //生成member对应的IUser对象
         IUser member = new User();
         member.setUserID(memberID);
         member.loadFromJSON(Member_JSON);

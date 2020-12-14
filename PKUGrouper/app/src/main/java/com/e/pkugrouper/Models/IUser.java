@@ -5,20 +5,28 @@ import java.util.List;
 public interface IUser extends ISerializable{
 
     String getUserName();
-    void setUserName(String username);
+    void setUserName(String _userName);
     String getMailBox();
     void setMailBox(String _mailBox);
-    String getTele();
-    void setTele(String Tele);
     int getUserID();
     void setUserID(int _userID);
-    String getPassword();
-    IIdentification getIdentification();
-    void setIdentification(IIdentification _identification);
-    List<Integer> getMessageIDs();
-    List<Integer> getEvaluationIDs();
-    List<String> getTags();
-    void setPassword(String _password);
+    String getTele();
+    void setTele(String _contactInformation);
     double getAverageScore();
     void setAverageScore(double _averageScore);
+    
+    String getPassword();
+    void setPassword(String _password);
+
+    List<Integer> getMessageIDs();
+    List<Integer> getEvaluationIDs();
+
+    List<Integer> getMissionIDs();
+    List<Integer> getViolationIDs();
+    
+    void setMessageIDs(List<Integer> _messageIDs);
+    void setEvaluationIDs(List<Integer> _evaluationIDs);
+    void setMissionIDs(List<Integer> _missionIDs);
+    void setViolationIDs(List<Integer> _violationIDs);
+
 }

@@ -1,6 +1,5 @@
 package com.e.pkugrouper.Managers;
 
-import com.e.pkugrouper.Models.ICommonUser;
 import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Models.IUser;
 
@@ -14,8 +13,8 @@ import java.util.List;
  * 当user的信息发生变化时，UserManager应当通知MissionManager与MessageManager，为它们赋予新值
  */
 public interface IUserManager {
-    ICommonUser findMemberByID(int missionID, int memberID);  // user/member
-    ICommonUser getSelf();                                  // user/self
+    IUser findMemberByID(int missionID, int memberID);  // user/member
+    IUser getSelf();                                  // user/self
     IUser userLogIn(IUser currentUser);                     // user/login
     IUser userRegister(IUser currentUser, String captcha);  // user/register
     List<IEvaluation> getEvaluations();                     // user/evaluations
