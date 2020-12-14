@@ -6,9 +6,15 @@ from django.utils import timezone
 from .someFuncs import *
 import random
 
+def fixtime(s):
+    x = s.find('.')
+    if x == -1:
+        return s
+    return s[:x]
+
 def to_json(obj):
     mp = {
-    "timeStamp" : str(obj.timeStamp)[:-7],
+    "timeStamp" : fixtime(str(obj.timeStamp)),
     "publisherID" : obj.publisher.id,
     "type" : obj.messageType,
     "messageContent" : eval(obj.messageContent),
@@ -20,7 +26,7 @@ def to_json(obj):
 class DealMessages(APIView):#获取message
     #（这个应该是给出user_ID，返回一个此user未查看的message的数组）
     @staticmethod
-    def get(request, user_ID):
+    def post(request, user_ID):
         #return Response('This is a GET of messages/{user_ID}')
         try:
             who = User.objects.get(id=user_ID)
@@ -34,7 +40,7 @@ class DealMessages(APIView):#获取message
 
 class DealMessage(APIView):#根据message_ID获取信息
     @staticmethod
-    def get(request, message_ID):
+    def post(request, message_ID):
         try:
             who = Message.objects.get(id=message_ID)
         except Message.DoesNotExist:

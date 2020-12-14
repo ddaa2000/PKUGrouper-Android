@@ -14,7 +14,7 @@ def datetime_earlier(dt1,dt2):
 def datetime_eq_or_earlier(dt1,dt2):
     return not datetime_earlier(dt2,dt1)
     
-def get_misssion_state(mission):
+def get_mission_state(mission):
     time_now = datetime.datetime.now()
     if datetime_earlier(time_now,mission.publishTime):
         return 'invaild publish time'
@@ -46,6 +46,13 @@ def mission_time_validity(old_mission,new_mission):
         return False
     return True
 '''
+
+def fixtime(s):
+    x = s.find('.')
+    if x == -1:
+        return s
+    return s[:x]
+
 def mission_to_json(mission):
     js = {
     "title" : mission.title,
@@ -54,23 +61,23 @@ def mission_to_json(mission):
     "memberIDs" : list(map(lambda x:x.id,mission.members.all())),
     "applicantIDs" : list(map(lambda x:x.id,mission.applicants.all())),
     "state": get_mission_state(mission),
-    "publishTime" : mission.publishTime.isoformat(sep=' '), 
-    "applicationEndTime" : mission.applicationEndTime.isoformat(sep=' '),
-    "executionStartTime" : mission.executionStartTime.isoformat(sep=' '),
-    "executionEndTime" : mission.executionEndTime.isoformat(sep=' '),
-    "channels" : list(map(lambda x:x.content,mission.applicants.all()))
+    "publishTime" : fixtime(str(mission.publishTime)), 
+    "applicationEndTime" : fixtime(str(mission.applicationEndTime)),
+    "executionStartTime" : fixtime(str(mission.executionStartTime)),
+    "executionEndTime" : fixtime(str(mission.executionEndTime)),
+    "channels" : list(map(lambda x:x.content,Channel.objects.filter(missions=mission)))
     }
     return js
     
 def string_to_datetime(s):
-    return datetime.strptime(s,"%Y-%m-%d %H%M%S")
+    return datetime.datetime.strptime(s,"%Y-%m-%d %H:%M:%S")
 '''
 好像暂时用不到或者说不好用
 def json_to_mission(js):
 '''
 class DealMission(APIView):
     @staticmethod
-    def get(request, user_ID, mission_ID):#获取任务信息
+    def post(request, user_ID, mission_ID):#获取任务信息
         uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
@@ -83,7 +90,7 @@ class DealMission(APIView):
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         return Response(mission_to_json(which))
 
     @staticmethod
@@ -101,46 +108,46 @@ class DealMission(APIView):
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
             
-        new_applicationEndTime=string_to_datetime(request.body["applicationEndTime"])
-        new_executionStartTime=string_to_datetime(request.body["executionStartTime"])
-        new_executionEndTime=string_to_datetime(request.body["executionEndTime"])
+        new_applicationEndTime=string_to_datetime(request.data["applicationEndTime"])
+        new_executionStartTime=string_to_datetime(request.data["executionStartTime"])
+        new_executionEndTime=string_to_datetime(request.data["executionEndTime"])
         
-        if datetime_eq_or_earlier(new_applicationEndTime,mission.publishTime):
+        if datetime_eq_or_earlier(new_applicationEndTime,which.publishTime):
             return Response("invalid Time",status=400)
         if datetime_earlier(new_executionStartTime,new_applicationEndTime):
             return Response("invalid Time",status=400)
         if datetime_eq_or_earlier(new_executionEndTime,new_executionStartTime):
             return Response("invalid Time",status=400)
         time_now = datetime.datetime.now()
-        if (new_applicationEndTime != mission.applicationEndTime) and (datetime_earlier(new_applicationEndTime,time_now)):
+        if (new_applicationEndTime != which.applicationEndTime) and (datetime_earlier(new_applicationEndTime,time_now)):
             return Response("invalid Time",status=400)
-        if (new_executionStartTime != mission.executionStartTime) and (datetime_earlier(new_executionStartTime,time_now)):
+        if (new_executionStartTime != which.executionStartTime) and (datetime_earlier(new_executionStartTime,time_now)):
             return Response("invalid Time",status=400)
-        if (new_executionEndTime != mission.executionEndTime) and (datetime_earlier(new_executionEndTime,time_now)):
+        if (new_executionEndTime != which.executionEndTime) and (datetime_earlier(new_executionEndTime,time_now)):
             return Response("invalid Time",status=400)
             
-        which.content=request.body["content"]
-        which.title=request.body["title"]
+        which.content=request.data["content"]
+        which.title=request.data["title"]
         which.applicationEndTime=new_applicationEndTime
         which.executionStartTime=new_executionStartTime
         which.executionEndTime=new_executionEndTime
         which.channels.all().delete()
-        for channelcontent in request.body["channels"]:
+        which.save()
+        for channelcontent in request.data["channels"]:
             try:
-                channel = Channel.objects.get(content=channelcontent)
+                channel_ = Channel.objects.get(content=channelcontent)
             except Channel.DoesNotExist:
-                channel = Channel.objects.create(content=channelcontent)
-            which.channels.add(channel)
-        which.save(update_fields=['title','content','applicationEndTime','executionStartTime','executionEndTime','channels'])
+                channel_ = Channel.objects.create(content=channelcontent)
+            MissionChannelship.objects.create(mission=which, channel=channel_)
         return Response('OK')
 
 class DealMissions(APIView):#获取任务列表{tag+关键词}
     @staticmethod
-    def get(request, user_ID):#request body:tag+关键词 List
+    def post(request, user_ID):#request body:tag+关键词 List
         uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
@@ -152,10 +159,10 @@ class DealMissions(APIView):#获取任务列表{tag+关键词}
             return Response("user Not Found",status=404)
         result=Mission.objects.filter(id=0)#empty
         
-        if (not(request.body["channels"]))and(not(request.body["keywords"])):
+        if (not(request.data["channels"]))and(not(request.data["keywords"])):
             result=Mission.objects.all()
         else:
-            for channelcontent in request.body["channels"]:
+            for channelcontent in request.data["channels"]:
                 try:
                     channel = Channel.objects.get(content=channelcontent)
                     tmpset=Mission.objects.filter(channels=channel)
@@ -163,18 +170,21 @@ class DealMissions(APIView):#获取任务列表{tag+关键词}
                 except:
                     a=1
                     
-            for keywordscontent in request.body["keywords"]:
+            for keywordscontent in request.data["keywords"]:
                 tmpset = Mission.objects.filter(title__contains=keywordscontent)
                 result=result | tmpset
 
-            for keywordscontent in request.body["keywords"]:
+            for keywordscontent in request.data["keywords"]:
                 tmpset = Mission.objects.filter(content__contains=keywordscontent)
                 result=result | tmpset
             
             result.distinct()
-        startNumber=min(request.body["startNumber"]-1,len(result))
-        endNumber=min(request.body["endNumber"],len(result))
-        return Response(result[startNumber:endNumber])
+        
+        result_list = list(map(lambda x:x.id,result.all()))
+        result_list.sort(reverse=True)
+        startNumber=min(request.data["startNumber"]-1,len(result_list))
+        endNumber=min(request.data["endNumber"],len(result_list))
+        return Response(result_list[startNumber:endNumber])
 
 class DealCreate(APIView):#创建任务请求
     @staticmethod
@@ -188,9 +198,9 @@ class DealCreate(APIView):#创建任务请求
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
             return Response("user Not Found",status=404)
-        new_applicationEndTime=string_to_datetime(request.body["applicationEndTime"])
-        new_executionStartTime=string_to_datetime(request.body["executionStartTime"])
-        new_executionEndTime=string_to_datetime(request.body["executionEndTime"])
+        new_applicationEndTime=string_to_datetime(request.data["applicationEndTime"])
+        new_executionStartTime=string_to_datetime(request.data["executionStartTime"])
+        new_executionEndTime=string_to_datetime(request.data["executionEndTime"])
         
         time_now = datetime.datetime.now()
         if datetime_eq_or_earlier(new_applicationEndTime,time_now):
@@ -200,26 +210,21 @@ class DealCreate(APIView):#创建任务请求
         if datetime_eq_or_earlier(new_executionEndTime,new_executionStartTime):
             return Response("invalid Time",status=400)
             
-        which.content=request.body["content"]
-        which.title=request.body["title"]
-        which.applicationEndTime=new_applicationEndTime
-        which.executionStartTime=new_executionStartTime
-        which.executionEndTime=new_executionEndTime
-        which.channels.all().delete()
-        which.members.all().delete()
-        which.applicants.all().delete()
+        which=Mission.objects.create(content=request.data["content"],
+                                     title=request.data["title"],
+                                     applicationEndTime=new_applicationEndTime,
+                                     executionStartTime=new_executionStartTime,
+                                     executionEndTime=new_executionEndTime,
+                                     publisher=who)
+        which.save()
         
-        for channelcontent in request.body["channels"]:
+        for channelcontent in request.data["channels"]:
             try:
-                channel = Channel.objects.get(content=channelcontent)
+                channel_ = Channel.objects.get(content=channelcontent)
             except Channel.DoesNotExist:
-                channel = Channel.objects.create(content=channelcontent)
-            which.channels.add(channel)
-            
-        which.publisher=who
-        which.members.add(who)
-        which.add()
-        return Response('OK')
+                channel_ = Channel.objects.create(content=channelcontent)
+            MissionChannelship.objects.create(mission=which, channel=channel_)
+        return Response({"missionID":which.id})
 
 class DealDelete(APIView):#删除任务请求
     @staticmethod
@@ -236,7 +241,7 @@ class DealDelete(APIView):#删除任务请求
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
         which.delete()
@@ -257,15 +262,16 @@ class DealJoin(APIView):#加入任务请求
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if datetime.datetime.now() > which.applicationEndTime:
             return Response("Forbidden",status=403)
-        if which.applicants.filter(user=who).count() > 0:
+        if which.applicants.filter(id=who.id).count() > 0:
             return Response("Forbidden",status=403)
-        if which.members.filter(user=who).count() > 0:
+        if which.members.filter(id=who.id).count() > 0:
             return Response("Forbidden",status=403)
-        tmpapp = Applicantship(user = who,mission = which)
-        tmpapp.add()
+        if which.publisher.id == who.id:
+            return Response("Forbidden",status=403)
+        tmpapp = Applicantship.objects.create(user = who,mission = which)
         return Response("OK")
 
 class DealAccept(APIView):#接受申请者请求
@@ -283,17 +289,17 @@ class DealAccept(APIView):#接受申请者请求
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if datetime.datetime.now() > which.applicationEndTime:
             return Response("Forbidden",status=403)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
         try:
-            tmpapp = Applicantship.gets(id=applicant_ID)
-            if tmp.app.mission != which:
+            tmpapp = which.applicantship_set.get(user__id=applicant_ID)
+            if tmpapp.mission != which:
                 return Response("Forbidden",status=403)
             tmpmem=Membership(user=tmpapp.user,mission=tmpapp.mission)
-            tmpmem.add()
+            tmpmem.save()
             tmpapp.delete()
             return Response("OK")
         except Applicantship.DoesNotExist:
@@ -315,14 +321,14 @@ class DealReject(APIView):#拒接申请者请求
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if datetime.datetime.now() > which.applicationEndTime:
             return Response("Forbidden",status=403)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
         try:
-            tmpapp = Applicantship.gets(id=applicant_ID)
-            if tmp.app.mission != which:
+            tmpapp = which.applicantship_set.get(user__id=applicant_ID)
+            if tmpapp.mission != which:
                 return Response("Forbidden",status=403)
             tmpapp.delete()
             return Response("OK")
@@ -349,7 +355,7 @@ class DealFire(APIView):#踢出成员请求
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if datetime.datetime.now() > which.executionEndTime:#may need modification
             return Response("Forbidden",status=403)
         if who.id != which.publisher.id:
@@ -357,7 +363,7 @@ class DealFire(APIView):#踢出成员请求
         if member.id == which.publisher.id:
             return Response("Forbidden",status=403)
         try:
-            tmpmem=Membership.objects.gets(mission=which,user=member)
+            tmpmem=Membership.objects.get(mission=which,user=member)
             tmpmem.delete()
             return Response("OK")
         except Membership.DoesNotExist:
@@ -379,12 +385,14 @@ class DealStart(APIView):#开始任务
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
-        if datetime.datetime.now() > which.executionBeginTime:
+            return Response("mission Not Found",status=404)
+        if datetime.datetime.now() > which.executionStartTime:
             return Response("Forbidden",status=403)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
-        which.executionBeginTime=datetime.datetime.now()
+        which.executionStartTime=datetime.datetime.now()
+        if which.executionStartTime < which.applicationEndTime:
+            which.applicationEndTime=which.executionStartTime
         which.save()
         return Response("OK")
 
@@ -403,8 +411,10 @@ class DealFinish(APIView):#结束任务
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if datetime.datetime.now() > which.executionEndTime:
+            return Response("Forbidden",status=403)
+        if datetime.datetime.now() < which.executionStartTime:
             return Response("Forbidden",status=403)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
@@ -427,11 +437,13 @@ class DealQuit(APIView):#退出任务请求
         try:
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
-            return Response("misssion Not Found",status=404)
+            return Response("mission Not Found",status=404)
         if datetime.datetime.now() > which.executionEndTime:#may need modification
             return Response("Forbidden",status=403)
+        if who.id == which.publisher.id:
+            return Response("Forbidden",status=403)
         try:
-            tmpmem=Membership.objects.gets(mission=which,user=who)
+            tmpmem=Membership.objects.get(mission=which,user=who)
             tmpmem.delete()
             return Response("OK")
         except Membership.DoesNotExist:

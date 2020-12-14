@@ -21,7 +21,7 @@ def list2str(a):
 
 class DealSelf(APIView):  # 获取个人信息
     @staticmethod
-    def get(request, user_ID):
+    def post(request, user_ID):
         uid = checkUID(request.data)
         if uid is 0:
             response = Response("Unauthorized", 401)
@@ -55,7 +55,7 @@ class DealSelf(APIView):  # 获取个人信息
 
 class DealMember(APIView):  # 获取他人信息
     @staticmethod
-    def get(request, getter_ID, mission_ID, gettee_ID):  # geter是获取人，getee是被获取人
+    def post(request, getter_ID, mission_ID, gettee_ID):  # geter是获取人，getee是被获取人
         uid = checkUID(request.data)
         if uid is 0:
             response = Response("Unauthorized", 401)
@@ -91,7 +91,7 @@ class DealMember(APIView):  # 获取他人信息
 
 class DealEvaluations(APIView):  # 获取用户做过的所有评价
     @staticmethod
-    def get(request, user_ID):
+    def post(request, user_ID):
         uid = checkUID(request.data)
         if uid is 0:
             response = Response("Unauthorized", 401)
@@ -108,7 +108,7 @@ class DealEvaluations(APIView):  # 获取用户做过的所有评价
 
 class DealEvaluation(APIView):  # 根据evaluation_ID获取评价
     @staticmethod
-    def get(request, evaluation_ID):
+    def post(request, evaluation_ID):
         uid = checkUID(request.data)
         if uid is 0:
             response = Response("Unauthorized", 401)
