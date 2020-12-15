@@ -93,9 +93,12 @@ public class UserManager extends HttpManager implements IUserManager{
         }
 
         //从返回的JSON字符串中得到当前使用的User对象
-        IUser Self = new User();
-        Self.loadFromJSON(User_JSON);
-        return Self;
+//        IUser Self = new User();
+//        Self.loadFromJSON(User_JSON);
+        user.loadFromJSON(User_JSON);
+        missionManager.setCurrentUser(user);
+        messageManager.setCurrentUser(user);
+        return user;
     }
 
     /*
@@ -139,6 +142,10 @@ public class UserManager extends HttpManager implements IUserManager{
         String url = "/user/login";
         JSONObject User_JSON = new JSONObject();
         User_JSON.put("mailbox", currentUser.getMailBox());
+        String password = currentUser.getPassword();
+        RSAUtils rsaUtils = new RSAUtils();
+        String passwordAfterRSA =  rsaUtils.encrypto(password);
+        currentUser.setPassword(passwordAfterRSA);
         User_JSON.put("passwordAfterRSA", currentUser.getPassword());
         String User_Login_JSON = httpPost(url, null, User_JSON.toJSONString());
 
@@ -151,6 +158,10 @@ public class UserManager extends HttpManager implements IUserManager{
             int User_ID = JSONObject.parseObject(User_Login_JSON).getInteger("UID");
             currentUser.setUserID(User_ID);
             user = currentUser;
+            if(missionManager!=null)
+                missionManager.setCurrentUser(user);
+            if(messageManager!=null)
+                messageManager.setCurrentUser(user);
 
             //更新messageManager和missionMagager中的currentUser
             if (messageManager == null) {
@@ -183,7 +194,11 @@ public class UserManager extends HttpManager implements IUserManager{
         JSONObject User_JSON = new JSONObject();
         User_JSON.put("mailbox", currentUser.getMailBox());
         User_JSON.put("username", currentUser.getUserName());
-        User_JSON.put("passwordAfterRSA", currentUser.getPassword());
+        String password = currentUser.getPassword();
+        RSAUtils rsaUtils = new RSAUtils();
+        String passwordAfterRSA = rsaUtils.encrypto(password);
+        currentUser.setPassword(passwordAfterRSA);
+        User_JSON.put("passwordAfterRSA", passwordAfterRSA);
         User_JSON.put("captchaCode", captcha);
         String User_Register_JSON = httpPost(url, null, User_JSON.toJSONString());
 
@@ -197,6 +212,13 @@ public class UserManager extends HttpManager implements IUserManager{
         }
         //生成注册后的User对象
         currentUser.setUserID(JSONObject.parseObject(User_Register_JSON).getInteger("UID"));
+
+        user = currentUser;
+        if(missionManager!=null)
+            missionManager.setCurrentUser(user);
+        if(messageManager!=null)
+            messageManager.setCurrentUser(user);
+
         return currentUser;
     }
 
@@ -332,8 +354,7 @@ public class UserManager extends HttpManager implements IUserManager{
         request_body.put("senderID",user.getUserID());
         request_body.put("passwordAfterRSA", user.getPassword());
         RSAUtils rsaUtils = new RSAUtils();
-        String passwordAfterRSA = password;
-        rsaUtils.encrypto(password);
+        String passwordAfterRSA = rsaUtils.encrypto(password);
         request_body.put("newPasswordAfterRSA", passwordAfterRSA);
         String password_response = httpPut(url, parameters, request_body.toJSONString());
 

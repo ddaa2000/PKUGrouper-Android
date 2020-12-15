@@ -12,7 +12,6 @@
     tools:context=".LoginFragment">
     <com.google.android.material.textfield.TextInputLayout
         android:layout_marginTop="50dp"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="用户名"
@@ -20,6 +19,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/logInUserNameEditText"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -48,3 +48,4 @@
         android:layout_margin="30dp"
         android:text="登录" />
 </LinearLayout>
+

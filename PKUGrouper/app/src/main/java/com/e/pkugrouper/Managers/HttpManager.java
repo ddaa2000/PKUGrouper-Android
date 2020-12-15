@@ -1,6 +1,8 @@
 package com.e.pkugrouper.Managers;
 
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,11 +33,14 @@ public class HttpManager implements IHttpManager{
     private final String message_not_found = "\"message Not Found\"";
     private final String invalid_time = "\"invalid time\"";
     private final String applicant_not_found = "\"applicant Not Found\"";
+    private final String httpbegin="http://62.234.0.67:8000";
     @Override
     public String httpGet(String url, List<String> parameters, String body) {
         String result="";
+        OutputStreamWriter out=null;
         BufferedReader in=null;
         HttpURLConnection connection=null;
+        url=httpbegin+url;
         if(parameters!=null && parameters.size()>0){
             for (String str:parameters){
                 str='/'+str;
@@ -48,19 +53,21 @@ public class HttpManager implements IHttpManager{
             connection = (HttpURLConnection) geturl.openConnection();
 
             // 在connect之前，设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("accept", "application/json");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("Charsert", "UTF-8");
 
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(60000);
+            // 发送POST请求必须设置如下两行，参数要放在http正文内
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            // 默认是 GET方式
+            connection.setRequestMethod("POST");
+            // Post 请求不使用缓存
+            connection.setUseCaches(false);
             // 配置本次连接的Content-type，json是"application/json"
             connection.setRequestProperty("Content-Type", "application/json");
-            // 设置连接主机服务器的超时时间：15000毫秒
-            connection.setConnectTimeout(15000);
-            // 设置读取远程返回的数据时间：60000毫秒
-            connection.setReadTimeout(60000);
-            // 设置连接方式：get
-            connection.setRequestMethod("GET");
-            // 建立实际的连接，可不写，注意connection.getOutputStream会隐含的进行connect。
             connection.connect();
 
             // 定义BufferedReader输入流来读取URL的响应
@@ -77,11 +84,22 @@ public class HttpManager implements IHttpManager{
                     result = result+line;
                 }
             }
+            // 定义BufferedReader输入流来读取URL的响应
+//            if (connection.getResponseCode() == 200) {
+//                in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+//                String line;
+//                while ((line = in.readLine()) != null) {
+//                    result = result+line;
+//                }
+//            }
         }catch(Exception e){
             System.out.println("发送GET请求出现异常！"+e);
             e.printStackTrace();
         }finally {
             try {
+                if(out != null){
+                    out.close();
+                }
                 if (in != null) {
                     in.close();
                 }
@@ -93,6 +111,7 @@ public class HttpManager implements IHttpManager{
                 e2.printStackTrace();
             }
         }
+//        Log.e("result:",result);
         return result;
     }
 
@@ -102,6 +121,7 @@ public class HttpManager implements IHttpManager{
         OutputStreamWriter out=null;
         BufferedReader in = null;
         HttpURLConnection connection = null;
+        url=httpbegin+url;
         if(parameters!=null && parameters.size()>0){
             for (String str:parameters){
                 str='/'+str;
@@ -138,6 +158,7 @@ public class HttpManager implements IHttpManager{
             out.flush();
 
             // 定义BufferedReader输入流来读取URL的响应
+
             if (connection.getResponseCode() == 200) {
                 in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                 String line;
@@ -151,6 +172,13 @@ public class HttpManager implements IHttpManager{
                     result = result+line;
                 }
             }
+//            if (connection.getResponseCode() == 200) {
+//                in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+//                String line;
+//                while ((line = in.readLine()) != null) {
+//                    result =result+line;
+//                }
+//            }
         } catch (Exception e) {
             System.out.println("发送 POST 请求出现异常！" + e);
             e.printStackTrace();
@@ -179,6 +207,7 @@ public class HttpManager implements IHttpManager{
         BufferedReader in = null;
         String result = "";
         HttpURLConnection connection = null;
+        url=httpbegin+url;
         if(parameters!=null && parameters.size()>0){
             for (String str:parameters){
                 str='/'+str;
@@ -199,21 +228,24 @@ public class HttpManager implements IHttpManager{
             connection.setRequestMethod("PUT");
             // 配置本次连接的Content-type，json是"application/json"
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.connect();
+
 
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(60000);
             // 发送PUT请求必须设置如下两行，参数要放在http正文内
             connection.setDoOutput(true);
             connection.setDoInput(true);
+
+            connection.connect();
+
             out=new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
             out.write(body);
             out.flush();
-            if (connection.getResponseCode() == 200) {
 
-                // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(
 
-                in = new BufferedReader(new InputStreamReader(
+                    connection.getInputStream()));
+
 
                         connection.getInputStream()));
 
@@ -229,6 +261,23 @@ public class HttpManager implements IHttpManager{
                     result = result+line;
                 }
             }
+
+//            if (connection.getResponseCode() == 200) {
+//
+//                // 定义BufferedReader输入流来读取URL的响应
+//
+//                in = new BufferedReader(new InputStreamReader(
+//
+//                        connection.getInputStream()));
+//
+//                String line;
+//
+//                while ((line = in.readLine()) != null) {
+//                    result += line;
+//                }
+//            } else {
+//
+//            }
         } catch (Exception e) {
             System.out.println("发送 PUT 请求出现异常！" + e);
             e.printStackTrace();

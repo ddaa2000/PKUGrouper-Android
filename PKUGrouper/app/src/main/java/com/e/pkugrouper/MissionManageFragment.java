@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
@@ -85,23 +87,23 @@ public class MissionManageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mission_manage, container, false);
-        for(int i = 0;i<20;i++){
-            members.add(new User());
-            applicants.add(new User());
-        }
+//        for(int i = 0;i<20;i++){
+//            members.add(new User());
+//            applicants.add(new User());
+//        }
 
 
         memberRecyclerView = v.findViewById(R.id.mission_detail_members_recyclerView);
         memberCardAdapter = new UserCardAdapter(members,getActivity());
         memberRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         memberRecyclerView.setAdapter(memberCardAdapter);
-        memberRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
+      //  memberRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
 
         applicantRecyclerView = v.findViewById(R.id.mission_detail_applicants_recyclerView);
         applicantCardAdapter = new UserCardAdapter(applicants,getActivity());
         applicantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         applicantRecyclerView.setAdapter(applicantCardAdapter);
-        applicantRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
+  //      applicantRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
 
         missionTitleText = v.findViewById(R.id.missionManage_title);
         missionContentText = v.findViewById(R.id.missionManage_description);
@@ -145,15 +147,129 @@ public class MissionManageFragment extends Fragment {
         return v;
     }
 
+
     private void missionLoadSucceeded(List<IUser> members,@Nullable List<IUser> applicants){
+
         missionTitleText.setText(GlobalObjects.currentMission.getTitle());
         missionContentText.setText(GlobalObjects.currentMission.getContent());
-        missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(GlobalObjects.currentMission.getState()=="start"){
-                    new MaterialAlertDialogBuilder(getContext()).setTitle("开始任务")
-                            .setMessage("任务开始后，就不可以修改任务成员了，确认要开始吗？")
+        if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)){
+            if(GlobalObjects.currentMission.isInApplication()){
+                missionStatusText.setText("未开始");
+                missionStartOrStopButton.setText("开始");
+                missionDeleteButton.setVisibility(View.VISIBLE);
+            }
+
+            else if(GlobalObjects.currentMission.isInExecution()){
+                missionStatusText.setText("进行中");
+                missionStartOrStopButton.setText("结束");
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isFinished()){
+                missionStatusText.setText("已结束");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+        }
+        else if(GlobalObjects.currentMission.hasMember(GlobalObjects.currentUser)){
+            if(GlobalObjects.currentMission.isInApplication()){
+                missionStatusText.setText("未开始");
+                missionStartOrStopButton.setText("退出");
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isInExecution()){
+                missionStatusText.setText("进行中");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isFinished()){
+                missionStatusText.setText("已结束");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+        }
+        else{
+            if(GlobalObjects.currentMission.isInApplication()){
+                missionStatusText.setText("未开始");
+                missionStartOrStopButton.setText("申请加入");
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isInExecution()){
+                missionStatusText.setText("进行中");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isFinished()){
+                missionStatusText.setText("已结束");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+            if(GlobalObjects.currentMission.hasApplicant(GlobalObjects.currentUser)){
+                missionStartOrStopButton.setText("已申请");
+                missionStartOrStopButton.setClickable(false);
+            }
+        }
+
+
+
+        memberCardAdapter.reloadData(members);
+        applicantCardAdapter.reloadData(applicants);
+
+        if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)){
+            missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("onclick","onclick");
+                    if(GlobalObjects.currentMission.isInApplication()){
+                        new MaterialAlertDialogBuilder(getContext()).setTitle("开始任务")
+                                .setMessage("任务开始后，就不可以修改任务成员了，确认要开始吗？")
+                                .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new MissionStart().execute();
+                                        dialog.cancel();
+                                    }
+                                })
+                                .show();
+                        //new MissionStart().execute();
+                    }
+                    else if(GlobalObjects.currentMission.isInExecution()){
+                        new MaterialAlertDialogBuilder(getContext()).setTitle("结束任务")
+                                .setMessage("确认任务已经完成，可以结束？")
+                                .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new MissionStop().execute();
+                                        dialog.cancel();
+                                    }
+                                })
+                                .show();
+                    }
+                }
+            });
+        }
+        else if(GlobalObjects.currentMission.hasMember(GlobalObjects.currentUser)){
+            missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new MaterialAlertDialogBuilder(getContext()).setTitle("退出任务")
+                            .setMessage("退出任务无法撤销，确认要退出吗？")
                             .setNeutralButton("取消", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -168,29 +284,18 @@ public class MissionManageFragment extends Fragment {
                                 }
                             })
                             .show();
-                    //new MissionStart().execute();
                 }
-                else{
-                    new MaterialAlertDialogBuilder(getContext()).setTitle("结束任务")
-                            .setMessage("确认任务已经完成，可以结束？")
-                            .setNeutralButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            })
-                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    new MissionStop().execute();
-                                    dialog.cancel();
-                                }
-                            })
-                            .show();
+            });
+        }
+        else{
+            missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(),"申请已提交",2).show();
                 }
-            }
-        });
-        missionStartOrStopButton.setText("开始");
+            });
+        }
+
 
 
 
@@ -209,12 +314,11 @@ public class MissionManageFragment extends Fragment {
     }
 
     private void missionLoadFailed(FailCode failCode){
-
     }
 
     private void missionStartSucceeded(){
 
-        missionStartOrStopButton.setText("完成");
+        new MissionLoadTask().execute();
     }
 
     private void missionStartFailed(FailCode failCode){
@@ -222,7 +326,7 @@ public class MissionManageFragment extends Fragment {
     }
 
     private void missionStopSucceeded(){
-
+        new MissionLoadTask().execute();
     }
 
     private void missionDeleteFailed(FailCode failCode){
@@ -276,8 +380,8 @@ public class MissionManageFragment extends Fragment {
                     for(Integer i:list2){
                         applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
                     }
-                    isload=Boolean.TRUE;
                 }
+                isload=Boolean.TRUE;
             }catch(Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){

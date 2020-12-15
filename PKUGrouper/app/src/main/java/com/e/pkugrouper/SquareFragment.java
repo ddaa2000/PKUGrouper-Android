@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.e.pkugrouper.Models.IMission;
+import com.e.pkugrouper.Models.Mission;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -217,9 +218,25 @@ public class SquareFragment extends Fragment {
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
             ChannelSearchParams param=channelSearchParams[0];
-            String channel=param.channel.toString();
             List<String>channels=new ArrayList<String>();
-            channels.add(channel);
+
+            switch(param.channel){
+                case ALL:
+                    channels.add(Mission.CHANNEL_LIFE);
+                    channels.add(Mission.CHANNEL_OTHER);
+                    channels.add(Mission.CHANNEL_GENERAL);
+                    channels.add(Mission.CHANNEL_PROFESSIONAL);
+                    break;
+                case LIFE:
+                    channels.add(Mission.CHANNEL_LIFE);
+                    break;
+                case GENERAL_COURSE:
+                    channels.add(Mission.CHANNEL_GENERAL);
+                    break;
+                case PROFESSIONAL_COURSE:
+                    channels.add(Mission.CHANNEL_PROFESSIONAL);
+                    break;
+            }
             try{
                 missionList=GlobalObjects.missionManager.findMissionByDescription(param.keywords,channels,1,20);
                 issearch=Boolean.TRUE;

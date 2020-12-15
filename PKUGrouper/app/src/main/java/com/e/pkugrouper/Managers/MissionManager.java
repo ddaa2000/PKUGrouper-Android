@@ -66,6 +66,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         IMission mission = new Mission();
+        mission.setID(missionID);
         mission.loadFromJSON(Mission_JSON);
         return mission;
     }
@@ -91,8 +92,18 @@ public class MissionManager extends HttpManager implements IMissionManager{
         request_body.put("senderID",currentUser.getUserID());
         request_body.put("passwordAfterRSA", currentUser.getPassword());
         request_body.put("channels", channels);
-        String[] keywords = description.split(" ");
-        request_body.put("keywords", keywords);
+        if(description == null){
+            List<String> keywords = new ArrayList<String>();
+            request_body.put("keywords", keywords);
+        }
+        else if(description.equals("")){
+            List<String> keywords = new ArrayList<String>();
+            request_body.put("keywords", keywords);
+        }
+        else{
+            String[] keywords = description.split(" ");
+            request_body.put("keywords", keywords);
+        }
         request_body.put("startNumber", startNumber);
         request_body.put("endNumber", endNumber);
         String Missions_JSON = httpGet(url, parameters, request_body.toJSONString());
@@ -111,6 +122,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         List<IMission> mission_list = new ArrayList<>();
         for(int mission_id: mission_id_list){
             IMission mission = findMissionByID(mission_id);
+            mission.setID(mission_id);
             if(mission != null)
                 mission_list.add(mission);
         }
@@ -179,7 +191,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         request_body.put("applicationEndTime", mission_JSON.getString("applicationEndTime"));
         request_body.put("executionStartTime", mission_JSON.getString("executionStartTime"));
         request_body.put("executionEndTime", mission_JSON.getString("executionEndTime"));
-        request_body.put("channels", mission_JSON.get("channels"));
+        request_body.put("channels", mission_JSON.getJSONArray("channels"));
         String add_response = httpPost(url, parameters, request_body.toJSONString());
 
         //创建任务失败

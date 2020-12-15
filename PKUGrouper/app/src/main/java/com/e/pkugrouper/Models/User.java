@@ -147,9 +147,12 @@ public class User implements IUser{
         if(user_JSON.getJSONArray("missionIDs") != null)
             setMissionIDs(JSON.parseArray(user_JSON.getJSONArray("missionIDs").toJSONString(),Integer.class));
         if(user_JSON.getJSONArray("evaluationIDs") != null)
-            setMissionIDs(JSON.parseArray(user_JSON.getJSONArray("evaluationIDs").toJSONString(),Integer.class));
+            setEvaluationIDs(JSON.parseArray(user_JSON.getJSONArray("evaluationIDs").toJSONString(),Integer.class));
         if(user_JSON.getJSONArray("violationIDs") != null)
-            setMissionIDs(JSON.parseArray(user_JSON.getJSONArray("violationIDs").toJSONString(),Integer.class));
+            setViolationIDs(JSON.parseArray(user_JSON.getJSONArray("violationIDs").toJSONString(),Integer.class));
+        if(user_JSON.getString("tele") != null)
+            setTele(user_JSON.getString("tele"));
+
 
     }
 }
