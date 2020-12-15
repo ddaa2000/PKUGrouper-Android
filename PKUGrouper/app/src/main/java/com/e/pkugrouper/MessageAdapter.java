@@ -23,7 +23,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageHolder>{
 
     public void reloadData(List<IMessage> newMessages){
         this.messages.clear();
-        this.messages.addAll(newMessages);
+        if(newMessages!=null)
+            this.messages.addAll(newMessages);
         notifyDataSetChanged();
     }
 

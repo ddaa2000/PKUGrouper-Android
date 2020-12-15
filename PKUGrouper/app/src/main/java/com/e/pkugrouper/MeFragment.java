@@ -112,7 +112,7 @@ public class MeFragment extends Fragment {
 
     private void userLoadSucceeded(List<IMessage> messages){
         userNameText.setText(GlobalObjects.currentUser.getUserName());
-        userContactText.setText("暂无联系方式");
+        userContactText.setText(GlobalObjects.currentUser.getTele());
         userEmailText.setText(GlobalObjects.currentUser.getMailBox());
 
         messageAdapter.reloadData(messages);

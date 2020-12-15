@@ -36,7 +36,8 @@ public class UserCardAdapter extends RecyclerView.Adapter<UserCardHolder> {
 
     public void reloadData(List<IUser> newUsers){
         this.users.clear();
-        this.users.addAll(newUsers);
+        if(newUsers!=null)
+            this.users.addAll(newUsers);
         notifyDataSetChanged();
     }
 

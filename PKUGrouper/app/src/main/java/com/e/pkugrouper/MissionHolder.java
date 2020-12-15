@@ -18,6 +18,7 @@ import java.util.List;
 
 public class MissionHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+    private IMission mission;
     private TextView missionTitleText;
     private TextView missionDescriptionText;
     private Activity activity;
@@ -30,6 +31,7 @@ public class MissionHolder extends RecyclerView.ViewHolder implements View.OnCli
     }
 
     public void bind(IMission mission){
+        this.mission = mission;
         missionTitleText.setText(mission.getTitle());
         missionDescriptionText.setText(mission.getContent());
     }
@@ -37,7 +39,7 @@ public class MissionHolder extends RecyclerView.ViewHolder implements View.OnCli
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(activity,MissionDetailActivity.class);
-        GlobalObjects.currentMission = new Mission();
+        GlobalObjects.currentMission = mission;
         activity.startActivity(intent);
     }
 }

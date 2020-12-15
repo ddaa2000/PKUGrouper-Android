@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,7 @@ public class LoginFragment extends Fragment {
      * @param failureType 登陆失败的错误码
      */
     private void logInFailed(String failureType){
-
+        Log.e("failed",failureType);
     }
 
 

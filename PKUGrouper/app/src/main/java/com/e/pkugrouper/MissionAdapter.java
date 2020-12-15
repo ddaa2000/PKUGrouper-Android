@@ -28,7 +28,8 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionHolder> {
 
     public void reloadData(List<IMission> newMissions){
         this.missions.clear();
-        this.missions.addAll(newMissions);
+        if(newMissions!=null)
+            this.missions.addAll(newMissions);
         notifyDataSetChanged();
     }
 

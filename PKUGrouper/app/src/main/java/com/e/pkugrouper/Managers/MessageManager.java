@@ -57,8 +57,7 @@ public class MessageManager extends HttpManager implements IMessageManager{
         }
 
         List<Integer> message_id_list = JSONObject.parseArray(Message_JSON_All, Integer.class);
-        if(message_id_list.size() == 0)
-            return null;
+
         List<IMessage> message_list = new ArrayList<>();
         for(int message_id: message_id_list){
             IMessage message = findMessageByID(message_id);

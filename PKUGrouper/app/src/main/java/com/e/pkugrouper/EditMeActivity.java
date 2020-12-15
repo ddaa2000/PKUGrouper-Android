@@ -35,7 +35,6 @@ public class EditMeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new UserEditTask().execute(userNameText.getText().toString(),
-                        userDescriptionText.getText().toString(),
                         contactText.getText().toString());
             }
         });
@@ -67,7 +66,7 @@ public class EditMeActivity extends AppCompatActivity {
         FailCode failure;
         /**
          *
-         * @param strings 依次是新的 用户名 介绍 联系方式
+         * @param strings 依次是新的 用户名 联系方式
          * @return
          */
         @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,12 @@ public class RegisterFragment extends Fragment {
         passwordDoubleText = v.findViewById(R.id.registerPasswordDoubleCheckEditText);
         mailText = v.findViewById(R.id.registerEmailEditText);
 
+        getVerificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GetVerificationTask().execute(mailText.getText().toString());
+            }
+        });
         registerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -120,7 +127,7 @@ public class RegisterFragment extends Fragment {
     }
 
     private void registerFailed(FailCode failCode){
-
+        Log.e("failed","failed"+failCode);
     }
 
     private void getVerificationFailed(FailCode failCode){
@@ -144,10 +151,13 @@ public class RegisterFragment extends Fragment {
             currentUser.setUserName(param.userName);
             currentUser.setMailBox(param.mailNum);
             currentUser.setPassword(param.password);
+            Log.e("doInBackground","doInBackground");
             try{
                 GlobalObjects.userManager.userRegister(currentUser,param.verificationCode);
+                Log.e("doInBackground","doInBackgroundOver");
                 isRegister=Boolean.TRUE;
             }catch (Exception e) {
+                Log.e("doInBackground","doInBackgroundException");
                 String s=e.getMessage();
                 if(s.equals("Register is bad request!")){
                     failureType=FailCode.SERVER_FAILURE;

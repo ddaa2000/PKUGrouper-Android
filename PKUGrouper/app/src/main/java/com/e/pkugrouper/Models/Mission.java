@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 
 
 public class Mission implements IMission{
+
+    public static final String CHANNEL_PROFESSIONAL = "professional", CHANNEL_GENERAL = "general", CHANNEL_LIFE = "life", CHANNEL_OTHER = "other";
     private int ID;
     private String content;
     private String title;
@@ -153,7 +155,7 @@ public class Mission implements IMission{
         object.put("applicationEndTime",applicationEndTime);
         object.put("executionStartTime",executionStartTime);
         object.put("executionEndTime",executionEndTime);
-        object.put("tag",channels);
+        object.put("channels",channels);
 
         String objStr=JSON.toJSONString(object);
         return objStr;
@@ -173,6 +175,6 @@ public class Mission implements IMission{
         applicationEndTime=object.getString("applicationEndTime");
         executionStartTime=object.getString("executionStartTime");
         executionEndTime=object.getString("executionEndTime");
-        channels=JSON.parseArray(object.getJSONArray("tag").toJSONString(),String.class);
+        channels=JSON.parseArray(object.getJSONArray("channels").toJSONString(),String.class);
     }
 }

@@ -14,6 +14,8 @@ import com.e.pkugrouper.Models.Mission;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
 public class MissionAddActivity extends AppCompatActivity {
 
     private Button missionCreateButton;
@@ -35,8 +37,25 @@ public class MissionAddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 IMission newMission = new Mission();
+                /*
+                这里要改！！！
+                 */
+
+                newMission.setChannels(new ArrayList<String>());
+                newMission.setApplicationEndTime("2100-12-01 18:23:30");
+                newMission.setExecutionStartTime("2200-12-01 18:23:30");
+                newMission.setExecutionEndTime("2300-12-01 18:23:30");
                 newMission.setTitle(missionTitleText.getText().toString());
                 newMission.setContent(missionContentText.getText().toString());
+
+                if(channelProfessional.isChecked())
+                    newMission.getChannels().add(Mission.CHANNEL_PROFESSIONAL);
+                if(channelGeneral.isChecked())
+                    newMission.getChannels().add(Mission.CHANNEL_GENERAL);
+                if(channelLife.isChecked())
+                    newMission.getChannels().add(Mission.CHANNEL_LIFE);
+                if(newMission.getChannels().isEmpty())
+                    newMission.getChannels().add(Mission.CHANNEL_OTHER);
                 new AddMissionTask().execute(newMission);
             }
         });

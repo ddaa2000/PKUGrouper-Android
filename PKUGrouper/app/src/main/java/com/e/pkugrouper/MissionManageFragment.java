@@ -85,10 +85,10 @@ public class MissionManageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mission_manage, container, false);
-        for(int i = 0;i<20;i++){
-            members.add(new User());
-            applicants.add(new User());
-        }
+//        for(int i = 0;i<20;i++){
+//            members.add(new User());
+//            applicants.add(new User());
+//        }
 
 
         memberRecyclerView = v.findViewById(R.id.mission_detail_members_recyclerView);
@@ -148,6 +148,8 @@ public class MissionManageFragment extends Fragment {
     private void missionLoadSucceeded(List<IUser> members,@Nullable List<IUser> applicants){
         missionTitleText.setText(GlobalObjects.currentMission.getTitle());
         missionContentText.setText(GlobalObjects.currentMission.getContent());
+        memberCardAdapter.reloadData(members);
+        applicantCardAdapter.reloadData(applicants);
         missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
