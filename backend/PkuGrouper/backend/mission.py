@@ -197,6 +197,7 @@ class DealMissions(APIView):#获取任务列表{tag+关键词}
             if mission.applicants.filter(id=user_ID).count()>0:
                 continue
             result_list.append(mission.id)
+        result_list = list(set(result_list))
         result_list.sort(reverse=True)
         startNumber=min(request.data["startNumber"]-1,len(result_list))
         endNumber=min(request.data["endNumber"],len(result_list))
