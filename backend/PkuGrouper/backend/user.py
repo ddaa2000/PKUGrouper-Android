@@ -16,6 +16,8 @@ class DealSelf(APIView):  # 获取个人信息
             response = Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             response = Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         else:
             user = User.objects.get(id=uid)
             mailbox = user.mailbox
@@ -25,6 +27,8 @@ class DealSelf(APIView):  # 获取个人信息
             for mission in user.missionsAsPublisher.all():
                 missions.append(mission.id)
             for mission in user.missionsAsMember.all():
+                missions.append(mission.id)
+            for mission in user.missionsAsApplicant.all():
                 missions.append(mission.id)
             evaluations = []
             score = 0
@@ -48,6 +52,8 @@ class DealMember(APIView):  # 获取他人信息
         uid = checkUID(request.data)
         if uid is 0:
             response = Response("Unauthorized", 401)
+        elif uid != getter_ID:
+            return Response("Unauthorized", 401)
         elif User.objects.filter(id=getter_ID).count() == 0:
             response = Response("getter Not Found", 404)
         elif Mission.objects.filter(id=mission_ID).count() == 0:
@@ -86,6 +92,8 @@ class DealEvaluations(APIView):  # 获取用户做过的所有评价
             response = Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             response = Response("user Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         else:
             user = User.objects.get(id=user_ID)
             evaluations = []
@@ -124,6 +132,8 @@ class DealInfo(APIView):  # 修改个人信息
             response = Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             response = Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         else:
             user = User.objects.get(id=user_ID)
             username = request.data.get('username', "")
@@ -146,6 +156,8 @@ class DealCode(APIView):  # 修改密码
             response = Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             response = Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         else:
             user = User.objects.get(id=user_ID)
             passwordAfterRSA = request.data.get('newPasswordAfterRSA', "")
@@ -164,6 +176,8 @@ class DealEvaluate(APIView):  # 评分
         uid = checkUID(request.data)
         if uid is 0:
             response = Response("Unauthorized", 401)
+        elif uid != evaluater_ID:
+            return Response("Unauthorized", 401)
         elif User.objects.filter(id=evaluater_ID).count() == 0:
             response = Response("evaluater Not Found", 404)
         elif Mission.objects.filter(id=mission_ID).count() == 0:
