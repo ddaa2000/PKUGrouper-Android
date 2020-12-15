@@ -30,6 +30,8 @@ class DealSelf(APIView):  # 获取个人信息
                 missions.append(mission.id)
             for mission in user.missionsAsApplicant.all():
                 missions.append(mission.id)
+            missions = list(set(missions))
+            missions.sort(reverse=True)
             evaluations = []
             score = 0
             for evaluation in user.evaluationsAsEvaluatee.all():
