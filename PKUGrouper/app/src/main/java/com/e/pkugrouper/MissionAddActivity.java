@@ -43,7 +43,7 @@ public class MissionAddActivity extends AppCompatActivity {
     }
 
     private enum FailCode{
-        USERNF,MISSIONID,TIMEINVALID
+        USERNF,MISSIONNULL,TIMEINVALID
     }
 
     private void addMissionSucceeded(){
@@ -75,13 +75,13 @@ public class MissionAddActivity extends AppCompatActivity {
                 GlobalObjects.missionManager.addMission(mission);
                 isadded=Boolean.TRUE;
             }catch(Exception e){
-                String s=e.getMessage();
+               String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
                     failure=FailCode.USERNF;
-                }else if(s.equals("mission is not found!")){
+                }else if(s.equals("this time is invalid to add mission!")){
                     failure=FailCode.TIMEINVALID;
                 }else{
-                    failure=FailCode.MISSIONID;
+                    failure=FailCode.MISSIONNULL;
                 }
             }
             return null;
