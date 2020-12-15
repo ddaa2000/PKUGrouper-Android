@@ -8,6 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 public class Mission implements IMission{
 
     public static final String CHANNEL_PROFESSIONAL = "professional", CHANNEL_GENERAL = "general", CHANNEL_LIFE = "life", CHANNEL_OTHER = "other";
+    public static final String STATE_INAPPLICATION = "in application", STATE_BETWEEN = "between application and execution",
+                                STATE_EXECUTE = "in execution", STATE_FINISHED = "finished";
     private int ID;
     private String content;
     private String title;
@@ -139,6 +141,27 @@ public class Mission implements IMission{
     	channels=_Channels;
     }
 
+    @Override
+    public boolean isInApplication() {
+        if(getState().equals(Mission.STATE_INAPPLICATION))
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean isFinished() {
+        if(getState().equals(Mission.STATE_FINISHED))
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean isInExecution() {
+        if(getState().equals(Mission.STATE_BETWEEN)||
+        getState().equals(Mission.STATE_EXECUTE))
+            return true;
+        return false;
+    }
 
 
     @Override
@@ -176,5 +199,24 @@ public class Mission implements IMission{
         executionStartTime=object.getString("executionStartTime");
         executionEndTime=object.getString("executionEndTime");
         channels=JSON.parseArray(object.getJSONArray("channels").toJSONString(),String.class);
+    }
+
+    public boolean hasMember(IUser user){
+        if(memberIDs.contains(user.getUserID()))
+            return true;
+        if(user.getUserID() == getPublisher())
+            return true;
+        return false;
+    }
+
+    public boolean hasPublisher(IUser user){
+        if(user.getUserID() == getPublisher())
+            return true;
+        return false;
+    }
+    public boolean hasApplicant(IUser user){
+        if(applicantIDs.contains(user.getUserID()))
+            return true;
+        return false;
     }
 }

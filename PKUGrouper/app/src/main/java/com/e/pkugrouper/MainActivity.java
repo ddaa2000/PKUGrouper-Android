@@ -38,4 +38,5 @@ public class MainActivity extends AppCompatActivity {
         else
             fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
     }
+
 }

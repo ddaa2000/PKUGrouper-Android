@@ -46,6 +46,9 @@ public class LoginFragment extends Fragment {
         userNameEditText = v.findViewById(R.id.logInUserNameEditText);
         passwordEditText = v.findViewById(R.id.logInPasswordEditText);
 
+        userNameEditText.setText("1800013008@pku.edu.cn");
+        passwordEditText.setText("DD2000114%%%");
+
         logInButton = v.findViewById(R.id.logInButton);
         logInButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -75,8 +78,24 @@ public class LoginFragment extends Fragment {
      * 登陆失败
      * @param failureType 登陆失败的错误码
      */
-    private void logInFailed(String failureType){
-        Log.e("failed",failureType);
+    private void logInFailed(int failureType){
+        switch (failureType){
+            case TIME_EXCEEDED:
+                Toast.makeText(getActivity(),"请求超时",2).show();
+                break;
+            case WRONG_USER_OR_PASSWORD:
+                Toast.makeText(getActivity(),"登陆失败，用户名或密码错误",2).show();
+                break;
+            case SERVER_FAILURE:
+                Toast.makeText(getActivity(),"服务器错误",2).show();
+                break;
+            case UNKNOWN_FAILURE:
+                Toast.makeText(getActivity(),"服务器错误",2).show();
+                break;
+
+
+        }
+
     }
 
 
@@ -105,6 +124,7 @@ public class LoginFragment extends Fragment {
             currentUser.setPassword(param.password);
             try{
                 GlobalObjects.currentUser=GlobalObjects.userManager.userLogIn(currentUser);
+                GlobalObjects.currentUser = GlobalObjects.userManager.getSelf();
                 isLogin=Boolean.TRUE;
             }catch (Exception e) {
                 failureType=e.getMessage();
@@ -118,7 +138,7 @@ public class LoginFragment extends Fragment {
                 logInSuccessfully();
             }
             else{
-                logInFailed(failureType);
+                logInFailed(WRONG_USER_OR_PASSWORD);
             }
         }
     }

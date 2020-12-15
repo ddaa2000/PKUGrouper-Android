@@ -66,6 +66,7 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         IMission mission = new Mission();
+        mission.setID(missionID);
         mission.loadFromJSON(Mission_JSON);
         return mission;
     }

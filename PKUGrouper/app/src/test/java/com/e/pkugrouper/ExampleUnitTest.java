@@ -44,7 +44,7 @@ public class ExampleUnitTest {
         userManager.setMessageManager(messageManager);
         userManager.setMissionManager(missionManager);
         IUser user = new User();
-        user.setMailBox("1800013008@pku.edu.cn");
+        user.setMailBox("1800013018@pku.edu.cn");
         user.setUserID(2);
         user.setPassword("DD2000114%%%");
         user = userManager.userLogIn(user);

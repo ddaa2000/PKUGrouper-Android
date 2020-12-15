@@ -117,6 +117,26 @@ public class MissionFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ChannelSearchParams params = new ChannelSearchParams();
+        switch(statusTab.getSelectedTabPosition()){
+            case 0:
+                params.channel = Channel.PRESENT;
+                break;
+            case 1:
+                params.channel = Channel.APPLYING;
+                break;
+            case 2:
+                params.channel = Channel.COMPLETED;
+                break;
+        }
+        params.keywords = null;
+        statusSearchTask = new StatusSearchTask();
+        statusSearchTask.execute(params);
+    }
+
     private class ChannelChange implements TabLayout.OnTabSelectedListener{
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
@@ -169,14 +189,46 @@ public class MissionFragment extends Fragment {
     private class StatusSearchTask extends AsyncTask<ChannelSearchParams, Void, Void> {
 
         private List<IMission>missionList=new ArrayList<IMission>();
+        private List<Integer>missionIDList=new ArrayList<Integer>();
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
             ChannelSearchParams param=channelSearchParams[0];
-            String channel=param.channel.toString();
-            List<String>channels=new ArrayList<String>();
-            channels.add(channel);
+            int channelid;
+            if(param.channel==Channel.PRESENT){
+                channelid=1;
+            }else if(param.channel==Channel.APPLYING){
+                channelid=2;
+            }else{
+                channelid=3;
+            }
             try{
-                missionList=GlobalObjects.missionManager.findMissionByDescription(param.keywords,channels,1,20);
+                GlobalObjects.currentUser = GlobalObjects.userManager.getSelf();
+                missionIDList = GlobalObjects.currentUser.getMissionIDs();
+                if(channelid==1){
+                    for(Integer i:missionIDList){
+                        IMission tmp=GlobalObjects.missionManager.findMissionByID(i);
+                        if((tmp.getMemberIDs().contains(GlobalObjects.currentUser.getUserID())||
+                                tmp.getPublisher()==(GlobalObjects.currentUser.getUserID()))
+                                &&!(tmp.getState().equals("finished"))){
+                            missionList.add(tmp);
+                        }
+                    }
+                }else if(channelid==2){
+                    for(Integer i:missionIDList){
+                        IMission tmp=GlobalObjects.missionManager.findMissionByID(i);
+                        if(tmp.getApplicantIDs().contains(GlobalObjects.currentUser.getUserID())){
+                            missionList.add(tmp);
+                        }
+                    }
+                }else{
+                    for(Integer i:missionIDList){
+                        IMission tmp=GlobalObjects.missionManager.findMissionByID(i);
+                        if(tmp.getState().equals("finished")){
+                            missionList.add(tmp);
+                        }
+                    }
+                }
+
             }catch(Exception e){
                 String s=e.getMessage();
                 System.out.println(s);

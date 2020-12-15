@@ -13,7 +13,8 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class EditMeActivity extends AppCompatActivity {
 
-    private TextInputEditText userNameText, userDescriptionText,contactText;
+    private TextInputEditText userNameText,contactText;
+    //private TextInputEditText userDescriptionText;
 
     private Button confirmButton;
     @Override
@@ -23,12 +24,12 @@ public class EditMeActivity extends AppCompatActivity {
 
 
         userNameText = findViewById(R.id.editMe_userName);
-        userDescriptionText = findViewById(R.id.editMe_userDescription);
+        //userDescriptionText = findViewById(R.id.editMe_userDescription);
         contactText = findViewById(R.id.editMe_contact);
         confirmButton = findViewById(R.id.editMe_confirm);
 
         userNameText.setText(GlobalObjects.currentUser.getUserName());
-        userDescriptionText.setText("自我介绍暂无");
+        //userDescriptionText.setText("自我介绍暂无");
         contactText.setText(GlobalObjects.currentUser.getTele());
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
