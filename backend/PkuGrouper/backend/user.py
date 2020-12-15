@@ -218,6 +218,8 @@ class DealCaptcha(APIView):#获取验证码
     def post(request):#request body:user(regiter information only)
         #return Response(['This is a POST of user/captcha', request.data])
         mail = request.data.get("mailbox")
+        if User.objects.filter(mailbox=mail).count()!=0:
+            return Response("BadRequest", status=400)
         captcha_mp[mail] = (''.join([str(random.randint(0,9)) for i in range(6)]),
                             time.time())
         if sendMail(mail, captcha_mp[mail][0])==0:
