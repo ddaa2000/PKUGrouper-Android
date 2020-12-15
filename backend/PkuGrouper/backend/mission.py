@@ -186,7 +186,17 @@ class DealMissions(APIView):#获取任务列表{tag+关键词}
             
             result.distinct()
         
-        result_list = list(map(lambda x:x.id,result.all()))
+        result_list = []
+        for mission in result:
+            if datetime.datetime.now()>mission.applicationEndTime:
+                continue
+            if mission.publisher.id == user_ID:
+                continue
+            if mission.members.filter(id=user_ID).count()>0:
+                continue
+            if mission.applicants.filter(id=user_ID).count()>0:
+                continue
+            result_list.append(mission.id)
         result_list.sort(reverse=True)
         startNumber=min(request.data["startNumber"]-1,len(result_list))
         endNumber=min(request.data["endNumber"],len(result_list))
