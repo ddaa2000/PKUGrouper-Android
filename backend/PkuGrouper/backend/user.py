@@ -4,19 +4,8 @@ from .models import *
 from django.utils import timezone
 from .someFuncs import *
 import datetime
-import json
 import random
 import time
-
-
-def list2str(a):
-    result = "["
-    for i in range(len(a)):
-        result += str(a[i])
-        if i is not len(a) - 1:
-            result += ", "
-    result += "]"
-    return result
 
 
 class DealSelf(APIView):  # 获取个人信息
@@ -47,9 +36,9 @@ class DealSelf(APIView):  # 获取个人信息
             violations = []
             for message in user.messagesAsReportee.all():
                 violations.append(message.id)
-            data = {'mailbox': mailbox, 'username': username, 'tele': tele, 'missionIDs': missions,
-                    'evaluationIDs': evaluations, 'violationIDs': violations, 'averageScore': score}
-            response = Response(json.dumps(data), 200)
+            data = {"mailbox": mailbox, "username": username, "tele": tele, "missionIDs": missions,
+                    "valuationIDs": evaluations, "violationIDs": violations, "averageScore": score, "id": uid}
+            response = Response(data, 200)
         return response
 
 
@@ -81,11 +70,11 @@ class DealMember(APIView):  # 获取他人信息
             if Mission.objects.get(id=mission_ID).members.filter(id=getter_ID).count() is not 0 \
                     or Mission.objects.get(id=mission_ID).publisher.id is getter_ID:
                 tele = gettee.tele
-                data = {'missionStatus': "tele can be seen", 'tele': tele, 'averageScore': score}
+                data = {"missionStatus": "tele can be seen", "tele": tele, "averageScore": score}
                 response = Response(json.dumps(data), 200)
             else:
-                data = {'missionStatus': "tele can not be seen", 'averageScore': score}
-                response = Response(json.dumps(data), 200)
+                data = {"missionStatus": "tele can not be seen", "averageScore": score}
+                response = Response(data, 200)
         return response
 
 
@@ -121,9 +110,9 @@ class DealEvaluation(APIView):  # 根据evaluation_ID获取评价
             evaluaterID = evaluation.evaluater.id
             missionID = evaluation.mission.id
             evaluationScore = evaluation.evaluationScore
-            data = {'timeStamp': timeStamp, 'evaluateeID': evaluaterID, 'evaluaterID': evaluateeID,
-                    'missionID':missionID, 'evaluationScore': evaluationScore}
-            response = Response(json.dumps(data), 200)
+            data = {"timeStamp": timeStamp, "evaluateeID": evaluaterID, "evaluaterID": evaluateeID,
+                    "missionID": missionID, "evaluationScore": evaluationScore}
+            response = Response(data, 200)
         return response
 
 
