@@ -302,8 +302,7 @@ public class MissionManageFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             int missionid=GlobalObjects.currentMission.getID();
             try{
-                GlobalObjects.missionManager.start(missionid);
-                isstart=Boolean.TRUE;
+                isstart=GlobalObjects.missionManager.start(missionid);
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -338,8 +337,7 @@ public class MissionManageFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             int missionid=GlobalObjects.currentMission.getID();
             try{
-                GlobalObjects.missionManager.finish(missionid);
-                isstop=Boolean.TRUE;
+                isstop=GlobalObjects.missionManager.start(missionid);
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -373,8 +371,7 @@ public class MissionManageFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             int missionid=GlobalObjects.currentMission.getID();
             try{
-                GlobalObjects.missionManager.deleteMission(missionid);
-                isdelete=Boolean.TRUE;
+                isdelete=GlobalObjects.missionManager.start(missionid);
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
