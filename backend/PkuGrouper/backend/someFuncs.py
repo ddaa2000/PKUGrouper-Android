@@ -9,9 +9,12 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
 def RSAdecypt(passwordAfterRSA):
-    private_key=rsa.PrivateKey.load_pkcs1(open('./backend/private_key.pem', 'rb').read())
-    de_password = b64decode(passwordAfterRSA.encode('utf8'))
-    password = rsa.decrypt(de_password,private_key).decode('utf8')
+    try:
+        private_key=rsa.PrivateKey.load_pkcs1(open('./backend/private_key.pem', 'rb').read())
+        de_password = b64decode(passwordAfterRSA.encode('utf8'))
+        password = rsa.decrypt(de_password,private_key).decode('utf8')
+    except:
+        password = ""
     return password
 
 def passwordToMD5(password):
