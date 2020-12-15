@@ -70,17 +70,19 @@ public class HttpManager implements IHttpManager{
             connection.setRequestProperty("Content-Type", "application/json");
             connection.connect();
 
-            out=new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
-            out.write(body);
-            out.flush();
-
-
-           // Log.e("body:",body);
-           // Log.e("body:",body);
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result = result+line;
+            // 定义BufferedReader输入流来读取URL的响应
+            if (connection.getResponseCode() == 200) {
+                in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
+                }
+            }else{
+                in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
+                }
             }
             // 定义BufferedReader输入流来读取URL的响应
 //            if (connection.getResponseCode() == 200) {
@@ -156,10 +158,19 @@ public class HttpManager implements IHttpManager{
             out.flush();
 
             // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result =result+line;
+
+            if (connection.getResponseCode() == 200) {
+                in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result =result+line;
+                }
+            }else{
+                in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
+                }
             }
 //            if (connection.getResponseCode() == 200) {
 //                in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
@@ -235,10 +246,20 @@ public class HttpManager implements IHttpManager{
 
                     connection.getInputStream()));
 
-            String line;
 
-            while ((line = in.readLine()) != null) {
-                result += line;
+                        connection.getInputStream()));
+
+                String line;
+
+                while ((line = in.readLine()) != null) {
+                    result += line;
+                }
+            } else{
+                in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
+                }
             }
 
 //            if (connection.getResponseCode() == 200) {

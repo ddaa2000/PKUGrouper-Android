@@ -195,8 +195,15 @@ public class SquareFragment extends Fragment {
         squareMissionListFragment.mHandler.sendMessage(msg);
     }
 
+    private void changeMissionListfailed(FailCode failCode){
+
+    }
+
     private enum Channel{
         ALL, PROFESSIONAL_COURSE, GENERAL_COURSE, LIFE
+    }
+    private enum FailCode{
+        BADREQUEST,USERNF,DCNULL
     }
     private class ChannelSearchParams{
         String keywords;  //注意，可能为null或者""
@@ -206,6 +213,8 @@ public class SquareFragment extends Fragment {
     private class ChannelSearchTask extends AsyncTask<ChannelSearchParams, Void, Void>{
 
         private List<IMission>missionList=new ArrayList<IMission>();
+        private FailCode failure;
+        Boolean issearch=Boolean.FALSE;
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
             ChannelSearchParams param=channelSearchParams[0];
@@ -230,9 +239,16 @@ public class SquareFragment extends Fragment {
             }
             try{
                 missionList=GlobalObjects.missionManager.findMissionByDescription(param.keywords,channels,1,20);
+                issearch=Boolean.TRUE;
             }catch(Exception e){
                 String s=e.getMessage();
-                System.out.println(s);
+                if(s.equals("currentUser is null!")||s.equals("User is not found!")){
+                    failure=FailCode.USERNF;
+                }else if(s.equals("find mission is bad request!")){
+                    failure=FailCode.BADREQUEST;
+                }else{
+                    failure=FailCode.DCNULL;
+                }
             }
 
             return null;
@@ -240,7 +256,11 @@ public class SquareFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            changeMissionList(missionList);
+            if(issearch){
+                changeMissionList(missionList);
+            }else{
+                changeMissionListfailed(failure);
+            }
         }
     }
 

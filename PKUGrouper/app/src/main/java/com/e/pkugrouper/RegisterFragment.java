@@ -124,7 +124,7 @@ public class RegisterFragment extends Fragment {
 
 
     private enum FailCode{
-        TIME_EXCEEDED,WRONG_VERIFICATION,UNKNOWN_FAILURE,SERVER_FAILURE,MAIL_EXIST
+        BADREQUEST,USERNF,CAPTCHANULL,NAMEBAD,MAILNE
     }
 
     private void registerFailed(FailCode failCode){
@@ -171,10 +171,14 @@ public class RegisterFragment extends Fragment {
             }catch (Exception e) {
                 Log.e("doInBackground","doInBackgroundException");
                 String s=e.getMessage();
-                if(s.equals("Register is bad request!")){
-                    failureType=FailCode.SERVER_FAILURE;
+                if(s.equals("currentUser is null!")){
+                    failureType=FailCode.USERNF;
+                }else if(s.equals("captcha is null!")){
+                    failureType=FailCode.CAPTCHANULL;
+                }else if(s.equals("Register is bad request!")){
+                    failureType=FailCode.BADREQUEST;
                 }else{
-                    failureType=FailCode.UNKNOWN_FAILURE;
+                    failureType=FailCode.NAMEBAD;
                 }
             }
             return null;
@@ -202,8 +206,12 @@ public class RegisterFragment extends Fragment {
                 boolean result = GlobalObjects.userManager.sendCaptcha(mailbox);
                 isMail= result;
             }catch(Exception e){
-                failureType=FailCode.TIME_EXCEEDED;
-                e.printStackTrace();
+                String s=e.getMessage();
+                if(s.equals("mailbox is null!")){
+                    failureType=FailCode.MAILNE;
+                }else{
+                    failureType=FailCode.BADREQUEST;
+                }
             }
             return null;
         }
