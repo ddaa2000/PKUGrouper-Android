@@ -70,6 +70,12 @@ public class HttpManager implements IHttpManager{
                 while ((line = in.readLine()) != null) {
                     result = result+line;
                 }
+            }else{
+                in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
+                }
             }
         }catch(Exception e){
             System.out.println("发送GET请求出现异常！"+e);
@@ -137,6 +143,12 @@ public class HttpManager implements IHttpManager{
                 String line;
                 while ((line = in.readLine()) != null) {
                     result =result+line;
+                }
+            }else{
+                in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
                 }
             }
         } catch (Exception e) {
@@ -210,8 +222,12 @@ public class HttpManager implements IHttpManager{
                 while ((line = in.readLine()) != null) {
                     result += line;
                 }
-            } else {
-
+            } else{
+                in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result = result+line;
+                }
             }
         } catch (Exception e) {
             System.out.println("发送 PUT 请求出现异常！" + e);
