@@ -83,6 +83,8 @@ class DealMission(APIView):
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -100,6 +102,8 @@ class DealMission(APIView):
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         #request body:mission
         try:
             who = User.objects.get(id=user_ID)
@@ -153,6 +157,8 @@ class DealMissions(APIView):#获取任务列表{tag+关键词}
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -194,6 +200,8 @@ class DealCreate(APIView):#创建任务请求
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -234,6 +242,8 @@ class DealDelete(APIView):#删除任务请求
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -255,6 +265,8 @@ class DealJoin(APIView):#加入任务请求
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -282,6 +294,8 @@ class DealAccept(APIView):#接受申请者请求
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -314,6 +328,8 @@ class DealReject(APIView):#拒接申请者请求
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -344,6 +360,8 @@ class DealFire(APIView):#踢出成员请求
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -378,6 +396,8 @@ class DealStart(APIView):#开始任务
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -404,6 +424,8 @@ class DealFinish(APIView):#结束任务
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -430,6 +452,8 @@ class DealQuit(APIView):#退出任务请求
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
             return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:

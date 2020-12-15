@@ -832,7 +832,7 @@ body=
 这个操作会向id=1的user发一个message
 
 ```json
-URL : /message/bug/{ID}/{reporteeID}
+URL : /message/report/{ID}/{reporteeID}
 
 request body:
 {

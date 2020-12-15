@@ -17,7 +17,7 @@ def to_json(obj):
     "timeStamp" : fixtime(str(obj.timeStamp)),
     "publisherID" : obj.publisher.id,
     "type" : obj.messageType,
-    "messageContent" : eval(obj.messageContent),
+    "messageContent" : obj.messageContent,
     }
     if obj.messageType == 'Report':
         mp["reportee"] = obj.reportees.all()[0].id
@@ -28,11 +28,18 @@ class DealMessages(APIView):#获取message
     @staticmethod
     def post(request, user_ID):
         #return Response('This is a GET of messages/{user_ID}')
+        uid = checkUID(request.data)
+        if uid is 0:
+            return Response("Unauthorized", 401)
+        elif User.objects.filter(id=user_ID).count() == 0:
+            return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
             return Response("user Not Found",status=404)
-        user_message = list(map(lambda p: to_json(p),
+        user_message = list(map(lambda p: p.id,
                             who.messagesAsReciever.all().order_by('-timeStamp')[:50])
                             )
 
@@ -41,33 +48,52 @@ class DealMessages(APIView):#获取message
 class DealMessage(APIView):#根据message_ID获取信息
     @staticmethod
     def post(request, message_ID):
+        uid = checkUID(request.data)
+        if uid is 0:
+            return Response("Unauthorized", 401)
+        elif User.objects.filter(id=uid).count() == 0:
+            return Response("User Not Found", 404)
         try:
             who = Message.objects.get(id=message_ID)
         except Message.DoesNotExist:
             return Response("message Not Found",status=404)
+        if who.recievers.filter(id=uid).count() == 0:
+            return Response("Forbidden", 401)
         return Response(to_json(who))
 
 class DealBug(APIView):#报告bug
     @staticmethod
     def post(request, user_ID):#request body:bug
         #return Response(['This is a POST of message/bug/{user_ID}', request.data])
+        uid = checkUID(request.data)
+        if uid is 0:
+            return Response("Unauthorized", 401)
+        elif User.objects.filter(id=user_ID).count() == 0:
+            return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
             return Response("user Not Found",status=404)
-        m = Message(messageContent=request.body, messageType='Bug',
-            publisher = who,
-            )
+        m = Message(messageContent=request.data['messageContent'],
+                    messageType='Bug',
+                    publisher = who,)
         m.save()
         m.recievers.add(User.objects.get(id=1))
         return Response("OK")
-
-        
 
 class DealReport(APIView):#举报
     @staticmethod
     def post(request, user_ID, reportee_ID):#request body:report
         #return Response(['This is a POST of message/report/{user_ID}/{reportee_ID}', request.data])
+        uid = checkUID(request.data)
+        if uid is 0:
+            return Response("Unauthorized", 401)
+        elif User.objects.filter(id=user_ID).count() == 0:
+            return Response("User Not Found", 404)
+        elif uid != user_ID:
+            return Response("Unauthorized", 401)
         try:
             who = User.objects.get(id=user_ID)
         except User.DoesNotExist:
@@ -77,9 +103,9 @@ class DealReport(APIView):#举报
         except User.DoesNotExist:
             return Response("reportee Not Found",status=404)
 
-        m = Message(messageContent=request.body, messageType='Report',
-            publisher = who,
-            )
+        m = Message(messageContent=request.data['messageContent'],
+                    messageType='Report',
+                    publisher = who,)
         m.save()
         m.recievers.add(User.objects.get(id=1))
         m.reportees.add(other)
