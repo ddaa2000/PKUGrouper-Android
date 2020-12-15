@@ -198,9 +198,8 @@ public class MissionManageFragment extends Fragment {
 
 
     private enum FailCode{
-        SERVER_ERROR,
-        TIME_OUT,
-        NO_LONGER_IN_MISSION,
+        MISSIONJF,
+        MISSIONQF,
         USERNF,
         MISSIONNF,
         MISSIONID,
@@ -235,6 +234,21 @@ public class MissionManageFragment extends Fragment {
     }
 
     private void missionStopFailed(FailCode failCode){
+
+    }
+    private void missionQuitFailed(FailCode failCode){
+
+    }
+
+    private void missionQuitSucceeded(){
+
+    }
+
+    private void applicationsendFailed(FailCode failCode){
+
+    }
+
+    private void applicationsendSucceeded(){
 
     }
 
@@ -394,6 +408,75 @@ public class MissionManageFragment extends Fragment {
             }else{
                 missionDeleteFailed(failure);
             }
+        }
+    }
+    private class MissionQuit extends AsyncTask<Void, Void, Void>{
+
+        Boolean isquit=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                isquit=GlobalObjects.missionManager.quit(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONQF;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isquit){
+                missionQuitSucceeded();
+            }else{
+                missionQuitFailed(failure);
+            }
+
+        }
+    }
+
+    private class ApplicationSend extends AsyncTask<Void, Void, Void>{
+
+        Boolean issend=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                issend=GlobalObjects.missionManager.join(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONJF;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(issend){
+                applicationsendSucceeded();
+            }else{
+                applicationsendFailed(failure);
+            }
+
         }
     }
 
