@@ -78,7 +78,7 @@ public class MissionAddActivity extends AppCompatActivity {
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
                     failure=FailCode.USERNF;
-                }else if(s.equals("mission is not found!")){
+                }else if(s.equals("this time is invalid to add mission!")){
                     failure=FailCode.TIMEINVALID;
                 }else{
                     failure=FailCode.MISSIONID;
