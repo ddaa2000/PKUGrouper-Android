@@ -1,11 +1,20 @@
 package com.e.pkugrouper.Managers;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.e.pkugrouper.Models.Evaluation;
 import com.e.pkugrouper.Models.IEvaluation;
+import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.Message;
 import com.e.pkugrouper.Models.User;
 
+import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,6 +75,7 @@ public class UserManager extends HttpManager implements IUserManager{
             throw new RuntimeException("Find is Forbidden");
         }
 
+        //生成member对应的IUser对象
         IUser member = new User();
         member.setUserID(memberID);
         member.loadFromJSON(Member_JSON);
@@ -317,6 +327,7 @@ public class UserManager extends HttpManager implements IUserManager{
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean changePassword(String password) {
         //怎么得到旧的密码和新的密码
@@ -432,5 +443,130 @@ public class UserManager extends HttpManager implements IUserManager{
             throw new RuntimeException("Send captcha is bad request!");
         }
         return false;
+    }
+
+    @Override
+    public List<IEvaluation> findEvaluations(int[] evaluationIDs) {
+        if(user == null){
+            throw new RuntimeException("currentUser is null!");
+        }
+
+        String url = "/findevaluations";
+        List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()));
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        request_body.put("evaluationIDs", evaluationIDs);
+        String find_response = httpPost(url, parameters, request_body.toJSONString());
+
+        if(find_response.equals(user_not_found)){
+            throw new RuntimeException("User is not found!");
+        }
+
+        if(find_response.equals(evaluation_not_found)){
+            throw new RuntimeException("evaluation is not found!");
+        }
+
+        List<IEvaluation> Evaluation_List = new ArrayList<>();
+        JSONArray platformArray = JSON.parseArray(find_response);
+        for (Object jsonObject : platformArray) {
+            String evaluation_json = jsonObject.toString();
+            IEvaluation evaluation = new Evaluation();
+            evaluation.loadFromJSON(evaluation_json);
+            Evaluation_List.add(evaluation);
+        }
+        return Evaluation_List;
+    }
+
+    @Override
+    public List<IUser> findUsers(int missionID, int[] getteeIDs) {
+        if(user == null){
+            throw new RuntimeException("currentUser is null!");
+        }
+
+        String url = "/findusers";
+        List<String> parameters = Arrays.asList(String.valueOf(user.getUserID()),
+                String.valueOf(missionID));
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",user.getUserID());
+        request_body.put("passwordAfterRSA", user.getPassword());
+        request_body.put("getteeIDs", getteeIDs);
+        String find_response = httpPost(url, parameters, request_body.toJSONString());
+
+        if(find_response.equals(getter_not_found)){
+            throw new RuntimeException("getter is not found!");
+        }
+
+        if(find_response.equals(evaluation_not_found)){
+            throw new RuntimeException("evaluation is not found!");
+        }
+
+        if(find_response.equals(gettee_not_found)){
+            throw new RuntimeException("gettee is not found!");
+        }
+
+        if(find_response.equals(bad_request)){
+            throw new RuntimeException("find users is bad request!");
+        }
+
+        if(find_response.equals(forbidden)){
+            throw new RuntimeException("find users is forbidden!");
+        }
+
+        List<IUser> gettee_List = new ArrayList<>();
+        JSONArray platformArray = JSON.parseArray(find_response);
+        for (Object jsonObject : platformArray) {
+            String gettee_json = jsonObject.toString();
+            IUser gettee = new User();
+            gettee.loadFromJSON(gettee_json);
+            gettee_List.add(gettee);
+        }
+        return gettee_List;
+    }
+
+    @Override
+    public boolean sendPasswordCaptcha(String mailbox) {
+        if(user == null){
+            throw new RuntimeException("currentUser is null!");
+        }
+
+        String url = "/user/fixpasswordcaptcha";
+        JSONObject request_body = new JSONObject();
+        request_body.put("mailbox",mailbox);
+        String send_response = httpPost(url, null, request_body.toJSONString());
+
+        if(send_response.equals(bad_request)){
+            throw new RuntimeException("send password captcha is bad request");
+        }
+
+        if(send_response.equals(ok))
+            return true;
+
+        return false;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean findPassword(String captcha, String newPassword) {
+        if(user == null){
+            throw new RuntimeException("currentUser is null!");
+        }
+
+        String url = "/user/fixpasswordcaptcha";
+        JSONObject request_body = new JSONObject();
+        request_body.put("mailbox",user.getMailBox());
+        RSAUtils rsaUtils = new RSAUtils();
+        String passwordRSA = rsaUtils.encrypto(newPassword);
+        request_body.put("passwordAfterRSA", passwordRSA);
+        request_body.put("captchaCode", captcha);
+        String send_response = httpPost(url, null, request_body.toJSONString());
+
+        if(send_response.equals(bad_request)){
+            throw new RuntimeException("find password is bad request");
+        }
+
+        JSONObject find_json = JSON.parseObject(send_response);
+        int UID = find_json.getInteger("UID");
+        return true;
     }
 }
