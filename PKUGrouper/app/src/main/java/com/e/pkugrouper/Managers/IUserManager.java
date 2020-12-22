@@ -29,4 +29,9 @@ public interface IUserManager {
     boolean changePassword(String password);                    // user/code
     boolean evaluate(int missionID, int evaluateeID,int score); // user/evaluate
     boolean sendCaptcha(String mailbox);                        //user/captcha
+
+    List<IEvaluation> findEvaluations(int[] evaluationIDs);
+    List<IUser> findUsers(int missionID, int[] getteeIDs);
+    boolean sendPasswordCaptcha(String mailbox);
+    boolean findPassword(String captcha, String newPassword);
 }
