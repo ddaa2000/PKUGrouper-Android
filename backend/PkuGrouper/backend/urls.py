@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views, user, mission, message
+from . import views, user, mission, message, finds
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -17,6 +17,8 @@ urlpatterns = [
     path('user/captcha/', user.DealCaptcha.as_view(), name='user/captcha/'),
     path('user/register/', user.DealRegister.as_view(), name='user/register/'),
     path('user/login/', user.DealLogin.as_view(), name='user/login/'),
+    path('user/fixpasswordcaptcha/', user.DealFixPasswordCaptcha.as_view(), name='user/fixpasswordcaptcha/'),
+    path('user/fixpassword/', user.DealFixPassword.as_view(), name='user/fixpassword/'),
 
     #path for mission
     path('mission/<int:user_ID>/<int:mission_ID>/', mission.DealMission.as_view(), name='mission/'),
@@ -36,6 +38,13 @@ urlpatterns = [
     path('message/<int:message_ID>/', message.DealMessage.as_view(), name='message/'),
     path('message/bug/<int:user_ID>/', message.DealBug.as_view(), name='message/bug/'),
     path('message/report/<int:user_ID>/<int:reportee_ID>/', message.DealReport.as_view(), name='message/report/'),
+
+    #path for finds
+    path('findmissions/<int:user_ID>/', finds.DealFindMissions.as_view(), name='/findmissions/'),
+    path('findmessages/<int:user_ID>/', finds.DealFindMessages.as_view(), name='/findmessages/'),
+    path('findevaluations/<int:user_ID>/', finds.DealFindEvaluations.as_view(), name='/findevaluations/'),
+    path('findusers/<int:getter_ID>/<int:mission_ID>/', finds.DealFindUsers.as_view(), name='/findusers/'),
+
     #下面是上面的path去掉末尾'/'的复制
     
     #path for user
@@ -50,6 +59,8 @@ urlpatterns = [
     path('user/captcha', user.DealCaptcha.as_view(), name='user/captcha'),
     path('user/register', user.DealRegister.as_view(), name='user/register'),
     path('user/login', user.DealLogin.as_view(), name='user/login'),
+    path('user/fixpasswordcaptcha', user.DealFixPasswordCaptcha.as_view(), name='user/fixpasswordcaptcha'),
+    path('user/fixpassword', user.DealFixPassword.as_view(), name='user/fixpassword'),
 
     #path for mission
     path('mission/<int:user_ID>/<int:mission_ID>', mission.DealMission.as_view(), name='mission'),
@@ -69,4 +80,10 @@ urlpatterns = [
     path('message/<int:message_ID>', message.DealMessage.as_view(), name='message'),
     path('message/bug/<int:user_ID>', message.DealBug.as_view(), name='message/bug'),
     path('message/report/<int:user_ID>/<int:reportee_ID>', message.DealReport.as_view(), name='message/report'),
+
+    #path for finds
+    path('findmissions/<int:user_ID>', finds.DealFindMissions.as_view(), name='/findmissions'),
+    path('findmessages/<int:user_ID>', finds.DealFindMessages.as_view(), name='/findmessages'),
+    path('findevaluations/<int:user_ID>', finds.DealFindEvaluations.as_view(), name='/findevaluations'),
+    path('findusers/<int:getter_ID>/<int:mission_ID>', finds.DealFindUsers.as_view(), name='/findusers'),
 ]

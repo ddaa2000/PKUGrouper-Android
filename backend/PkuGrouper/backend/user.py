@@ -281,3 +281,13 @@ class DealLogin(APIView):#登录
         if who.passwordAfterMD5 != code:
             return Response("Forbidden",status=404)
         return Response({"UID":who.id})
+
+class DealFixPasswordCaptcha(APIView):
+    @staticmethod
+    def post(request):
+        return Response("fuckyou!")
+
+class DealFixPassword(APIView):
+    @staticmethod
+    def post(request):
+        return Response("fuckyou!")
