@@ -177,26 +177,17 @@ class DealMissions(APIView):#获取任务列表{tag+关键词}
             return Response("user Not Found",status=404)
         result=Mission.objects.filter(id=0)#empty
         
-        if (not(request.data["channels"]))and(not(request.data["keywords"])):
-            result=Mission.objects.all()
-        else:
-            for channelcontent in request.data["channels"]:
-                try:
-                    channel = Channel.objects.get(content=channelcontent)
-                    tmpset=Mission.objects.filter(channels=channel)
-                    result=result | tmpset
-                except:
-                    a=1
-                    
-            for keywordscontent in request.data["keywords"]:
-                tmpset = Mission.objects.filter(title__contains=keywordscontent)
+        for channelcontent in request.data["channels"]:
+            try:
+                channel = Channel.objects.get(content=channelcontent)
+                tmpset=Mission.objects.filter(channels=channel)
                 result=result | tmpset
-
-            for keywordscontent in request.data["keywords"]:
-                tmpset = Mission.objects.filter(content__contains=keywordscontent)
-                result=result | tmpset
-            
-            result.distinct()
+            except:
+                a=1
+                
+        for keywordscontent in request.data["keywords"]:
+            result = (result.filter(title__contains=keywordscontent)
+                      |result.filter(content__contains=keywordscontent))
         
         result_list = []
         for mission in result:
