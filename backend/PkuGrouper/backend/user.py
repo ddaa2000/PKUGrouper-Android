@@ -222,7 +222,6 @@ class DealTags(APIView):#修改tagList
         return Response(['This is a PUT of user/tags/{user_ID}', request.data])
 
 
-captcha_mp = {}
 class DealCaptcha(APIView):#获取验证码
     @staticmethod
     def post(request):#request body:user(regiter information only)
@@ -230,10 +229,16 @@ class DealCaptcha(APIView):#获取验证码
         mail = request.data.get("mailbox")
         if User.objects.filter(mailbox=mail).count()!=0:
             return Response("BadRequest", status=400)
-        captcha_mp[mail] = (''.join([str(random.randint(0,9)) for i in range(6)]),
-                            time.time())
-        if sendMail(mail, captcha_mp[mail][0])==0:
-            del captcha_mp[mail]
+        try:
+            captcha = Captcha.objects.get(mailbox=mail)
+        except:
+            captcha = Captcha(mailbox=mail,
+                              captchaContent=''.join([str(random.randint(0,9)) for i in range(6)]))
+            captcha.save()
+        if datetime.datetime.now()-captcha.timeStamp > datetime.timedelta(seconds=300):
+            captcha.captchaContent = ''.join([str(random.randint(0,9)) for i in range(6)])
+        captcha.save()
+        if sendMail(mail, captcha.captchaContent)==0:
             return Response("BadRequest",status=400)
         else:
             return Response("OK")
@@ -246,21 +251,19 @@ class DealRegister(APIView):#注册
         passwordAfterRSA = request.data.get("passwordAfterRSA")
         captchaCode = request.data.get("captchaCode")
         username = request.data.get("username")
-        if len(User.objects.filter(username=username)):
+        if User.objects.filter(username=username).count() > 0:
             return Response("bad username",status=400)
-        if captcha_mp.get(mail) == None:
+        if Captcha.objects.filter(mailbox=mail).count() == 0:
             return Response("Do not have captcha!",status=400)
-        if time.time() - captcha_mp[mail][1] > 30000:
-            del captcha_mp[mail]
+        captcha = Captcha.objects.get(mailbox=mail)
+        if datetime.datetime.now()-captcha.timeStamp > datetime.timedelta(seconds=300):
             return Response("captcha time limit exceed!",status=400)
-        if captcha_mp[mail][0] != captchaCode:
-            del captcha_mp[mail]
+        if captcha.captchaContent != captchaCode:
             return Response("captchaCode wrong!",status=400)
         md5code = passwordToMD5(RSAdecypt(passwordAfterRSA))
-        person = User(username=username, mailbox=mail, passwordAfterMD5=md5code,
-                    )
+        person = User(username=username, mailbox=mail, passwordAfterMD5=md5code)
         person.save()
-        del captcha_mp[mail]
+        captcha.delete()
         return Response({"UID":person.id})
 
 class DealLogin(APIView):#登录
@@ -282,12 +285,44 @@ class DealLogin(APIView):#登录
             return Response("Forbidden",status=404)
         return Response({"UID":who.id})
 
-class DealFixPasswordCaptcha(APIView):
+class DealFixPasswordCaptcha(APIView):#找回密码之获取验证码
     @staticmethod
     def post(request):
-        return Response("fuckyou!")
+        mail = request.data.get("mailbox")
+        if User.objects.filter(mailbox=mail).count()==0:
+            return Response("BadRequest", status=400)
+        try:
+            captcha = Captcha.objects.get(mailbox=mail)
+        except:
+            captcha = Captcha(mailbox=mail,
+                              captchaContent=''.join([str(random.randint(0,9)) for i in range(6)]))
+            captcha.save()
+        if datetime.datetime.now()-captcha.timeStamp > datetime.timedelta(seconds=300):
+            captcha.captchaContent = ''.join([str(random.randint(0,9)) for i in range(6)])
+        captcha.save()
+        if sendMail(mail, captcha.captchaContent)==0:
+            return Response("BadRequest",status=400)
+        else:
+            return Response("OK")
 
-class DealFixPassword(APIView):
+class DealFixPassword(APIView):#找回密码
     @staticmethod
     def post(request):
-        return Response("fuckyou!")
+        mail = request.data.get("mailbox")
+        passwordAfterRSA = request.data.get("passwordAfterRSA")
+        captchaCode = request.data.get("captchaCode")
+        if Captcha.objects.filter(mailbox=mail).count() == 0:
+            return Response("Do not have captcha!",status=400)
+        if User.objects.filter(mailbox=mail).count() == 0:
+            return Response("Bad Request", status=400)
+        captcha = Captcha.objects.get(mailbox=mail)
+        if datetime.datetime.now()-captcha.timeStamp > datetime.timedelta(seconds=300):
+            return Response("captcha time limit exceed!",status=400)
+        if captcha.captchaContent != captchaCode:
+            return Response("captchaCode wrong!",status=400)
+        md5code = passwordToMD5(RSAdecypt(passwordAfterRSA))
+        person = User.objects.get(mailbox=mail)
+        person.passwordAfterMD5 = md5code
+        person.save()
+        captcha.delete()
+        return Response({"UID":person.id})
