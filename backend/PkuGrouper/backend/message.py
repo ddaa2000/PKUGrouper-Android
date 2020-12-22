@@ -43,7 +43,7 @@ class DealMessages(APIView):  # 获取message
         except User.DoesNotExist:
             return Response("user Not Found",status=404)
         user_message = list(map(lambda p: p.id,
-                            who.messagesAsReciever.all().order_by('-timeStamp')[:50])
+                            who.messagesAsReceiver.all().order_by('-timeStamp')[:50])
                             )
 
         return Response(user_message)
@@ -61,7 +61,7 @@ class DealMessage(APIView):#根据message_ID获取信息
             who = Message.objects.get(id=message_ID)
         except Message.DoesNotExist:
             return Response("message Not Found",status=404)
-        if who.recievers.filter(id=uid).count() == 0:
+        if who.receivers.filter(id=uid).count() == 0:
             return Response("Forbidden", 401)
         return Response(to_json(who))
 
@@ -85,7 +85,7 @@ class DealBug(APIView):#报告bug
                     messageType='Bug',
                     publisher = who,)
         m.save()
-        m.recievers.add(User.objects.get(id=1))
+        m.receivers.add(User.objects.get(id=1))
         return Response("OK")
 
 
@@ -113,7 +113,7 @@ class DealReport(APIView):  # 举报
                     messageType='Report',
                     publisher = who,)
         m.save()
-        m.recievers.add(User.objects.get(id=1))
+        m.receivers.add(User.objects.get(id=1))
         m.reportees.add(other)
 
         return Response("OK")
@@ -144,7 +144,7 @@ class debug(APIView):  # for debug
             m.id = cnt+1
             cnt+=1
             m.save()
-            m.recievers.add(admin)
+            m.receivers.add(admin)
         # report
         for i in range(100):
             m = Message(messageContent=str(i),messageType='Report',
@@ -153,7 +153,7 @@ class debug(APIView):  # for debug
             m.id = cnt+1
             cnt+=1
             m.save()
-            m.recievers.add(admin)
+            m.receivers.add(admin)
             for j in range(1):
                 m.reportees.add(user_list[random.randint(1,len(user_list)-1)])
         # Notice
@@ -164,7 +164,7 @@ class debug(APIView):  # for debug
         cnt+=1
         m.save()
         for i in User.objects.all():
-            m.recievers.add(i)
+            m.receivers.add(i)
 
         return Response([len(User.objects.all()),len(Message.objects.all())])
 

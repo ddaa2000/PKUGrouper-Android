@@ -86,7 +86,7 @@ class Message(models.Model):
     publisher = models.ForeignKey(User, on_delete=models.CASCADE,
                                   related_name='messagesAsPublisher')
     receivers = models.ManyToManyField(User, through='Receivership',
-                                       related_name='messagesAsReciever')
+                                       related_name='messagesAsReceiver')
     # 被举报人
     reportees = models.ManyToManyField(User, through='Reporteeship',
                                       related_name='messagesAsReportee')
