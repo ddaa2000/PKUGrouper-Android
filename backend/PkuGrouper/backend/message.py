@@ -13,15 +13,15 @@ def fixtime(s):
     return s[:x]
 
 def to_json(obj):
-    mp = {
+    js = {
     "timeStamp" : fixtime(str(obj.timeStamp)),
     "publisherID" : obj.publisher.id,
     "type" : obj.messageType,
     "messageContent" : obj.messageContent,
     }
     if obj.messageType == 'Report':
-        mp["reportee"] = obj.reportees.all()[0].id
-    return mp
+        js["reportee"] = obj.reportees.first().id
+    return js
 
 class DealMessages(APIView):#获取message
     #（这个应该是给出user_ID，返回一个此user未查看的message的数组）
