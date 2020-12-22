@@ -310,6 +310,10 @@ class DealJoin(APIView):#加入任务请求
         if which.publisher.id == who.id:
             return Response("Forbidden",status=403)
         tmpapp = Applicantship.objects.create(user = who,mission = which)
+        # send message to publisher
+        info = who.username + " 申请加入您创建的任务 " + which.title
+        Message.objects.create(messageContent=info, messageType="Notice",
+                               publisher=who, receiver=which.publisher)
         return Response("OK")
 
 
@@ -342,6 +346,10 @@ class DealAccept(APIView):#接受申请者请求
             tmpmem=Membership(user=tmpapp.user,mission=tmpapp.mission)
             tmpmem.save()
             tmpapp.delete()
+            # send message to user being accepted
+            info = "您被 "+which.publisher.username+" 接受加入任务 "+which.title+" 了"
+            Message.objects.create(messageContent=info, messageType="Notice",
+                                   publisher=which.publisher, receiver=User.objects.get(id=applicant_ID))
             return Response("OK")
         except Applicantship.DoesNotExist:
             return Response("applicant Not Found",status=404)
@@ -375,6 +383,10 @@ class DealReject(APIView):#拒接申请者请求
             if tmpapp.mission != which:
                 return Response("Forbidden",status=403)
             tmpapp.delete()
+            # send message to user being rejected
+            info = "您被 " + which.publisher.username + " 拒绝加入任务 " + which.title + " 了"
+            Message.objects.create(messageContent=info, messageType="Notice",
+                                   publisher=which.publisher, receiver=User.objects.get(id=applicant_ID))
             return Response("OK")
         except Applicantship.DoesNotExist:
             return Response("applicant Not Found",status=404)
@@ -383,7 +395,7 @@ class DealReject(APIView):#拒接申请者请求
 
 class DealFire(APIView):#踢出成员请求
     @staticmethod
-    def post(request, user_ID, mission_ID, member_ID):#modified by hzq
+    def post(request, user_ID, mission_ID, member_ID):  # modified by hzq
         uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
@@ -403,15 +415,19 @@ class DealFire(APIView):#踢出成员请求
             which = Mission.objects.get(id=mission_ID)
         except Mission.DoesNotExist:
             return Response("mission Not Found",status=404)
-        if datetime.datetime.now() > which.executionEndTime:#may need modification
+        if datetime.datetime.now() > which.executionEndTime:  # may need modification
             return Response("Forbidden",status=403)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
         if member.id == which.publisher.id:
             return Response("Forbidden",status=403)
         try:
-            tmpmem=Membership.objects.get(mission=which,user=member)
+            tmpmem=Membership.objects.get(mission=which, user=member)
             tmpmem.delete()
+            # send message to member to be deleted
+            info = "您被 " + which.publisher.username + " 从任务 " + which.title + " 踢出了"
+            Message.objects.create(messageContent=info, messageType="Notice",
+                                   publisher=which.publisher, receiver=member)
             return Response("OK")
         except Membership.DoesNotExist:
             return Response("Forbidden",status=404)
@@ -447,6 +463,12 @@ class DealStart(APIView):#开始任务
         if which.executionStartTime < which.applicationEndTime:
             which.applicationEndTime=which.executionStartTime
         which.save()
+
+        # publisher send messages to all members
+        info = "您的任务 "+which.title+" 开始啦！"
+        for member in which.members.all():
+            Message.objects.create(messageContent=info, messageType="Notice",
+                                   publisher=which.publisher, receiver=member.id)
         return Response("OK")
 
 
@@ -476,6 +498,12 @@ class DealFinish(APIView):#结束任务
             return Response("Forbidden",status=403)
         which.executionEndTime=datetime.datetime.now()
         which.save()
+
+        # publisher send messages to all members
+        info = "您的任务 " + which.title + " 结束啦！"
+        for member in which.members.all():
+            Message.objects.create(messageContent=info, messageType="Notice",
+                                   publisher=which.publisher, receiver=member.id)
         return Response("OK")
 
 
