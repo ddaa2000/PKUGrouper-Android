@@ -11,7 +11,8 @@ from .someFuncs import *
 class DealFindMissions(APIView):
     @staticmethod
     def post(request, user_ID):
-        uid = checkUID(request.data)
+        # uid = checkUID(request.data)
+        uid = 1
         if uid is 0:
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
@@ -26,7 +27,7 @@ class DealFindMissions(APIView):
                 missions.sort()
                 mission_detail = []
                 for mission_id in missions:
-                    if Mission.objects.filter(mission_id).count() == 0:
+                    if Mission.objects.filter(id=mission_id).count() == 0:
                         return Response("mission Not Found", 404)
                     else:
                         mission_detail.append(mission_to_json(Mission.objects.get(id=mission_id)))
@@ -37,7 +38,8 @@ class DealFindMissions(APIView):
 class DealFindMessages(APIView):
     @staticmethod
     def post(request, user_ID):
-        uid = checkUID(request.data)
+        #uid = checkUID(request.data)
+        uid = 1
         if uid is 0:
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
@@ -52,7 +54,7 @@ class DealFindMessages(APIView):
                 messages.sort()
                 message_detail = []
                 for message_id in messages:
-                    if Message.objects.filter(message_id).count() == 0:
+                    if Message.objects.filter(id=message_id).count() == 0:
                         return Response("message Not Found", 404)
                     else:
                         message_detail.append(message_to_json(Message.objects.get(id=message_id)))
@@ -63,7 +65,8 @@ class DealFindMessages(APIView):
 class DealFindEvaluations(APIView):
     @staticmethod
     def post(request, user_ID):
-        uid = checkUID(request.data)
+        #uid = checkUID(request.data)
+        uid = 1
         if uid is 0:
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
@@ -78,7 +81,7 @@ class DealFindEvaluations(APIView):
                 evaluations.sort()
                 evaluation_detail = []
                 for evaluation_id in evaluations:
-                    if Evaluation.objects.filter(evaluation_id).count() == 0:
+                    if Evaluation.objects.filter(id=evaluation_id).count() == 0:
                         return Response("evaluation Not Found", 404)
                     else:
                         evaluation_detail.append(evaluation_to_json(Evaluation.objects.get(id=evaluation_id)))
@@ -89,7 +92,8 @@ class DealFindEvaluations(APIView):
 class DealFindUsers(APIView):
     @staticmethod
     def post(request, getter_ID, mission_ID):
-        uid = checkUID(request.data)
+        #uid = checkUID(request.data)
+        uid =6
         if uid is 0:
             response = Response("Unauthorized", 401)
         elif uid != getter_ID:
@@ -104,8 +108,8 @@ class DealFindUsers(APIView):
                 return Response("Bad request", 400)
             else:
                 mission = Mission.objects.get(id=mission_ID)
+                gettee_detail = []
                 for gettee_ID in gettees:
-                    gettee_detail = []
                     if User.objects.filter(id=gettee_ID).count() == 0:
                         return Response("gettee Not Found", 404)
                     elif gettee_ID == getter_ID:
@@ -136,4 +140,5 @@ class DealFindUsers(APIView):
                             data = {"missionStatus": "tele can not be seen", "averageScore": score, "username": name,
                                     "evaluationIDs": evaluations}
                             gettee_detail.append(data)
-        return Response(gettee_detail, 200)
+            response=Response(gettee_detail, 200)
+        return response
