@@ -11,8 +11,7 @@ from .someFuncs import *
 class DealFindMissions(APIView):
     @staticmethod
     def post(request, user_ID):
-        # uid = checkUID(request.data)
-        uid = 1
+        uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
@@ -38,8 +37,7 @@ class DealFindMissions(APIView):
 class DealFindMessages(APIView):
     @staticmethod
     def post(request, user_ID):
-        #uid = checkUID(request.data)
-        uid = 1
+        uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
@@ -65,8 +63,7 @@ class DealFindMessages(APIView):
 class DealFindEvaluations(APIView):
     @staticmethod
     def post(request, user_ID):
-        #uid = checkUID(request.data)
-        uid = 1
+        uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
         elif User.objects.filter(id=user_ID).count() == 0:
@@ -92,8 +89,7 @@ class DealFindEvaluations(APIView):
 class DealFindUsers(APIView):
     @staticmethod
     def post(request, getter_ID, mission_ID):
-        #uid = checkUID(request.data)
-        uid =6
+        uid = checkUID(request.data)
         if uid is 0:
             response = Response("Unauthorized", 401)
         elif uid != getter_ID:

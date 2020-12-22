@@ -312,8 +312,10 @@ class DealJoin(APIView):#加入任务请求
         tmpapp = Applicantship.objects.create(user = who,mission = which)
         # send message to publisher
         info = who.username + " 申请加入您创建的任务 " + which.title
-        Message.objects.create(messageContent=info, messageType="Notice",
-                               publisher=who, receiver=which.publisher)
+        message = Message(messageContent=info, messageType="Notice", publisher=who)
+        message.save()
+        message.receivers.add(which.publisher)
+        message.save()
         return Response("OK")
 
 
@@ -348,8 +350,10 @@ class DealAccept(APIView):#接受申请者请求
             tmpapp.delete()
             # send message to user being accepted
             info = "您被 "+which.publisher.username+" 接受加入任务 "+which.title+" 了"
-            Message.objects.create(messageContent=info, messageType="Notice",
-                                   publisher=which.publisher, receiver=User.objects.get(id=applicant_ID))
+            message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
+            message.save()
+            message.receivers.add(User.objects.get(id=applicant_ID))
+            message.save()
             return Response("OK")
         except Applicantship.DoesNotExist:
             return Response("applicant Not Found",status=404)
@@ -385,8 +389,10 @@ class DealReject(APIView):#拒接申请者请求
             tmpapp.delete()
             # send message to user being rejected
             info = "您被 " + which.publisher.username + " 拒绝加入任务 " + which.title + " 了"
-            Message.objects.create(messageContent=info, messageType="Notice",
-                                   publisher=which.publisher, receiver=User.objects.get(id=applicant_ID))
+            message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
+            message.save()
+            message.receivers.add(User.objects.get(id=applicant_ID))
+            message.save()
             return Response("OK")
         except Applicantship.DoesNotExist:
             return Response("applicant Not Found",status=404)
@@ -426,8 +432,10 @@ class DealFire(APIView):#踢出成员请求
             tmpmem.delete()
             # send message to member to be deleted
             info = "您被 " + which.publisher.username + " 从任务 " + which.title + " 踢出了"
-            Message.objects.create(messageContent=info, messageType="Notice",
-                                   publisher=which.publisher, receiver=member)
+            message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
+            message.save()
+            message.receivers.add(member)
+            message.save()
             return Response("OK")
         except Membership.DoesNotExist:
             return Response("Forbidden",status=404)
@@ -466,9 +474,11 @@ class DealStart(APIView):#开始任务
 
         # publisher send messages to all members
         info = "您的任务 "+which.title+" 开始啦！"
+        message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
+        message.save()
         for member in which.members.all():
-            Message.objects.create(messageContent=info, messageType="Notice",
-                                   publisher=which.publisher, receiver=member.id)
+            message.receivers.add(member)
+        message.save()
         return Response("OK")
 
 
@@ -501,9 +511,11 @@ class DealFinish(APIView):#结束任务
 
         # publisher send messages to all members
         info = "您的任务 " + which.title + " 结束啦！"
+        message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
+        message.save()
         for member in which.members.all():
-            Message.objects.create(messageContent=info, messageType="Notice",
-                                   publisher=which.publisher, receiver=member.id)
+            message.receivers.add(member)
+        message.save()
         return Response("OK")
 
 

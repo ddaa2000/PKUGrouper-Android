@@ -85,7 +85,7 @@ class Message(models.Model):
     timeStamp = models.DateTimeField(auto_now_add=True)
     publisher = models.ForeignKey(User, on_delete=models.CASCADE,
                                   related_name='messagesAsPublisher')
-    recievers = models.ManyToManyField(User, through='Receivership',
+    receivers = models.ManyToManyField(User, through='Receivership',
                                        related_name='messagesAsReciever')
     # 被举报人
     reportees = models.ManyToManyField(User, through='Reporteeship',
