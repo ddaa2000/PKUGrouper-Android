@@ -464,9 +464,8 @@ class DealStart(APIView):#开始任务
             return Response("Forbidden",status=403)
         if who.id != which.publisher.id:
             return Response("Forbidden",status=403)
-        for applicantship in Applicantship.objects.all():
-            if applicantship.mission is which:
-                applicantship.delete()
+        for applicantship in Applicantship.objects.filter(mission__id=which.id):
+            applicantship.delete()
         which.executionStartTime=datetime.datetime.now()
         if which.executionStartTime < which.applicationEndTime:
             which.applicationEndTime=which.executionStartTime
@@ -547,4 +546,10 @@ class DealQuit(APIView):#退出任务请求
             return Response("OK")
         except Membership.DoesNotExist:
             return Response("Forbidden",status=404)
+        # send message to publisher
+        info = who.username + " 退出了加入您创建的任务 " + which.title
+        message = Message(messageContent=info, messageType="Notice", publisher=who)
+        message.save()
+        message.receivers.add(which.publisher)
+        message.save()
         return Response("Unknown Fault",status=403)
