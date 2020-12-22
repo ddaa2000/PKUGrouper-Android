@@ -1,6 +1,6 @@
 find开头的那几个API还是要和之前一样要加senderID和passwordAfterRSA
 
-/user/findpassword...的那两个不要
+/user/fixpassword...的那两个不要
 
 下面的全是POST
 
