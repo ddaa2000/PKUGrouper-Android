@@ -474,11 +474,11 @@ class DealStart(APIView):#开始任务
 
         # publisher send messages to all members
         info = "您的任务 "+which.title+" 开始啦！"
-        message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
-        message.save()
         for member in which.members.all():
+            message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
+            message.save()
             message.receivers.add(member)
-        message.save()
+            message.save()
         return Response("OK")
 
 
@@ -511,11 +511,11 @@ class DealFinish(APIView):#结束任务
 
         # publisher send messages to all members
         info = "您的任务 " + which.title + " 结束啦！"
-        message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
-        message.save()
         for member in which.members.all():
+            message = Message(messageContent=info, messageType="Notice", publisher=which.publisher)
+            message.save()
             message.receivers.add(member)
-        message.save()
+            message.save()
         return Response("OK")
 
 
