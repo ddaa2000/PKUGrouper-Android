@@ -65,23 +65,28 @@ class DealMember(APIView):  # 获取他人信息
         elif gettee_ID == getter_ID:
             response = Response("Bad Request", 400)
         elif Mission.objects.get(id=mission_ID).members.filter(id=gettee_ID).count() is 0 \
-                and Mission.objects.get(id=mission_ID).publisher.id is not gettee_ID:
+                and Mission.objects.get(id=mission_ID).publisher.id is not gettee_ID \
+                and Mission.objects.get(id=mission_ID).applicants.filter(id=gettee_ID).count() is 0:
             response = Response("Forbidden", 403)
         else:
             getter = User.objects.get(id=getter_ID)
             gettee = User.objects.get(id=gettee_ID)
+            mission = Mission.objects.get(id=mission_ID)
             score = 0
+            name = gettee.username
+            evaluations = []
             for evaluation in gettee.evaluationsAsEvaluatee.all():
                 score += evaluation.evaluationScore
+                evaluations.append(evaluation.id)
             if gettee.evaluationsAsEvaluatee.all().count() is not 0:
                 score /= gettee.evaluationsAsEvaluatee.all().count()
-            if Mission.objects.get(id=mission_ID).members.filter(id=getter_ID).count() is not 0 \
-                    or Mission.objects.get(id=mission_ID).publisher.id is getter_ID:
+            if mission.members.filter(id=getter_ID).count() is not 0 \
+                    or mission.publisher.id is getter_ID:
                 tele = gettee.tele
-                data = {"missionStatus": "tele can be seen", "tele": tele, "averageScore": score}
-                response = Response(json.dumps(data), 200)
+                data = {"missionStatus": "tele can be seen", "tele": tele, "averageScore": score, "username": name, "evaluationIDs": evaluations}
+                response = Response(data, 200)
             else:
-                data = {"missionStatus": "tele can not be seen", "averageScore": score}
+                data = {"missionStatus": "tele can not be seen", "averageScore": score, "username": name, "evaluationIDs": evaluations}
                 response = Response(data, 200)
         return response
 
@@ -187,6 +192,9 @@ class DealEvaluate(APIView):  # 评分
         elif User.objects.filter(id=evaluatee_ID).count() == 0:
             response = Response("evaluatee Not Found", 404)
         elif evaluatee_ID == evaluater_ID:
+            response = Response("Forbidden", 403)
+        elif request.data.get('score', -1) == -1 or request.data.get('score', -1) < 0\
+                or request.data.get('score', -1) > 10:
             response = Response("Forbidden", 403)
         else:
             #  judge whether this evaluation has been made once
