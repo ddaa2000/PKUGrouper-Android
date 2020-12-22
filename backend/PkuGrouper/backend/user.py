@@ -87,7 +87,6 @@ class DealMember(APIView):  # 获取他人信息
                 and Mission.objects.get(id=mission_ID).applicants.filter(id=gettee_ID).count() is 0:
             response = Response("Forbidden", 403)
         else:
-            getter = User.objects.get(id=getter_ID)
             gettee = User.objects.get(id=gettee_ID)
             mission = Mission.objects.get(id=mission_ID)
             score = 0

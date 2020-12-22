@@ -89,5 +89,51 @@ class DealFindEvaluations(APIView):
 class DealFindUsers(APIView):
     @staticmethod
     def post(request, getter_ID, mission_ID):
-        
-        return Response("fuckyou!")
+        uid = checkUID(request.data)
+        if uid is 0:
+            response = Response("Unauthorized", 401)
+        elif uid != getter_ID:
+            return Response("Unauthorized", 401)
+        elif User.objects.filter(id=getter_ID).count() == 0:
+            response = Response("getter Not Found", 404)
+        elif Mission.objects.filter(id=mission_ID).count() == 0:
+            response = Response("mission Not Found", 404)
+        else:
+            gettees = request.data.get('getteeIDs', [])
+            if len(gettees) == 0:
+                return Response("Bad request", 400)
+            else:
+                mission = Mission.objects.get(id=mission_ID)
+                for gettee_ID in gettees:
+                    gettee_detail = []
+                    if User.objects.filter(id=gettee_ID).count() == 0:
+                        return Response("gettee Not Found", 404)
+                    elif gettee_ID == getter_ID:
+                        return Response("Bad Request", 400)
+                    elif Mission.objects.get(id=mission_ID).members.filter(id=gettee_ID).count() is 0 \
+                            and Mission.objects.get(id=mission_ID).publisher.id is not gettee_ID \
+                            and Mission.objects.get(id=mission_ID).applicants.filter(id=gettee_ID).count() is 0:
+                        return Response("Forbidden", 403)
+                    elif gettee_ID == getter_ID:
+                        return Response("Bad Request", 400)
+                    else:
+                        gettee = User.objects.get(id=gettee_ID)
+                        score = 0
+                        name = gettee.username
+                        evaluations = []
+                        for evaluation in gettee.evaluationsAsEvaluatee.all():
+                            score += evaluation.evaluationScore
+                            evaluations.append(evaluation.id)
+                        if gettee.evaluationsAsEvaluatee.all().count() is not 0:
+                            score /= gettee.evaluationsAsEvaluatee.all().count()
+                        if mission.members.filter(id=getter_ID).count() is not 0 \
+                                or mission.publisher.id is getter_ID:
+                            tele = gettee.tele
+                            data = {"missionStatus": "tele can be seen", "tele": tele, "averageScore": score,
+                                    "username": name, "evaluationIDs": evaluations}
+                            gettee_detail.append(data)
+                        else:
+                            data = {"missionStatus": "tele can not be seen", "averageScore": score, "username": name,
+                                    "evaluationIDs": evaluations}
+                            gettee_detail.append(data)
+        return Response(gettee_detail, 200)
