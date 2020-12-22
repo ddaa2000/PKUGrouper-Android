@@ -8,6 +8,24 @@ import random
 import time
 
 
+def fixtime(s):
+    x = s.find('.')
+    if x == -1:
+        return s
+    return s[:x]
+
+
+def evaluation_to_json(evaluation):
+    js = {
+        "timeStamp": fixtime(str(evaluation.timeStamp)),
+        "evaluaterID": evaluation.evaluater.id,
+        "evaluateeID": evaluation.evaluatee.id,
+        "missionID": evaluation.mission.id,
+        "evaluationScore": evaluation.evaluationScore
+    }
+    return js
+
+
 class DealSelf(APIView):  # 获取个人信息
     @staticmethod
     def post(request, user_ID):
@@ -69,7 +87,6 @@ class DealMember(APIView):  # 获取他人信息
                 and Mission.objects.get(id=mission_ID).applicants.filter(id=gettee_ID).count() is 0:
             response = Response("Forbidden", 403)
         else:
-            getter = User.objects.get(id=getter_ID)
             gettee = User.objects.get(id=gettee_ID)
             mission = Mission.objects.get(id=mission_ID)
             score = 0
@@ -119,15 +136,7 @@ class DealEvaluation(APIView):  # 根据evaluation_ID获取评价
         elif Evaluation.objects.filter(id=evaluation_ID).count() == 0:
             response = Response("evaluation Not Found", 404)
         else:
-            evaluation = Evaluation.objects.get(id=evaluation_ID)
-            timeStamp = evaluation.timeStamp.strftime("%Y-%m-%d %H:%M:%S")
-            evaluateeID = evaluation.evaluatee.id
-            evaluaterID = evaluation.evaluater.id
-            missionID = evaluation.mission.id
-            evaluationScore = evaluation.evaluationScore
-            data = {"timeStamp": timeStamp, "evaluateeID": evaluaterID, "evaluaterID": evaluateeID,
-                    "missionID": missionID, "evaluationScore": evaluationScore}
-            response = Response(data, 200)
+            response = Response(evaluation_to_json(Evaluation.objects.get(id=evaluation_ID)), 200)
         return response
 
 

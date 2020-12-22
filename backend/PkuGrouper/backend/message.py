@@ -6,28 +6,31 @@ from django.utils import timezone
 from .someFuncs import *
 import random
 
+
 def fixtime(s):
     x = s.find('.')
     if x == -1:
         return s
     return s[:x]
 
+
 def to_json(obj):
-    mp = {
-    "timeStamp" : fixtime(str(obj.timeStamp)),
-    "publisherID" : obj.publisher.id,
-    "type" : obj.messageType,
-    "messageContent" : obj.messageContent,
+    js = {
+        "timeStamp" : fixtime(str(obj.timeStamp)),
+        "publisherID" : obj.publisher.id,
+        "type" : obj.messageType,
+        "messageContent" : obj.messageContent,
     }
     if obj.messageType == 'Report':
-        mp["reportee"] = obj.reportees.all()[0].id
-    return mp
+        js["reportee"] = obj.reportees.first().id
+    return js
 
-class DealMessages(APIView):#获取message
-    #（这个应该是给出user_ID，返回一个此user未查看的message的数组）
+
+class DealMessages(APIView):  # 获取message
+    # 这个应该是给出user_ID，返回一个此user未查看的message的数组）
     @staticmethod
     def post(request, user_ID):
-        #return Response('This is a GET of messages/{user_ID}')
+        # return Response('This is a GET of messages/{user_ID}')
         uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
@@ -40,10 +43,11 @@ class DealMessages(APIView):#获取message
         except User.DoesNotExist:
             return Response("user Not Found",status=404)
         user_message = list(map(lambda p: p.id,
-                            who.messagesAsReciever.all().order_by('-timeStamp')[:50])
+                            who.messagesAsReceiver.all().order_by('-timeStamp')[:50])
                             )
 
         return Response(user_message)
+
 
 class DealMessage(APIView):#根据message_ID获取信息
     @staticmethod
@@ -57,14 +61,15 @@ class DealMessage(APIView):#根据message_ID获取信息
             who = Message.objects.get(id=message_ID)
         except Message.DoesNotExist:
             return Response("message Not Found",status=404)
-        if who.recievers.filter(id=uid).count() == 0:
+        if who.receivers.filter(id=uid).count() == 0:
             return Response("Forbidden", 401)
         return Response(to_json(who))
 
+
 class DealBug(APIView):#报告bug
     @staticmethod
-    def post(request, user_ID):#request body:bug
-        #return Response(['This is a POST of message/bug/{user_ID}', request.data])
+    def post(request, user_ID):  # request body:bug
+        # return Response(['This is a POST of message/bug/{user_ID}', request.data])
         uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
@@ -80,13 +85,14 @@ class DealBug(APIView):#报告bug
                     messageType='Bug',
                     publisher = who,)
         m.save()
-        m.recievers.add(User.objects.get(id=1))
+        m.receivers.add(User.objects.get(id=1))
         return Response("OK")
 
-class DealReport(APIView):#举报
+
+class DealReport(APIView):  # 举报
     @staticmethod
-    def post(request, user_ID, reportee_ID):#request body:report
-        #return Response(['This is a POST of message/report/{user_ID}/{reportee_ID}', request.data])
+    def post(request, user_ID, reportee_ID):  # request body:report
+        # return Response(['This is a POST of message/report/{user_ID}/{reportee_ID}', request.data])
         uid = checkUID(request.data)
         if uid is 0:
             return Response("Unauthorized", 401)
@@ -107,15 +113,16 @@ class DealReport(APIView):#举报
                     messageType='Report',
                     publisher = who,)
         m.save()
-        m.recievers.add(User.objects.get(id=1))
+        m.receivers.add(User.objects.get(id=1))
         m.reportees.add(other)
 
         return Response("OK")
 
-class debug(APIView):#for debug
+
+class debug(APIView):  # for debug
     @staticmethod
     def get(request):
-        #users
+        # users
         User.objects.all().delete()
         for i in range(100):
             q = User(mailbox=str(i)+'@pku.edu.cn',username='user_'+str(i),
@@ -123,13 +130,13 @@ class debug(APIView):#for debug
             q.id = i+1
             q.save()
         user_list = User.objects.all()
-        #admin
+        # admin
 
         admin = User.objects.get(id=1)
-        #message
+        # message
         Message.objects.all().delete()
         cnt = 0
-        #bug
+        # bug
         for i in range(100):
             m = Message(messageContent=str(i),messageType='Bug',
                         publisher = user_list[random.randint(1,len(user_list)-1)],
@@ -137,8 +144,8 @@ class debug(APIView):#for debug
             m.id = cnt+1
             cnt+=1
             m.save()
-            m.recievers.add(admin)
-        #report
+            m.receivers.add(admin)
+        # report
         for i in range(100):
             m = Message(messageContent=str(i),messageType='Report',
                         publisher = user_list[random.randint(1,len(user_list)-1)],
@@ -146,10 +153,10 @@ class debug(APIView):#for debug
             m.id = cnt+1
             cnt+=1
             m.save()
-            m.recievers.add(admin)
+            m.receivers.add(admin)
             for j in range(1):
                 m.reportees.add(user_list[random.randint(1,len(user_list)-1)])
-        #Notice
+        # Notice
         m = Message(messageContent=str(i),messageType='Notice',
                         publisher = admin,
                     )
@@ -157,9 +164,11 @@ class debug(APIView):#for debug
         cnt+=1
         m.save()
         for i in User.objects.all():
-            m.recievers.add(i)
+            m.receivers.add(i)
 
         return Response([len(User.objects.all()),len(Message.objects.all())])
+
+
 class debug_clear(APIView):#for debug
     @staticmethod
     def get(request):
