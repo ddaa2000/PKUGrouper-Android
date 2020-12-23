@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.e.pkugrouper.Managers.RSAUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -68,7 +69,8 @@ public class EditPasswordActivity extends AppCompatActivity {
             String oldpassword=strings[0];
             String newpassword=strings[1];
             String savepassword=GlobalObjects.currentUser.getPassword();
-            if(savepassword.equals(oldpassword)){
+            String RSAOld = new RSAUtils().encrypto(oldpassword);
+            if(savepassword.equals(RSAOld)){
                 if(newpassword.equals(oldpassword)){
                     failure=FailCode.OLDNEWSAME;
                 }else{

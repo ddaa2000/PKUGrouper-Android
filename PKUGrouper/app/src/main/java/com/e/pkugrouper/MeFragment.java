@@ -184,4 +184,10 @@ public class MeFragment extends Fragment {
 
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new UserLoadTask().execute();
+    }
 }

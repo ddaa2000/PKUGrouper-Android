@@ -3,6 +3,7 @@ package com.e.pkugrouper;
 import com.e.pkugrouper.Managers.HttpManager;
 import com.e.pkugrouper.Managers.MessageManager;
 import com.e.pkugrouper.Managers.MissionManager;
+import com.e.pkugrouper.Managers.RSAUtils;
 import com.e.pkugrouper.Managers.UserManager;
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
@@ -47,6 +48,11 @@ public class ExampleUnitTest {
         user.setMailBox("1800013018@pku.edu.cn");
         user.setUserID(2);
         user.setPassword("DD2000114%%%");
+        RSAUtils utils = new RSAUtils();
+        String afterRSA = utils.encrypto(user.getPassword());
+        String afterRSA1 = utils.encrypto(user.getPassword());
+        String afterRSA2 = utils.encrypto(user.getPassword());
+        String afterRSA3 = new RSAUtils().encrypto(user.getPassword());
         user = userManager.userLogIn(user);
         user = userManager.getSelf();
 

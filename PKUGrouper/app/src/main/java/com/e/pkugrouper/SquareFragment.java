@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.Mission;
@@ -139,6 +140,7 @@ public class SquareFragment extends Fragment {
                 }
                 presentContent = searchView.getQuery().toString();
                 params.keywords = presentContent;
+                Toast.makeText(getActivity(),presentContent,2).show();
                 channelSearchTask.cancel(false);
                 channelSearchTask = new ChannelSearchTask();
                 channelSearchTask.execute(params);
@@ -193,10 +195,11 @@ public class SquareFragment extends Fragment {
         Message msg = new Message();
         msg.obj = missions;
         squareMissionListFragment.mHandler.sendMessage(msg);
+        Toast.makeText(getActivity(),"刷新成功",2).show();
     }
 
     private void changeMissionListfailed(FailCode failCode){
-
+        Toast.makeText(getActivity(),"刷新失败",2).show();
     }
 
     private enum Channel{
@@ -263,5 +266,6 @@ public class SquareFragment extends Fragment {
             }
         }
     }
+
 
 }

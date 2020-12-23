@@ -124,7 +124,7 @@ public class RegisterFragment extends Fragment {
 
 
     private enum FailCode{
-        BADREQUEST,USERNF,CAPTCHANULL,NAMEBAD,MAILNE
+        BADREQUEST,USERNF,CAPTCHANULL,NAMEBAD,MAILNE,MAIL_EXIST,TIME_EXCEEDED,UNKNOWN_FAILURE
     }
 
     private void registerFailed(FailCode failCode){

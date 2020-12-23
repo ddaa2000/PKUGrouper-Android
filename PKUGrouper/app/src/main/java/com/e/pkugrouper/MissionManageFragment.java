@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Mission;
 import com.e.pkugrouper.Models.User;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -41,6 +43,10 @@ public class MissionManageFragment extends Fragment {
     private RecyclerView memberRecyclerView, applicantRecyclerView;
     private List<IUser> members = new ArrayList<IUser>(),applicants = new ArrayList<IUser>();
     private UserCardAdapter memberCardAdapter,applicantCardAdapter;
+
+    private ContentLoadingProgressBar pb1;
+
+    private MaterialCardView applicantCard;
 
     private TextView missionTitleText, missionContentText, missionStatusText;
 
@@ -105,6 +111,8 @@ public class MissionManageFragment extends Fragment {
         applicantRecyclerView.setAdapter(applicantCardAdapter);
   //      applicantRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
 
+        applicantCard = v.findViewById(R.id.missionManage_applicantCard);
+
         missionTitleText = v.findViewById(R.id.missionManage_title);
         missionContentText = v.findViewById(R.id.missionManage_description);
         missionStatusText = v.findViewById(R.id.missionManage_missionStatus);
@@ -115,6 +123,9 @@ public class MissionManageFragment extends Fragment {
 //        missionEditButton = v.findViewById(R.id.missionManage_editMission);
         missionDeleteButton = v.findViewById(R.id.missionManage_deleteMission);
         missionStartOrStopButton = v.findViewById(R.id.missionManage_startOrStopMission);
+
+        pb1 = v.findViewById(R.id.missionManage_pb1);
+        pb1.show();
 
 
         missionStartOrStopButton.setText("开始");
@@ -152,6 +163,10 @@ public class MissionManageFragment extends Fragment {
 
         missionTitleText.setText(GlobalObjects.currentMission.getTitle());
         missionContentText.setText(GlobalObjects.currentMission.getContent());
+
+        if(!GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser))
+            applicantCard.setVisibility(View.GONE);
+
         if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)){
             if(GlobalObjects.currentMission.isInApplication()){
                 missionStatusText.setText("未开始");
@@ -257,6 +272,7 @@ public class MissionManageFragment extends Fragment {
                                     public void onClick(DialogInterface dialog, int which) {
                                         new MissionStop().execute();
                                         dialog.cancel();
+
                                     }
                                 })
                                 .show();
@@ -279,7 +295,7 @@ public class MissionManageFragment extends Fragment {
                             .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    new MissionStart().execute();
+                                    new MissionQuit().execute();
                                     dialog.cancel();
                                 }
                             })
@@ -291,7 +307,7 @@ public class MissionManageFragment extends Fragment {
             missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(),"申请已提交",2).show();
+                    new ApplicationSend().execute();
                 }
             });
         }
@@ -345,7 +361,7 @@ public class MissionManageFragment extends Fragment {
     }
 
     private void missionQuitSucceeded(){
-
+        getActivity().onBackPressed();
     }
 
     private void applicationsendFailed(FailCode failCode){
@@ -353,7 +369,8 @@ public class MissionManageFragment extends Fragment {
     }
 
     private void applicationsendSucceeded(){
-
+        Toast.makeText(getActivity(),"申请已发送",2).show();
+        new MissionLoadTask().execute();
     }
 
 
@@ -370,17 +387,21 @@ public class MissionManageFragment extends Fragment {
                 mission=GlobalObjects.currentMission;
                 GlobalObjects.currentMission=GlobalObjects.missionManager.findMissionByID(mission.getID());
                 int userid=GlobalObjects.currentUser.getUserID();
-                if(userid==GlobalObjects.currentMission.getPublisher()){
-                    List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
-                    List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
-                    int missionid=GlobalObjects.currentMission.getID();
-                    for(Integer i:list1){
-                        member.add(GlobalObjects.userManager.findMemberByID(missionid,i));
-                    }
-                    for(Integer i:list2){
-                        applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
-                    }
+                List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
+                List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
+
+                int missionid=GlobalObjects.currentMission.getID();
+                if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser))
+                    member.add(GlobalObjects.currentUser);
+                else
+                    member.add(GlobalObjects.userManager.findMemberByID(missionid,GlobalObjects.currentMission.getPublisher()));
+                for(Integer i:list1){
+                    member.add(GlobalObjects.userManager.findMemberByID(missionid,i));
                 }
+                for(Integer i:list2){
+                    applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
+                }
+
                 isload=Boolean.TRUE;
             }catch(Exception e){
                 String s=e.getMessage();
@@ -455,7 +476,7 @@ public class MissionManageFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             int missionid=GlobalObjects.currentMission.getID();
             try{
-                isstop=GlobalObjects.missionManager.start(missionid);
+                isstop=GlobalObjects.missionManager.finish(missionid);
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -489,7 +510,7 @@ public class MissionManageFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             int missionid=GlobalObjects.currentMission.getID();
             try{
-                isdelete=GlobalObjects.missionManager.start(missionid);
+                isdelete=GlobalObjects.missionManager.deleteMission(missionid);
             }catch (Exception e){
                 String s=e.getMessage();
                 if(s.equals("User is not found!")||s.equals("currentUser is null!")){
@@ -584,5 +605,9 @@ public class MissionManageFragment extends Fragment {
         }
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        new MissionLoadTask().execute();
+    }
 }

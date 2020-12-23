@@ -31,6 +31,8 @@ public class UserManager extends HttpManager implements IUserManager{
 
     @Override
     public IUser findMemberByID(int missionID, int memberID) {
+        if(memberID == user.getUserID())
+            return user;
         if(user == null) {
             throw new RuntimeException("User is Null");
         } //检测user对象是否存在

@@ -69,6 +69,9 @@ public class HttpManager implements IHttpManager{
             // 配置本次连接的Content-type，json是"application/json"
             connection.setRequestProperty("Content-Type", "application/json");
             connection.connect();
+            out=new OutputStreamWriter(connection.getOutputStream(),"UTF-8");
+            out.write(body);
+            out.flush();
 
             // 定义BufferedReader输入流来读取URL的响应
             if (connection.getResponseCode() == 200) {
@@ -242,15 +245,9 @@ public class HttpManager implements IHttpManager{
             out.write(body);
             out.flush();
 
-            in = new BufferedReader(new InputStreamReader(
-
-                    connection.getInputStream()));
-
-
-                        connection.getInputStream()));
-
+            if(connection.getResponseCode() == 200){
+                in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String line;
-
                 while ((line = in.readLine()) != null) {
                     result += line;
                 }

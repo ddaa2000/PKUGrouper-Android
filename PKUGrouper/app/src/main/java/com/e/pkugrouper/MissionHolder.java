@@ -1,6 +1,8 @@
 package com.e.pkugrouper;
 
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -34,6 +36,12 @@ public class MissionHolder extends RecyclerView.ViewHolder implements View.OnCli
         this.mission = mission;
         missionTitleText.setText(mission.getTitle());
         missionDescriptionText.setText(mission.getContent());
+        final ObjectAnimator anim1 = ObjectAnimator.ofFloat(itemView,"scaleX",0f,1f);
+        final ObjectAnimator anim2 = ObjectAnimator.ofFloat(itemView,"scaleY",0f,1f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(anim1,anim2);
+        animatorSet.setDuration((long)(Math.random()*300+150));
+        animatorSet.start();
     }
 
     @Override

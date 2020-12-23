@@ -2,13 +2,16 @@ package com.e.pkugrouper;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.e.pkugrouper.Managers.IHttpManager;
@@ -16,16 +19,19 @@ import com.e.pkugrouper.Models.Evaluation;
 import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Managers.HttpManager;
 import com.e.pkugrouper.Models.IMission;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.dialog.MaterialDialogs;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class UserDetailActivity extends AppCompatActivity {
+public class UserDetailActivity extends AppCompatActivity implements  DialogCompleted {
 
-    private TextView userNameText, userEmailText, userMissionTotalText, userEvaluationText;
-    private Button kickOrAcceptButton,refuseButton;
+    private TextView userNameText, userEmailText, userMissionTotalText, userEvaluationText,evaluationText;
+    private Button kickOrAcceptButton,refuseButton, evaluateButton;
+    private MaterialCardView manageCard, evaluationCard;
+    private RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +43,63 @@ public class UserDetailActivity extends AppCompatActivity {
         userMissionTotalText = findViewById(R.id.userDeatail_missionTotal);
         kickOrAcceptButton = findViewById(R.id.userDetail_kickOrAccept);
         refuseButton = findViewById(R.id.userDetail_refuseApplicant);
+        manageCard = findViewById(R.id.userDeatail_manageCard);
+        evaluationCard = findViewById(R.id.userDetail_evaluationCard);
+        evaluateButton = findViewById(R.id.userDetail_evaluate);
+
+        evaluationText = findViewById(R.id.userDetail_evaluationText);
+        ratingBar = findViewById(R.id.userDetail_rating);
+
+
+        evaluationCard.setVisibility(View.GONE);
 
         new UserDetailLoadTask().execute();
 
 
     }
 
-    private void userDetailLoadSucceeded(String evaluationAverage, String missionTotal, boolean isApplicant){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new UserDetailLoadTask().execute();
+    }
+
+    private void userDetailLoadSucceeded(String evaluationAverage, String missionTotal, boolean isApplicant,
+                                         IEvaluation evaluation){
+
         userNameText.setText(GlobalObjects.currentMember.getUserName());
         userEmailText.setText(GlobalObjects.currentMember.getMailBox());
 
         userEvaluationText.setText(evaluationAverage);
         userMissionTotalText.setText(missionTotal);
+
+        if(!GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)
+                || GlobalObjects.currentMission.isFinished()){
+            kickOrAcceptButton.setVisibility(View.GONE);
+            refuseButton.setVisibility(View.GONE);
+            manageCard.setVisibility(View.GONE);
+        }
+        if(GlobalObjects.currentMission.isFinished()){
+            evaluationCard.setVisibility(View.VISIBLE);
+            if(evaluation!=null) {
+                evaluateButton.setClickable(false);
+                evaluateButton.setText("已评价");
+                ratingBar.setRating((float)evaluation.getScore());
+                evaluationText.setVisibility(View.GONE);
+            }
+            else{
+                ratingBar.setVisibility(View.GONE);
+                evaluationText.setVisibility(View.VISIBLE);
+                evaluateButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        EvaluationDialogFragment evaluationDialogFragment = new EvaluationDialogFragment();
+                        evaluationDialogFragment.show(fragmentManager,"evaluationDialog");
+                    }
+                });
+            }
+        }
         if(isApplicant){
             kickOrAcceptButton.setText("同意申请");
             kickOrAcceptButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +127,11 @@ public class UserDetailActivity extends AppCompatActivity {
             });
             refuseButton.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void OnDialogCompleted() {
+        new UserDetailLoadTask().execute();
     }
 
     private enum FailCode{
@@ -192,7 +248,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            userDetailLoadSucceeded(averagescore,missiontotal,isapplicant);
+            userDetailLoadSucceeded(averagescore,missiontotal,isapplicant, null);
         }
     }
 

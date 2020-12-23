@@ -60,7 +60,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="成员名"
+                        android:text="***"
                         android:id="@+id/userDetail_memberName"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
@@ -74,7 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/userDetail_email"
-                        android:text="1900011111@pku.edu.cn"
+                        android:text="***********"
                         android:textAppearance="?attr/textAppearanceBody2" />
 
                 </LinearLayout>
@@ -100,6 +100,14 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:text="统计"/>
+
+            <View
+                android:layout_marginTop="10dp"
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
@@ -108,23 +116,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:textAppearance="?attr/textAppearanceBody2"
                     android:text="参加的任务数："/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
+                    android:textAppearance="?attr/textAppearanceBody2"
                     android:id="@+id/userDeatail_missionTotal"
+                    android:layout_marginRight="10dp"
                     android:text="***"/>
             </LinearLayout>
 
             <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:textAppearance="?attr/textAppearanceBody2"
                     android:text="评价得分："/>
                 <TextView
                     android:layout_width="0dp"
@@ -132,12 +145,15 @@
                     android:textAlignment="textEnd"
                     android:layout_height="wrap_content"
                     android:id="@+id/userDetail_evaluation"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:layout_marginRight="10dp"
                     android:text="***"/>
             </LinearLayout>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/userDeatail_manageCard"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
@@ -154,6 +170,14 @@
                 android:layout_height="wrap_content"
                 android:text="管理"
                 android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+            <View
+                android:layout_marginTop="10dp"
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -172,6 +196,66 @@
                     android:id="@+id/userDetail_refuseApplicant"
                     android:text="拒绝申请"/>
 
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/userDetail_evaluationCard"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardElevation="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="评价"
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+            <View
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <RatingBar
+                android:id="@+id/userDetail_rating"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:stepSize="0.5"
+                android:numStars="5"
+                android:isIndicator="true"
+                android:scaleX="0.75"
+                android:scaleY="0.75"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:id="@+id/userDetail_evaluationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:text="还没有进行评价"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:id="@+id/userDetail_evaluate"
+                    android:text="评价"/>
             </LinearLayout>
 
         </LinearLayout>
