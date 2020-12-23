@@ -1,9 +1,13 @@
 package com.e.pkugrouper.Managers;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.e.pkugrouper.Models.IMessage;
+import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Message;
+import com.e.pkugrouper.Models.Mission;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +15,6 @@ import java.util.ArrayList;
 
 public class MessageManager extends HttpManager implements IMessageManager{
     private IUser currentUser;
-
 
     private final String user_not_found = "\"user Not Found\"";
     private final String bad_request = "\"Bad Request\"";
@@ -97,6 +100,7 @@ public class MessageManager extends HttpManager implements IMessageManager{
         else if (bug_response.equals(user_not_found)){
             throw new RuntimeException("User is not found!");
         }
+
         return false;
     }
 
@@ -169,4 +173,38 @@ public class MessageManager extends HttpManager implements IMessageManager{
             return message;
         }
     }
+
+    @Override
+    public List<IMessage> findMessages(int[] messageIDs) {
+        if(currentUser == null){
+            throw new RuntimeException("currentUser is null!");
+        }
+
+        String url = "/findmessages";
+        List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",currentUser.getUserID());
+        request_body.put("passwordAfterRSA", currentUser.getPassword());
+        request_body.put("messageIDs", messageIDs);
+        String find_response = httpPost(url, parameters, request_body.toJSONString());
+
+        if(find_response.equals(user_not_found)){
+            throw new RuntimeException("User is not found!");
+        }
+
+        if(find_response.equals(message_not_found)){
+            throw new RuntimeException("message is not found!");
+        }
+
+        List<IMessage> Message_List = new ArrayList<>();
+        JSONArray platformArray = JSON.parseArray(find_response);
+        for (Object jsonObject : platformArray) {
+            String message_json = jsonObject.toString();
+            IMessage message = new Message();
+            message.loadFromJSON(message_json);
+            Message_List.add(message);
+        }
+        return Message_List;
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.e.pkugrouper.Managers;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.IMission;
@@ -186,12 +188,9 @@ public class MissionManager extends HttpManager implements IMissionManager{
         request_body.put("senderID",currentUser.getUserID());
         request_body.put("passwordAfterRSA", currentUser.getPassword());
         JSONObject mission_JSON = JSONObject.parseObject(mission.toJSON());
-        request_body.put("title", mission_JSON.getString("title"));
-        request_body.put("content", mission_JSON.getString("content"));
-        request_body.put("applicationEndTime", mission_JSON.getString("applicationEndTime"));
-        request_body.put("executionStartTime", mission_JSON.getString("executionStartTime"));
-        request_body.put("executionEndTime", mission_JSON.getString("executionEndTime"));
-        request_body.put("channels", mission_JSON.getJSONArray("channels"));
+      
+        request_body.putAll(mission_JSON);
+
         String add_response = httpPost(url, parameters, request_body.toJSONString());
 
         //创建任务失败
@@ -558,5 +557,38 @@ public class MissionManager extends HttpManager implements IMissionManager{
         }
 
         return false;
+    }
+
+    @Override
+    public List<IMission> findMissions(int[] missionIDs) {
+        if(currentUser == null){
+            throw new RuntimeException("currentUser is null!");
+        }
+
+        String url = "/findmissions";
+        List<String> parameters = Arrays.asList(String.valueOf(currentUser.getUserID()));
+        JSONObject request_body = new JSONObject();
+        request_body.put("senderID",currentUser.getUserID());
+        request_body.put("passwordAfterRSA", currentUser.getPassword());
+        request_body.put("missionIDs", missionIDs);
+        String find_response = httpPost(url, parameters, request_body.toJSONString());
+
+        if(find_response.equals(user_not_found)){
+            throw new RuntimeException("User is not found!");
+        }
+
+        if(find_response.equals(mission_not_found)){
+            throw new RuntimeException("mission is not found!");
+        }
+
+        List<IMission> Mission_List = new ArrayList<>();
+        JSONArray platformArray = JSON.parseArray(find_response);
+        for (Object jsonObject : platformArray) {
+            String mission_json = jsonObject.toString();
+            IMission mission = new Mission();
+            mission.loadFromJSON(mission_json);
+            Mission_List.add(mission);
+        }
+        return Mission_List;
     }
 }
