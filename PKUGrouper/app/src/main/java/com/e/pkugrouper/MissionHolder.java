@@ -1,6 +1,8 @@
 package com.e.pkugrouper;
 
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,9 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.pkugrouper.Models.IMission;
+import com.e.pkugrouper.Models.Mission;
+
+import java.util.List;
 
 public class MissionHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+    private IMission mission;
     private TextView missionTitleText;
     private TextView missionDescriptionText;
     private Activity activity;
@@ -27,13 +33,21 @@ public class MissionHolder extends RecyclerView.ViewHolder implements View.OnCli
     }
 
     public void bind(IMission mission){
+        this.mission = mission;
         missionTitleText.setText(mission.getTitle());
         missionDescriptionText.setText(mission.getContent());
+        final ObjectAnimator anim1 = ObjectAnimator.ofFloat(itemView,"scaleX",0f,1f);
+        final ObjectAnimator anim2 = ObjectAnimator.ofFloat(itemView,"scaleY",0f,1f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(anim1,anim2);
+        animatorSet.setDuration((long)(Math.random()*300+150));
+        animatorSet.start();
     }
 
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(activity,MissionDetailActivity.class);
+        GlobalObjects.currentMission = mission;
         activity.startActivity(intent);
     }
 }

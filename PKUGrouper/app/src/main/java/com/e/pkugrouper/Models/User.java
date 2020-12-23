@@ -137,12 +137,22 @@ public class User implements IUser{
 
     @Override
     public void loadFromJSON(String JSONString) {
-        JSONObject object=JSON.parseObject(JSONString);
+        JSONObject user_JSON = JSONObject.parseObject(JSONString);
+        if(user_JSON.getString("mailbox") != null)
+            setMailBox(user_JSON.getString("mailbox"));
+        if(user_JSON.getString("username") != null)
+            setUserName(user_JSON.getString("username"));
+        if(user_JSON.getDouble("averageScore") != null)
+            setAverageScore(user_JSON.getDouble("averageScore"));
+        if(user_JSON.getJSONArray("missionIDs") != null)
+            setMissionIDs(JSON.parseArray(user_JSON.getJSONArray("missionIDs").toJSONString(),Integer.class));
+        if(user_JSON.getJSONArray("evaluationIDs") != null)
+            setEvaluationIDs(JSON.parseArray(user_JSON.getJSONArray("evaluationIDs").toJSONString(),Integer.class));
+        if(user_JSON.getJSONArray("violationIDs") != null)
+            setViolationIDs(JSON.parseArray(user_JSON.getJSONArray("violationIDs").toJSONString(),Integer.class));
+        if(user_JSON.getString("tele") != null)
+            setTele(user_JSON.getString("tele"));
 
-        mailBox=object.getString("mailbox");
-        missionIDs=JSON.parseArray(object.getJSONArray("missionIDs").toJSONString(),Integer.class);
-        evaluationIDs=JSON.parseArray(object.getJSONArray("evaluationIDs").toJSONString(),Integer.class);
-        violationIDs=JSON.parseArray(object.getJSONArray("violationIDs").toJSONString(),Integer.class);
-        averageScore=object.getDoubleValue("averageScore");
+
     }
 }

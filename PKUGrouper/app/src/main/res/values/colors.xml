@@ -11,6 +11,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#E0F7FA</color>
 
+    <color name="transparent">#0000E2FF</color>
+    <color name="transparent2">#00FFFFFF</color>
+
     <color name="cardColor">@color/beige_25</color>
     <color name="backgroundColor">@color/beige_50</color>
     <color name="surfaceColor">@color/beige_100</color>

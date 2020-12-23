@@ -26,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
         GlobalObjects.currentMember = null;
         GlobalObjects.currentMessage = null;
         GlobalObjects.currentMission = null;
-
+        GlobalObjects.userManager.setMessageManager(GlobalObjects.messageManager);
+        GlobalObjects.userManager.setMissionManager(GlobalObjects.missionManager);
+        
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.main_frame);
         if(fragment == null){
@@ -36,4 +38,5 @@ public class MainActivity extends AppCompatActivity {
         else
             fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
     }
+
 }

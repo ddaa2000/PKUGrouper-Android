@@ -130,5 +130,17 @@
         <item name="android:textColor">@color/textColor</item>
     </style>
 
+    <style name="TextInputLogIn" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/white</item>
+<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>-->
+
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorError">@color/white</item>
+    </style>
+
 
 </resources>

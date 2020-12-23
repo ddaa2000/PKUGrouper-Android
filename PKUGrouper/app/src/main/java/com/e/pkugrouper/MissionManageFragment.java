@@ -1,17 +1,29 @@
 package com.e.pkugrouper;
 
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.Mission;
 import com.e.pkugrouper.Models.User;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +43,15 @@ public class MissionManageFragment extends Fragment {
     private RecyclerView memberRecyclerView, applicantRecyclerView;
     private List<IUser> members = new ArrayList<IUser>(),applicants = new ArrayList<IUser>();
     private UserCardAdapter memberCardAdapter,applicantCardAdapter;
+
+    private ContentLoadingProgressBar pb1;
+
+    private MaterialCardView applicantCard;
+
+    private TextView missionTitleText, missionContentText, missionStatusText;
+
+    private Button missionStartOrStopButton, missionDeleteButton;
+//    private Button missionEditButton;
 
 
     // TODO: Rename and change types of parameters
@@ -72,24 +93,521 @@ public class MissionManageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mission_manage, container, false);
-        for(int i = 0;i<20;i++){
-            members.add(new User());
-            applicants.add(new User());
-        }
+//        for(int i = 0;i<20;i++){
+//            members.add(new User());
+//            applicants.add(new User());
+//        }
 
 
         memberRecyclerView = v.findViewById(R.id.mission_detail_members_recyclerView);
         memberCardAdapter = new UserCardAdapter(members,getActivity());
         memberRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         memberRecyclerView.setAdapter(memberCardAdapter);
-        memberRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
+      //  memberRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
 
         applicantRecyclerView = v.findViewById(R.id.mission_detail_applicants_recyclerView);
         applicantCardAdapter = new UserCardAdapter(applicants,getActivity());
         applicantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         applicantRecyclerView.setAdapter(applicantCardAdapter);
-        applicantRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
+  //      applicantRecyclerView.addItemDecoration(new LineDividerItemDecoration(getContext()));
+
+        applicantCard = v.findViewById(R.id.missionManage_applicantCard);
+
+        missionTitleText = v.findViewById(R.id.missionManage_title);
+        missionContentText = v.findViewById(R.id.missionManage_description);
+        missionStatusText = v.findViewById(R.id.missionManage_missionStatus);
+
+        missionTitleText.setText(GlobalObjects.currentMission.getTitle());
+        missionContentText.setText(GlobalObjects.currentMission.getContent());
+
+//        missionEditButton = v.findViewById(R.id.missionManage_editMission);
+        missionDeleteButton = v.findViewById(R.id.missionManage_deleteMission);
+        missionStartOrStopButton = v.findViewById(R.id.missionManage_startOrStopMission);
+
+        pb1 = v.findViewById(R.id.missionManage_pb1);
+        pb1.show();
+
+
+        missionStartOrStopButton.setText("开始");
+        missionDeleteButton.setText("删除");
+        missionDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialAlertDialogBuilder(getContext()).setTitle("警告")
+                        .setMessage("这将删除整个任务，此操作无法撤销")
+                        .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new MissionDelete().execute();
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
+            }
+        });
+
+
+        new MissionLoadTask().execute();
 
         return v;
+    }
+
+
+    private void missionLoadSucceeded(List<IUser> members,@Nullable List<IUser> applicants){
+
+        missionTitleText.setText(GlobalObjects.currentMission.getTitle());
+        missionContentText.setText(GlobalObjects.currentMission.getContent());
+
+        if(!GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser))
+            applicantCard.setVisibility(View.GONE);
+
+        if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)){
+            if(GlobalObjects.currentMission.isInApplication()){
+                missionStatusText.setText("未开始");
+                missionStartOrStopButton.setText("开始");
+                missionDeleteButton.setVisibility(View.VISIBLE);
+            }
+
+            else if(GlobalObjects.currentMission.isInExecution()){
+                missionStatusText.setText("进行中");
+                missionStartOrStopButton.setText("结束");
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isFinished()){
+                missionStatusText.setText("已结束");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+        }
+        else if(GlobalObjects.currentMission.hasMember(GlobalObjects.currentUser)){
+            if(GlobalObjects.currentMission.isInApplication()){
+                missionStatusText.setText("未开始");
+                missionStartOrStopButton.setText("退出");
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isInExecution()){
+                missionStatusText.setText("进行中");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isFinished()){
+                missionStatusText.setText("已结束");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+        }
+        else{
+            if(GlobalObjects.currentMission.isInApplication()){
+                missionStatusText.setText("未开始");
+                missionStartOrStopButton.setText("申请加入");
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isInExecution()){
+                missionStatusText.setText("进行中");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+
+            else if(GlobalObjects.currentMission.isFinished()){
+                missionStatusText.setText("已结束");
+                missionStartOrStopButton.setVisibility(View.GONE);
+                missionDeleteButton.setVisibility(View.GONE);
+            }
+            if(GlobalObjects.currentMission.hasApplicant(GlobalObjects.currentUser)){
+                missionStartOrStopButton.setText("已申请");
+                missionStartOrStopButton.setClickable(false);
+            }
+        }
+
+
+
+        memberCardAdapter.reloadData(members);
+        applicantCardAdapter.reloadData(applicants);
+
+        if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)){
+            missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("onclick","onclick");
+                    if(GlobalObjects.currentMission.isInApplication()){
+                        new MaterialAlertDialogBuilder(getContext()).setTitle("开始任务")
+                                .setMessage("任务开始后，就不可以修改任务成员了，确认要开始吗？")
+                                .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new MissionStart().execute();
+                                        dialog.cancel();
+                                    }
+                                })
+                                .show();
+                        //new MissionStart().execute();
+                    }
+                    else if(GlobalObjects.currentMission.isInExecution()){
+                        new MaterialAlertDialogBuilder(getContext()).setTitle("结束任务")
+                                .setMessage("确认任务已经完成，可以结束？")
+                                .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new MissionStop().execute();
+                                        dialog.cancel();
+
+                                    }
+                                })
+                                .show();
+                    }
+                }
+            });
+        }
+        else if(GlobalObjects.currentMission.hasMember(GlobalObjects.currentUser)){
+            missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new MaterialAlertDialogBuilder(getContext()).setTitle("退出任务")
+                            .setMessage("退出任务无法撤销，确认要退出吗？")
+                            .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new MissionQuit().execute();
+                                    dialog.cancel();
+                                }
+                            })
+                            .show();
+                }
+            });
+        }
+        else{
+            missionStartOrStopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new ApplicationSend().execute();
+                }
+            });
+        }
+
+
+
+
+    }
+
+
+    private enum FailCode{
+        MISSIONJF,
+        MISSIONQF,
+        USERNF,
+        MISSIONNF,
+        MISSIONID,
+        MISSIONSF,
+        MISSIONFF,
+        DELETEFB
+    }
+
+    private void missionLoadFailed(FailCode failCode){
+    }
+
+    private void missionStartSucceeded(){
+
+        new MissionLoadTask().execute();
+    }
+
+    private void missionStartFailed(FailCode failCode){
+
+    }
+
+    private void missionStopSucceeded(){
+        new MissionLoadTask().execute();
+    }
+
+    private void missionDeleteFailed(FailCode failCode){
+
+    }
+
+    private void missionDeleteSucceeded(){
+        getActivity().onBackPressed();
+    }
+
+    private void missionStopFailed(FailCode failCode){
+
+    }
+    private void missionQuitFailed(FailCode failCode){
+
+    }
+
+    private void missionQuitSucceeded(){
+        getActivity().onBackPressed();
+    }
+
+    private void applicationsendFailed(FailCode failCode){
+
+    }
+
+    private void applicationsendSucceeded(){
+        Toast.makeText(getActivity(),"申请已发送",2).show();
+        new MissionLoadTask().execute();
+    }
+
+
+
+    private class MissionLoadTask extends AsyncTask<Void, Void, Void>{
+        private List<IUser> member=new ArrayList<IUser>() ;
+        private List<IUser> applicant=new ArrayList<IUser>() ;
+        private IMission mission=new Mission();
+        Boolean isload=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try{
+                mission=GlobalObjects.currentMission;
+                GlobalObjects.currentMission=GlobalObjects.missionManager.findMissionByID(mission.getID());
+                int userid=GlobalObjects.currentUser.getUserID();
+                List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
+                List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
+
+                int missionid=GlobalObjects.currentMission.getID();
+                if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser))
+                    member.add(GlobalObjects.currentUser);
+                else
+                    member.add(GlobalObjects.userManager.findMemberByID(missionid,GlobalObjects.currentMission.getPublisher()));
+                for(Integer i:list1){
+                    member.add(GlobalObjects.userManager.findMemberByID(missionid,i));
+                }
+                for(Integer i:list2){
+                    applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
+                }
+
+                isload=Boolean.TRUE;
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else{
+                    failure= FailCode.MISSIONID;
+                }
+            }
+            
+
+            //这里应该从服务器再次获取当前的任务，以防任务发生了变化，当前的任务在GlobalObjects中，新获取的任务应该覆盖GlobalObjects中的currentMission
+            //同时，应当返回所有的成员和申请（当当前用户是当前任务的管理员时）的信息
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isload){
+                missionLoadSucceeded(member,applicant);
+            }else{
+                missionLoadFailed(failure);
+            }
+
+        }
+    }
+
+    private class MissionStart extends AsyncTask<Void, Void, Void>{
+
+        Boolean isstart=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                isstart=GlobalObjects.missionManager.start(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONSF;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isstart){
+                missionStartSucceeded();
+            }else{
+                missionStartFailed(failure);
+            }
+
+        }
+    }
+
+    private class MissionStop extends AsyncTask<Void, Void, Void>{
+
+        Boolean isstop=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                isstop=GlobalObjects.missionManager.finish(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONFF;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isstop){
+                missionStopSucceeded();
+            }else{
+                missionStopFailed(failure);
+            }
+        }
+    }
+
+    private class MissionDelete extends AsyncTask<Void, Void, Void>{
+
+        Boolean isdelete=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                isdelete=GlobalObjects.missionManager.deleteMission(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.DELETEFB;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isdelete){
+                missionDeleteSucceeded();
+            }else{
+                missionDeleteFailed(failure);
+            }
+        }
+    }
+    private class MissionQuit extends AsyncTask<Void, Void, Void>{
+
+        Boolean isquit=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                isquit=GlobalObjects.missionManager.quit(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONQF;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isquit){
+                missionQuitSucceeded();
+            }else{
+                missionQuitFailed(failure);
+            }
+
+        }
+    }
+
+    private class ApplicationSend extends AsyncTask<Void, Void, Void>{
+
+        Boolean issend=Boolean.FALSE;
+        FailCode failure;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            int missionid=GlobalObjects.currentMission.getID();
+            try{
+                issend=GlobalObjects.missionManager.join(missionid);
+            }catch (Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is not found!")||s.equals("currentUser is null!")){
+                    failure= FailCode.USERNF;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else{
+                    failure=FailCode.MISSIONJF;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(issend){
+                applicationsendSucceeded();
+            }else{
+                applicationsendFailed(failure);
+            }
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new MissionLoadTask().execute();
     }
 }

@@ -6,11 +6,15 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.e.pkugrouper.Models.IUser;
+import com.e.pkugrouper.Models.User;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
@@ -78,12 +82,18 @@ public class RegisterFragment extends Fragment {
         passwordDoubleText = v.findViewById(R.id.registerPasswordDoubleCheckEditText);
         mailText = v.findViewById(R.id.registerEmailEditText);
 
+        getVerificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GetVerificationTask().execute(mailText.getText().toString());
+            }
+        });
         registerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
 
                 if(!passwordDoubleText.getText().toString().equals(passwordText.getText().toString())){
-                    //这里需要显示错误信息
+                    Toast.makeText(getActivity(),"两次输入密码不同",2).show();
                     return;
                 }
                 RegisterParams params = new RegisterParams();
@@ -108,21 +118,31 @@ public class RegisterFragment extends Fragment {
     }
 
     private void getVerificationCodeSucceeded(){
-
+        Toast.makeText(getActivity(),"获取成功",2).show();
     }
 
 
 
     private enum FailCode{
-        TIME_EXCEEDED,WRONG_VERIFICATION,UNKNOWN_FAILURE,SERVER_FAILURE,MAIL_EXIST
+        BADREQUEST,USERNF,CAPTCHANULL,NAMEBAD,MAILNE,MAIL_EXIST,TIME_EXCEEDED,UNKNOWN_FAILURE
     }
 
     private void registerFailed(FailCode failCode){
-
+        Log.e("failed","failed"+failCode);
     }
 
     private void getVerificationFailed(FailCode failCode){
-
+        switch(failCode){
+            case MAIL_EXIST:
+                Toast.makeText(getActivity(),"该邮箱已经被注册",2).show();
+                break;
+            case TIME_EXCEEDED:
+                Toast.makeText(getActivity(),"获取验证码超时",2).show();
+                break;
+            case UNKNOWN_FAILURE:
+                Toast.makeText(getActivity(),"未知错误",2).show();
+                break;
+        }
     }
 
     private class RegisterParams{
@@ -132,18 +152,78 @@ public class RegisterFragment extends Fragment {
 
     private class RegisterTask extends AsyncTask<RegisterParams,Void,Void>{
 
+        private IUser currentUser = new User();
+
+        Boolean isRegister=Boolean.FALSE;
+        FailCode failureType;
         @Override
-        protected Void doInBackground(RegisterParams... params) {
-            registerSucceeded();
+        protected Void doInBackground(RegisterParams...params) {
+            RegisterParams param=params[0];
+            currentUser.setUserName(param.userName);
+            currentUser.setMailBox(param.mailNum);
+            currentUser.setPassword(param.password);
+            Log.e("doInBackground","doInBackground");
+            try{
+                GlobalObjects.userManager.userRegister(currentUser,param.verificationCode);
+                GlobalObjects.currentUser = GlobalObjects.userManager.getSelf();
+                Log.e("doInBackground","doInBackgroundOver");
+                isRegister=Boolean.TRUE;
+            }catch (Exception e) {
+                Log.e("doInBackground","doInBackgroundException");
+                String s=e.getMessage();
+                if(s.equals("currentUser is null!")){
+                    failureType=FailCode.USERNF;
+                }else if(s.equals("captcha is null!")){
+                    failureType=FailCode.CAPTCHANULL;
+                }else if(s.equals("Register is bad request!")){
+                    failureType=FailCode.BADREQUEST;
+                }else{
+                    failureType=FailCode.NAMEBAD;
+                }
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isRegister){
+                registerSucceeded();
+            }
+            else{
+                registerFailed(failureType);
+            }
         }
     }
 
     private class GetVerificationTask extends AsyncTask<String,Void,Void>{
 
+        Boolean isMail=Boolean.FALSE;
+        FailCode failureType = FailCode.UNKNOWN_FAILURE;
         @Override
         protected Void doInBackground(String... mail) {
+            String mailbox=mail[0];
+            try{
+                boolean result = GlobalObjects.userManager.sendCaptcha(mailbox);
+                isMail= result;
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("mailbox is null!")){
+                    failureType=FailCode.MAILNE;
+                }else{
+                    failureType=FailCode.BADREQUEST;
+                }
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(isMail){
+                getVerificationCodeSucceeded();
+            }
+            else{
+                getVerificationFailed(failureType);
+            }
         }
     }
 

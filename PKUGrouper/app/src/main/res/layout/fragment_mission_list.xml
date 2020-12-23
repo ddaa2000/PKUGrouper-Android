@@ -8,9 +8,14 @@
     tools:context=".MissionListFragment">
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mission_list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:divider="@color/white"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mission_list"
+            android:layout_width="match_parent"
+            android:divider="@color/white"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </LinearLayout>

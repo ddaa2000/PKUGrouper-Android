@@ -11,8 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.e.pkugrouper.Models.IMission;
+import com.e.pkugrouper.Models.Mission;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -33,11 +36,15 @@ public class SquareFragment extends Fragment {
 
     private FloatingActionButton addMissionButton;
     private TabLayout channelTab;
+    private SearchView searchView;
     private MissionListFragment squareMissionListFragment;
+
+    private String presentContent = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
     private ChannelSearchTask channelSearchTask;
 
     public SquareFragment() {
@@ -85,12 +92,64 @@ public class SquareFragment extends Fragment {
         squareMissionListFragment = (MissionListFragment)getChildFragmentManager().findFragmentById(R.id.squareMissionListFragment);
 
 
+        searchView = v.findViewById(R.id.squareSearchView);
         addMissionButton = v.findViewById(R.id.add_mission_floatingButton);
         addMissionButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),MissionAddActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        ChannelSearchParams params = new ChannelSearchParams();
+        switch(channelTab.getSelectedTabPosition()){
+            case 0:
+                params.channel = Channel.ALL;
+                break;
+            case 1:
+                params.channel = Channel.PROFESSIONAL_COURSE;
+                break;
+            case 2:
+                params.channel = Channel.GENERAL_COURSE;
+                break;
+            case 3:
+                params.channel = Channel.LIFE;
+                break;
+        }
+        params.keywords = null;
+        channelSearchTask.execute(params);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                ChannelSearchParams params = new ChannelSearchParams();
+                switch(channelTab.getSelectedTabPosition()){
+                    case 0:
+                        params.channel = Channel.ALL;
+                        break;
+                    case 1:
+                        params.channel = Channel.PROFESSIONAL_COURSE;
+                        break;
+                    case 2:
+                        params.channel = Channel.GENERAL_COURSE;
+                        break;
+                    case 3:
+                        params.channel = Channel.LIFE;
+                        break;
+                }
+                presentContent = searchView.getQuery().toString();
+                params.keywords = presentContent;
+                Toast.makeText(getActivity(),presentContent,2).show();
+                channelSearchTask.cancel(false);
+                channelSearchTask = new ChannelSearchTask();
+                channelSearchTask.execute(params);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
         return v;
@@ -100,7 +159,7 @@ public class SquareFragment extends Fragment {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             ChannelSearchParams params = new ChannelSearchParams();
-            params.keywords = null;
+            params.keywords = presentContent;
             switch (tab.getPosition()){
                 case 0:
                     params.channel = Channel.ALL;
@@ -136,23 +195,77 @@ public class SquareFragment extends Fragment {
         Message msg = new Message();
         msg.obj = missions;
         squareMissionListFragment.mHandler.sendMessage(msg);
+        Toast.makeText(getActivity(),"刷新成功",2).show();
+    }
+
+    private void changeMissionListfailed(FailCode failCode){
+        Toast.makeText(getActivity(),"刷新失败",2).show();
     }
 
     private enum Channel{
         ALL, PROFESSIONAL_COURSE, GENERAL_COURSE, LIFE
     }
+    private enum FailCode{
+        BADREQUEST,USERNF,DCNULL
+    }
     private class ChannelSearchParams{
-        String keywords;
+        String keywords;  //注意，可能为null或者""
         Channel channel;
     }
 
     private class ChannelSearchTask extends AsyncTask<ChannelSearchParams, Void, Void>{
 
+        private List<IMission>missionList=new ArrayList<IMission>();
+        private FailCode failure;
+        Boolean issearch=Boolean.FALSE;
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
-            changeMissionList(new ArrayList<IMission>());
+            ChannelSearchParams param=channelSearchParams[0];
+            List<String>channels=new ArrayList<String>();
+
+            switch(param.channel){
+                case ALL:
+                    channels.add(Mission.CHANNEL_LIFE);
+                    channels.add(Mission.CHANNEL_OTHER);
+                    channels.add(Mission.CHANNEL_GENERAL);
+                    channels.add(Mission.CHANNEL_PROFESSIONAL);
+                    break;
+                case LIFE:
+                    channels.add(Mission.CHANNEL_LIFE);
+                    break;
+                case GENERAL_COURSE:
+                    channels.add(Mission.CHANNEL_GENERAL);
+                    break;
+                case PROFESSIONAL_COURSE:
+                    channels.add(Mission.CHANNEL_PROFESSIONAL);
+                    break;
+            }
+            try{
+                missionList=GlobalObjects.missionManager.findMissionByDescription(param.keywords,channels,1,20);
+                issearch=Boolean.TRUE;
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("currentUser is null!")||s.equals("User is not found!")){
+                    failure=FailCode.USERNF;
+                }else if(s.equals("find mission is bad request!")){
+                    failure=FailCode.BADREQUEST;
+                }else{
+                    failure=FailCode.DCNULL;
+                }
+            }
+
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(issearch){
+                changeMissionList(missionList);
+            }else{
+                changeMissionListfailed(failure);
+            }
+        }
     }
+
 
 }
