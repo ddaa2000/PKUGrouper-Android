@@ -10,6 +10,7 @@ public interface IUser extends ISerializable{
     void setMainBox(String _mainBox);
     int getUserID();
     void setUserID(int _userID);
+    String getPassword();
     IIdentification getIdentification();
     void setIdentification(IIdentification _identification);
     List<Integer> getMessageIDs();

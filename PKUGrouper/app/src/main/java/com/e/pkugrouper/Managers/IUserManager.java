@@ -19,6 +19,7 @@ public interface IUserManager {
     IUser userLogIn(IUser currentUser);                     // user/login
     IUser userRegister(IUser currentUser);                  // user/register
     List<IEvaluation> getEvaluations();                     // user/evaluations
+    IEvaluation findEvaluationByID(int evaluationID);
 
     boolean setMissionManager(IMissionManager _missionManager);
     boolean setMessageManager(IMessageManager _messageManager);
@@ -28,5 +29,5 @@ public interface IUserManager {
     boolean editTags();                                        // user/tags
     boolean changePassword();                                  // user/code
     boolean evaluate(int missionID, int evaluateeID,int score); // user/evaluate
-
+    boolean sendCaptcha(String mailbox);                        //user/captcha
 }
