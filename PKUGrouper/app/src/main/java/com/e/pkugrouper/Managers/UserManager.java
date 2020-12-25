@@ -266,26 +266,12 @@ public class UserManager extends HttpManager implements IUserManager{
 
     @Override
     public boolean setMissionManager(IMissionManager _missionManager) {
-        if (_missionManager == null) {
-            //throw exception
-            return false;
-        }
-        else{
-            missionManager = _missionManager;
-            return true;
-        }
+        return false;
     }
 
     @Override
     public boolean setMessageManager(IMessageManager _messageManager) {
-        if (_messageManager == null) {
-            //throw exception;
-            return false;
-        }
-        else{
-            messageManager = _messageManager;
-            return true;
-        }
+        return false;
     }
 
     @Override
@@ -354,7 +340,6 @@ public class UserManager extends HttpManager implements IUserManager{
             //user not found
             return false;
         }
-
         return false;
     }
 
