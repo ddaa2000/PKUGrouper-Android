@@ -16,7 +16,11 @@ Before deploying the server, please use `pip3 install djangorestframework` and `
 
 ------
 
-When you want to deploy the server, please use `nohup python3 -u manage.py runserver 0:8000 > backend.log 2>&1 &` to run the server in the background.
+When you want to deploy the server,  please use `python3 manage.py makemigrations` and `python3 manage.py migrate` to construct the database.
+
+
+
+Then use `nohup python3 -u manage.py runserver 0:8000 > backend.log 2>&1 &` to run the server in the background.
 
 
 
@@ -37,3 +41,11 @@ If you want to use the server formally, please find the 26th line in `PkuGrouper
 
 
 The replace it with `DEBUG = False`.
+
+------
+
+The method to create an administrator account is not metioned in this file.
+
+
+
+To successfully use the function of BUG and REPORTE, you need also create a user who's id is 1. This is not mentioned in this file, either.
