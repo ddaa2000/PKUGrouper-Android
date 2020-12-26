@@ -22,21 +22,21 @@
     <color name="primaryVariantColor">@color/beige_700</color>
     <color name="textColor">@color/beige_900</color>
 
-<!--    <color name="primary_25">@color/cyan_25</color>-->
-<!--    <color name="primary_50">@color/cyan_100</color>-->
-<!--    <color name="primary_100">@color/cyan_200</color>-->
-<!--    <color name="primary_200">@color/cyan_200</color>-->
-<!--    <color name="primary_500">@color/cyan_500</color>-->
-<!--    <color name="primary_700">@color/cyan_700</color>-->
-<!--    <color name="primary_900">@color/cyan_900</color>-->
+    <!--    <color name="primary_25">@color/cyan_25</color>-->
+    <!--    <color name="primary_50">@color/cyan_100</color>-->
+    <!--    <color name="primary_100">@color/cyan_200</color>-->
+    <!--    <color name="primary_200">@color/cyan_200</color>-->
+    <!--    <color name="primary_500">@color/cyan_500</color>-->
+    <!--    <color name="primary_700">@color/cyan_700</color>-->
+    <!--    <color name="primary_900">@color/cyan_900</color>-->
 
-<!--    <color name="primary_25">@color/pink_25</color>-->
-<!--    <color name="primary_50">@color/pink_100</color>-->
-<!--    <color name="primary_100">@color/pink_200</color>-->
-<!--    <color name="primary_200">@color/pink_200</color>-->
-<!--    <color name="primary_500">@color/pink_500</color>-->
-<!--    <color name="primary_700">@color/pink_700</color>-->
-<!--    <color name="primary_900">@color/pink_900</color>-->
+    <!--    <color name="primary_25">@color/pink_25</color>-->
+    <!--    <color name="primary_50">@color/pink_100</color>-->
+    <!--    <color name="primary_100">@color/pink_200</color>-->
+    <!--    <color name="primary_200">@color/pink_200</color>-->
+    <!--    <color name="primary_500">@color/pink_500</color>-->
+    <!--    <color name="primary_700">@color/pink_700</color>-->
+    <!--    <color name="primary_900">@color/pink_900</color>-->
 
     <color name="beige_25">#FFF0EE</color>
     <color name="beige_50">#FFE4E1</color>
@@ -62,4 +62,8 @@
     <color name="cyan_500">#00BCD4</color>
     <color name="cyan_700">#0097A7</color>
     <color name="cyan_900">#006064</color>
+    <color name="light_blue_400">#FF29B6F6</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="gray_400">#FFBDBDBD</color>
+    <color name="gray_600">#FF757575</color>
 </resources>

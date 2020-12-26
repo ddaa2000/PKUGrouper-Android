@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="400dp"
+    android:padding="20dp"
+    android:orientation="vertical"
+    tools:context=".MissionAddFragment">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="新建任务"
+        android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        app:cardBackgroundColor="@color/beige_500"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="任务标题"
+            android:textColor="@color/white"
+            android:textAppearance="?attr/textAppearanceBody1"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="任务标题"
+        android:layout_marginTop="10dp"
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/missionAdd_missionTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        app:cardBackgroundColor="@color/beige_500"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="任务内容"
+            android:textColor="@color/white"
+            android:textAppearance="?attr/textAppearanceBody1"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="任务内容"
+        android:layout_marginTop="10dp"
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:gravity="bottom"
+            android:id="@+id/missionAdd_mssionContent"
+            android:layout_width="match_parent"
+            android:lines="6"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        app:cardBackgroundColor="@color/beige_500"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="频道"
+            android:textColor="@color/white"
+            android:textAppearance="?attr/textAppearanceBody1"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:id="@+id/missionAdd_radioGroup">
+        <RadioButton
+            android:id="@+id/missionAdd_channelProfessional"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/beige_900"
+            android:text="专业课"/>
+        <RadioButton
+            android:id="@+id/missionAdd_channelGeneral"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/beige_900"
+            android:text="通选课"/>
+        <RadioButton
+            android:id="@+id/missionAdd_channelLife"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/beige_900"
+            android:text="生活"/>
+        <RadioButton
+            android:id="@+id/missionAdd_channelOther"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/beige_900"
+            android:text="其他"/>
+    </RadioGroup>
+<!--    <CheckBox-->
+<!--        android:id="@+id/missionAdd_channelProfessional"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="专业课"/>-->
+<!--    <CheckBox-->
+<!--        android:id="@+id/missionAdd_channelGeneral"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="通选课"/>-->
+<!--    <CheckBox-->
+<!--        android:id="@+id/missionAdd_channelLife"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="生活"/>-->
+    <!--            <CheckBox-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="其他"/>-->
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/missionAdd_missionCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="创建任务"/>
+        <Button
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/missionAdd_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="取消"/>
+    </LinearLayout>
+
+
+</LinearLayout>

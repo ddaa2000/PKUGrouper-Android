@@ -1,5 +1,8 @@
 package com.e.pkugrouper;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,11 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.Message;
 import com.e.pkugrouper.Models.User;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +49,13 @@ public class MeFragment extends Fragment {
     private MessageAdapter messageAdapter;
     private List<IMessage> messages;
 
-    private TextView userNameText, userEmailText, userContactText; //userDescriptionText;
+    private List<MaterialCardView> cards;
+    private List<View> contents;
+    private List<ProgressBar> progressBars;
+
+    private TextView userNameText, userEmailText, userContactText,userNameSecondText, missionTotal;
+    private TextView missionPresent,missionPublished,evaluationText,firstCharacter;
+    private RatingBar ratingBar;
     private Button logOutButton, editPasswordButton, editInfoButton;
 
     public MeFragment() {
@@ -98,27 +110,110 @@ public class MeFragment extends Fragment {
 
         userNameText = v.findViewById(R.id.me_userName);
         userContactText = v.findViewById(R.id.me_contact);
-        //userDescriptionText = v.findViewById(R.id.me_selfDescription);
         userEmailText = v.findViewById(R.id.me_Email);
+        userNameSecondText = v.findViewById(R.id.me_userName2);
+        missionTotal = v.findViewById(R.id.me_missionAll);
+        missionPresent = v.findViewById(R.id.me_missionPresent);
+        missionPublished = v.findViewById(R.id.me_missionPublish);
+        evaluationText = v.findViewById(R.id.me_evaluationNum);
+        firstCharacter = v.findViewById(R.id.me_firstCharacter);
+        ratingBar = v.findViewById(R.id.me_ratingBar);
 
         logOutButton = v.findViewById(R.id.me_logOut);
         editPasswordButton = v.findViewById(R.id.me_EditPassword);
         editInfoButton = v.findViewById(R.id.me_editSelf);
+
+        cards = new ArrayList<>();
+        contents = new ArrayList<>();
+        progressBars = new ArrayList<>();
+        cards.add(v.findViewById(R.id.me_card1));
+        cards.add(v.findViewById(R.id.me_card2));
+        cards.add(v.findViewById(R.id.me_card3));
+        cards.add(v.findViewById(R.id.me_card4));
+        cards.add(v.findViewById(R.id.me_card5));
+
+        contents.add(v.findViewById(R.id.me_content1));
+        contents.add(v.findViewById(R.id.me_content2));
+        contents.add(v.findViewById(R.id.me_content3));
+        contents.add(v.findViewById(R.id.me_content4));
+        contents.add(v.findViewById(R.id.me_content5));
+
+        progressBars.add(v.findViewById(R.id.me_progress1));
+        progressBars.add(v.findViewById(R.id.me_progress2));
+        progressBars.add(v.findViewById(R.id.me_progress3));
+        progressBars.add(v.findViewById(R.id.me_progress4));
+        progressBars.add(v.findViewById(R.id.me_progress5));
+
+        for(View view : contents){
+            view.setVisibility(View.INVISIBLE);
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        for(MaterialCardView card : cards){
+            final ObjectAnimator anim1 = ObjectAnimator.ofFloat(card,"scaleX",0f,1f);
+            final ObjectAnimator anim2 = ObjectAnimator.ofFloat(card,"scaleY",0f,1f);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(anim1,anim2);
+            animatorSet.setDuration((long)(Math.random()*300+150));
+            animatorSet.start();
+        }
 
         new UserLoadTask().execute();
 
         return v;
     }
 
-    private void userLoadSucceeded(List<IMessage> messages){
+    private void userLoadSucceeded(List<IMessage> messages,int missionPresentNum, int missionPublishedNum, double evaluationAverage){
+
+        for(View view : contents){
+            view.setAlpha(0f);
+            view.setVisibility(View.VISIBLE);
+            ObjectAnimator.ofFloat(view,"alpha",0f,1f).setDuration(1000).start();
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+            final ObjectAnimator anim = ObjectAnimator.ofFloat(progressBar,"alpha",1f,0f).setDuration(1000);
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            anim.start();
+        }
+
         userNameText.setText(GlobalObjects.currentUser.getUserName());
         userContactText.setText(GlobalObjects.currentUser.getTele());
         userEmailText.setText(GlobalObjects.currentUser.getMailBox());
 
+        missionTotal.setText(""+GlobalObjects.currentUser.getMissionIDs().size());
+        missionPublished.setText(""+missionPublishedNum);
+        missionPresent.setText(""+missionPresentNum);
+        userNameSecondText.setText(GlobalObjects.currentUser.getUserName());
+        evaluationText.setText(((Float)(float)evaluationAverage).toString());
+        ratingBar.setRating((float)evaluationAverage);
+        firstCharacter.setText(""+GlobalObjects.currentUser.getUserName().charAt(0));
+
         messageAdapter.reloadData(messages);
 
 
-        logOutButton.setVisibility(View.GONE);
+        //logOutButton.setVisibility(View.GONE);
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,16 +227,18 @@ public class MeFragment extends Fragment {
         editInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),EditMeActivity.class);
-                startActivity(intent);
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                EditMeFragment fragment = new EditMeFragment();
+                fragment.show(fm,"editMeFragment");
             }
         });
 
         editPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), EditPasswordActivity.class);
-                startActivity(intent);
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                EditPasswordFragment fragment = new EditPasswordFragment();
+                fragment.show(fm,"editPasswordFragment");
             }
         });
     }
@@ -177,7 +274,7 @@ public class MeFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             if(isload){
-                userLoadSucceeded(messagelist);
+                userLoadSucceeded(messagelist,0,0,0);
             }else{
                 userLoadFailed(failure);
             }

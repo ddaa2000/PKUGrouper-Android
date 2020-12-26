@@ -5,12 +5,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.e.pkugrouper.Models.IMission;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,9 +42,39 @@ public class MissionFragment extends Fragment {
 
     private StatusSearchTask statusSearchTask;
 
+    private List<String> stringArrayList = new ArrayList<String>();
+    private MissionAdapter missionAdapter;
+    private RecyclerView missionRecyclerView;
+    private List<IMission> missions = new ArrayList<IMission>();
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    public Handler mHandler = new Handler() {
+        public void handleMessage (Message msg) {//此方法在ui线程运行
+            ChannelSearchParams params = new ChannelSearchParams();
+            params.keywords = null;
+            switch (statusTab.getSelectedTabPosition()){
+                case 0:
+                    params.channel = Channel.PRESENT;
+                    break;
+                case 1:
+                    params.channel = Channel.APPLYING;
+                    break;
+                case 2:
+                    params.channel = Channel.COMPLETED;
+                    break;
+            }
+            statusSearchTask.cancel(false);
+            statusSearchTask = new StatusSearchTask();
+            missionAdapter.setLoadState(missionAdapter.LOADING);
+            statusSearchTask.execute(params);
+        }
+    };
+
 
     public MissionFragment() {
         // Required empty public constructor
@@ -92,8 +127,8 @@ public class MissionFragment extends Fragment {
         addMissionButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),MissionAddActivity.class);
-                startActivity(intent);
+                MissionAddFragment fragment = new MissionAddFragment();
+                fragment.show(getActivity().getSupportFragmentManager(),"missionAddDialog");
             }
         });
 
@@ -110,8 +145,45 @@ public class MissionFragment extends Fragment {
                 break;
         }
         params.keywords = null;
-        statusSearchTask = new StatusSearchTask();
-        statusSearchTask.execute(params);
+        //statusSearchTask = new StatusSearchTask();
+        //statusSearchTask.execute(params);
+        Log.e("create","craete");
+
+        missionAdapter = new MissionAdapter(missions,getActivity(),mHandler);
+        missionAdapter.setLoadState(missionAdapter.LOADING);
+        missionRecyclerView = v.findViewById(R.id.mission_list);
+        missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        missionRecyclerView.setAdapter(missionAdapter);
+        missionRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+                missionAdapter.setLoadState(missionAdapter.LOADING);
+                Toast.makeText(getContext(),"loading",2).show();
+            }
+        });
+
+        swipeRefreshLayout = v.findViewById(R.id.missionList_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ChannelSearchParams params = new ChannelSearchParams();
+                switch(statusTab.getSelectedTabPosition()){
+                    case 0:
+                        params.channel = Channel.PRESENT;
+                        break;
+                    case 1:
+                        params.channel = Channel.APPLYING;
+                        break;
+                    case 2:
+                        params.channel = Channel.COMPLETED;
+                        break;
+                }
+                params.keywords = null;
+                statusSearchTask = new StatusSearchTask();
+                statusSearchTask.execute(params);
+                Log.e("resume","resume");
+            }
+        });
 
 
         return v;
@@ -135,6 +207,7 @@ public class MissionFragment extends Fragment {
         params.keywords = null;
         statusSearchTask = new StatusSearchTask();
         statusSearchTask.execute(params);
+        Log.e("resume","resume");
     }
 
     private class ChannelChange implements TabLayout.OnTabSelectedListener{
@@ -156,7 +229,7 @@ public class MissionFragment extends Fragment {
             statusSearchTask.cancel(false);
             statusSearchTask = new StatusSearchTask();
             statusSearchTask.execute(params);
-            Log.e("sss","selected");
+            Log.e("select","select");
         }
 
         @Override
@@ -173,9 +246,9 @@ public class MissionFragment extends Fragment {
 
 
     private void changeMissionList(List<IMission> missions){
-        Message msg = new Message();
-        msg.obj = missions;
-        missionListFragment.mHandler.sendMessage(msg);
+        swipeRefreshLayout.setRefreshing(false);
+        missionAdapter.reloadData(missions);
+        missionAdapter.setLoadState(missionAdapter.LOADING_END);
     }
 
     private enum Channel{

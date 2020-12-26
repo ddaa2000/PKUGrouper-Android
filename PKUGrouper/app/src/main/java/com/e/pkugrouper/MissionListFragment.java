@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.Mission;
@@ -38,9 +40,11 @@ public class MissionListFragment extends Fragment {
 
     private List<String> stringArrayList = new ArrayList<String>();
     private MissionAdapter missionAdapter;
-    private ListView listView;
     private RecyclerView missionRecyclerView;
     private List<IMission> missions = new ArrayList<IMission>();
+
+
+    public Fragment parentFragment;
 
 
     public Handler mHandler = new Handler() {
@@ -93,10 +97,17 @@ public class MissionListFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_mission_list, container, false);
 
-        missionAdapter = new MissionAdapter(missions,getActivity());
-        missionRecyclerView = v.findViewById(R.id.mission_list);
-        missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        missionRecyclerView.setAdapter(missionAdapter);
+//        missionAdapter = new MissionAdapter(missions,getActivity());
+//        missionRecyclerView = v.findViewById(R.id.mission_list);
+//        missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        missionRecyclerView.setAdapter(missionAdapter);
+//        missionRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+//            @Override
+//            public void onLoadMore() {
+//                missionAdapter.setLoadState(missionAdapter.LOADING);
+//                Toast.makeText(getContext(),"loading",2).show();
+//            }
+//        });
 
         //listView = v.findViewById(R.id.mission_list);
         //listView.setAdapter(missionAdapter);

@@ -22,14 +22,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <FrameLayout
                 android:layout_gravity="center_vertical"
                 android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="0"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/professional" />
+                android:layout_height="50dp">
+                <ImageView
+                    android:id="@+id/missionItem_professional"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/professional_new" />
+                <ImageView
+                    android:id="@+id/missionItem_general"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/general_new" />
+                <ImageView
+                    android:id="@+id/missionItem_life"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/life_new" />
+                <ImageView
+                    android:id="@+id/missionItem_other"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/other_new" />
+            </FrameLayout>
+
 
             <LinearLayout
                 android:layout_marginLeft="10dp"

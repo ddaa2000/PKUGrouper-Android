@@ -1,46 +1,49 @@
 package com.e.pkugrouper;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.e.pkugrouper.Managers.IHttpManager;
 import com.e.pkugrouper.Models.Evaluation;
 import com.e.pkugrouper.Models.IEvaluation;
 import com.e.pkugrouper.Managers.HttpManager;
-import com.e.pkugrouper.Models.IMission;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.dialog.MaterialDialogs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class UserDetailActivity extends AppCompatActivity implements  DialogCompleted {
 
-    private TextView userNameText, userEmailText, userMissionTotalText, userEvaluationText,evaluationText;
-    private Button kickOrAcceptButton,refuseButton, evaluateButton;
+    private TextView userNameText, userContactText, userEvaluationTotalText, userEvaluationText,
+            evaluationText,firstCharacterText;
+    private Button kickOrAcceptButton,refuseButton, evaluateButton,reportButton;
     private MaterialCardView manageCard, evaluationCard;
     private RatingBar ratingBar;
+
+    private List<View> contents;
+    private List<ProgressBar> progressBars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
         userNameText = findViewById(R.id.userDetail_memberName);
-        userEmailText = findViewById(R.id.userDetail_email);
+        userContactText = findViewById(R.id.userDetail_email);
         userEvaluationText = findViewById(R.id.userDetail_evaluation);
-        userMissionTotalText = findViewById(R.id.userDeatail_missionTotal);
+        userEvaluationTotalText = findViewById(R.id.userDeatail_evaluationTotal);
         kickOrAcceptButton = findViewById(R.id.userDetail_kickOrAccept);
         refuseButton = findViewById(R.id.userDetail_refuseApplicant);
         manageCard = findViewById(R.id.userDeatail_manageCard);
@@ -50,8 +53,34 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
         evaluationText = findViewById(R.id.userDetail_evaluationText);
         ratingBar = findViewById(R.id.userDetail_rating);
 
+        reportButton = findViewById(R.id.userDetail_report);
+
+        firstCharacterText = findViewById(R.id.userDetail_firstCharacter);
+
+        contents = new ArrayList<>();
+        progressBars = new ArrayList<>();
+
+        contents.add(findViewById(R.id.userDetail_content1));
+        contents.add(findViewById(R.id.userDetail_content2));
+        contents.add(findViewById(R.id.userDetail_content3));
+        contents.add(findViewById(R.id.userDetail_content4));
+        contents.add(findViewById(R.id.userDetail_content5));
+
+        progressBars.add(findViewById(R.id.userDetail_progress1));
+        progressBars.add(findViewById(R.id.userDetail_progress2));
+        progressBars.add(findViewById(R.id.userDetail_progress3));
+        progressBars.add(findViewById(R.id.userDetail_progress4));
+        progressBars.add(findViewById(R.id.userDetail_progress5));
+
 
         evaluationCard.setVisibility(View.GONE);
+
+        for(View view : contents){
+            view.setVisibility(View.INVISIBLE);
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
         new UserDetailLoadTask().execute();
 
@@ -61,17 +90,73 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
     @Override
     protected void onResume() {
         super.onResume();
+        for(View view : contents){
+            view.setVisibility(View.INVISIBLE);
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+        }
         new UserDetailLoadTask().execute();
     }
 
     private void userDetailLoadSucceeded(String evaluationAverage, String missionTotal, boolean isApplicant,
                                          IEvaluation evaluation){
 
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        for(View view : contents){
+            view.setAlpha(0f);
+            view.setVisibility(View.VISIBLE);
+            ObjectAnimator.ofFloat(view,"alpha",0f,1f).setDuration(1000).start();
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+            final ObjectAnimator anim = ObjectAnimator.ofFloat(progressBar,"alpha",1f,0f).setDuration(1000);
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            anim.start();
+        }
+
+        String fisrtCharacter = ""+GlobalObjects.currentMember.getUserName().charAt(0);
+        firstCharacterText.setText(fisrtCharacter);
         userNameText.setText(GlobalObjects.currentMember.getUserName());
-        userEmailText.setText(GlobalObjects.currentMember.getMailBox());
+        userContactText.setText("联系方式："+GlobalObjects.currentMember.getTele());
 
         userEvaluationText.setText(evaluationAverage);
-        userMissionTotalText.setText(missionTotal);
+        userEvaluationTotalText.setText(missionTotal);
+
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ReportFragment evaluationDialogFragment = new ReportFragment();
+                evaluationDialogFragment.show(fragmentManager,"reportDialog");
+            }
+        });
 
         if(!GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)
                 || GlobalObjects.currentMission.isFinished()){

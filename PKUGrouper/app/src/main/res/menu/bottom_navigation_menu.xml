@@ -3,16 +3,16 @@
     <item
         android:id="@+id/page_square"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/square"
         android:title="广场"/>
     <item
         android:id="@+id/page_mission"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/mission"
         android:title="任务"/>
     <item
         android:id="@+id/page_me"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/user"
         android:title="个人"/>
 </menu>
