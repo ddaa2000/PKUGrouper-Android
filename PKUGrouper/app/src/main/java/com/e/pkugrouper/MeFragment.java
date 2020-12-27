@@ -243,7 +243,7 @@ public class MeFragment extends Fragment {
         });
     }
     private enum FailCode{
-        USERNF,ERROR
+        USERNF,BADREQUEST,MISSIONID,MISSIONNF
     }
     private void userLoadFailed(FailCode failCode){
 
@@ -253,19 +253,38 @@ public class MeFragment extends Fragment {
 
         List<IMessage> messagelist=new ArrayList<>();
         Boolean isload=Boolean.FALSE;
+        int missionPresentNum=0;
+        int missionPublishedNum=0;
+        double evaluationAverage=0.0;
+        IMission mission=new Mission();
         FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
             GlobalObjects.currentUser=GlobalObjects.userManager.getSelf();
             try{
                 messagelist=GlobalObjects.messageManager.getCurrentUserMessages();
+                evaluationAverage=GlobalObjects.currentUser.getAverageScore();
+                List<Integer> missionlist=GlobalObjects.currentUser.getMissionIDs();
+                for(Integer id:missionlist){
+                    mission=GlobalObjects.missionManager.findMissionByID(id);
+                    if(mission.getState().equals("in execution")){
+                        missionPresentNum=missionPresentNum+1;
+                    }
+                    if(mission.getPublisher()==GlobalObjects.currentUser.getUserID()){
+                        missionPublishedNum=missionPublishedNum+1;
+                    }
+                }
                 isload=Boolean.TRUE;
             }catch(Exception e){
                 String s=e.getMessage();
                 if(s.equals("currentUser is null")||s.equals("User is not found!")){
                     failure= FailCode.USERNF;
-                }else{
-                    failure=FailCode.ERROR;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                } else{
+                    failure=FailCode.BADREQUEST;
                 }
             }
             return null;
@@ -274,7 +293,7 @@ public class MeFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             if(isload){
-                userLoadSucceeded(messagelist,0,0,0);
+                userLoadSucceeded(messagelist,missionPresentNum,missionPublishedNum,evaluationAverage);
             }else{
                 userLoadFailed(failure);
             }
