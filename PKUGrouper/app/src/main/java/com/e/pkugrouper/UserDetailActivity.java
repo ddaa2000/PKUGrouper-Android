@@ -73,16 +73,16 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
         progressBars.add(findViewById(R.id.userDetail_progress5));
 
 
-        evaluationCard.setVisibility(View.GONE);
 
-        for(View view : contents){
-            view.setVisibility(View.INVISIBLE);
-        }
-        for(ProgressBar progressBar : progressBars){
-            progressBar.setVisibility(View.VISIBLE);
-        }
 
-        new UserDetailLoadTask().execute();
+//        for(View view : contents){
+//            view.setVisibility(View.INVISIBLE);
+//        }
+//        for(ProgressBar progressBar : progressBars){
+//            progressBar.setVisibility(View.VISIBLE);
+//        }
+//
+//        new UserDetailLoadTask().execute();
 
 
     }
@@ -90,6 +90,16 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
     @Override
     protected void onResume() {
         super.onResume();
+
+        evaluationCard.setVisibility(View.GONE);
+        if(!GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)
+                || GlobalObjects.currentMission.isFinished()){
+            manageCard.setVisibility(View.GONE);
+        }
+        if(GlobalObjects.currentMission.isFinished()){
+            evaluationCard.setVisibility(View.VISIBLE);
+        }
+
         for(View view : contents){
             view.setVisibility(View.INVISIBLE);
         }
@@ -97,6 +107,8 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
             progressBar.setVisibility(View.VISIBLE);
         }
         new UserDetailLoadTask().execute();
+
+
     }
 
     private void userDetailLoadSucceeded(String evaluationAverage, String missionTotal, boolean isApplicant,
@@ -144,7 +156,16 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
         String fisrtCharacter = ""+GlobalObjects.currentMember.getUserName().charAt(0);
         firstCharacterText.setText(fisrtCharacter);
         userNameText.setText(GlobalObjects.currentMember.getUserName());
-        userContactText.setText("联系方式："+GlobalObjects.currentMember.getTele());
+        if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)
+                || GlobalObjects.currentMission.hasMember(GlobalObjects.currentUser)) {
+            if(GlobalObjects.currentMember.getTele() == null || GlobalObjects.currentMember.getTele().equals(""))
+                userContactText.setText("联系方式：" + "该用户还没有设置联系方式");
+            else
+                userContactText.setText("联系方式：" + GlobalObjects.currentMember.getTele());
+        }
+        else
+            userContactText.setText("联系方式：仅任务成员可见");
+
 
         userEvaluationText.setText(evaluationAverage);
         userEvaluationTotalText.setText(missionTotal);

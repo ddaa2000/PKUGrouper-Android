@@ -158,7 +158,6 @@ public class MissionFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 missionAdapter.setLoadState(missionAdapter.LOADING);
-                Toast.makeText(getContext(),"loading",2).show();
             }
         });
 
@@ -263,6 +262,17 @@ public class MissionFragment extends Fragment {
 
         private List<IMission>missionList=new ArrayList<IMission>();
         private List<Integer>missionIDList=new ArrayList<Integer>();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if(!swipeRefreshLayout.isRefreshing()){
+                if(missionAdapter.loadState != missionAdapter.LOADING){
+                    missionAdapter.setLoadState(missionAdapter.LOADING);
+                    missionAdapter.reloadData(new ArrayList<IMission>());
+                }
+            }
+        }
+
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
             ChannelSearchParams param=channelSearchParams[0];

@@ -36,7 +36,7 @@ public class MissionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     // 加载到底
     public final int LOADING_END = 3;
 
-    private int loadState = 2;
+    public int loadState = 2;
 
     private Handler handler;
 

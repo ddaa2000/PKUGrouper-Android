@@ -77,13 +77,13 @@ public class HelloWorldFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_hello_world, container, false);
 
         viewPager = v.findViewById(R.id.logInRegisterViewPager);
-        logInRegisterAdpater = new LogInRegisterAdpater(getActivity().getSupportFragmentManager());
-        viewPager.setAdapter(logInRegisterAdpater);
+        logInRegisterTab = v.findViewById(R.id.logInRegisterTab);
+
         //FragmentManager fm = getActivity().getSupportFragmentManager();
         //Fragment fragment = new LoginFragment();
        // fm.beginTransaction().replace(R.id.logInFrame,fragment).commit();
-        logInRegisterTab = v.findViewById(R.id.logInRegisterTab);
-        logInRegisterTab.setupWithViewPager(viewPager);
+
+
 
 
         Log.e("setup over","hello created");
@@ -101,4 +101,11 @@ public class HelloWorldFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        logInRegisterAdpater = new LogInRegisterAdpater(getActivity().getSupportFragmentManager());
+        viewPager.setAdapter(logInRegisterAdpater);
+        logInRegisterTab.setupWithViewPager(viewPager);
+    }
 }

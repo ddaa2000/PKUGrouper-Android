@@ -16,24 +16,19 @@
         android:text="新建任务"
         android:textAppearance="?attr/textAppearanceHeadline6"/>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_marginTop="20dp"
+    <com.google.android.material.chip.Chip
         android:layout_width="wrap_content"
-        app:cardBackgroundColor="@color/beige_500"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任务标题"
-            android:textColor="@color/white"
-            android:textAppearance="?attr/textAppearanceBody1"/>
-    </com.google.android.material.card.MaterialCardView>
+        android:layout_height="wrap_content"
+        app:chipBackgroundColor="@color/beige_500"
+        android:textColor="@color/white"
+        android:layout_marginTop="15dp"
+        android:text="任务标题"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginHorizontal="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="任务标题"
-        android:layout_marginTop="10dp"
+        android:hint="请输入任务标题"
         app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -43,47 +38,36 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_marginTop="20dp"
+    <com.google.android.material.chip.Chip
         android:layout_width="wrap_content"
-        app:cardBackgroundColor="@color/beige_500"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="任务内容"
-            android:textColor="@color/white"
-            android:textAppearance="?attr/textAppearanceBody1"/>
-    </com.google.android.material.card.MaterialCardView>
+        android:layout_height="wrap_content"
+        app:chipBackgroundColor="@color/beige_500"
+        android:textColor="@color/white"
+        android:layout_marginTop="15dp"
+        android:text="任务内容"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginHorizontal="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="任务内容"
-        android:layout_marginTop="10dp"
+        android:hint="请输入任务内容"
         app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:gravity="bottom"
             android:id="@+id/missionAdd_mssionContent"
             android:layout_width="match_parent"
-            android:lines="6"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_marginTop="20dp"
+    <com.google.android.material.chip.Chip
         android:layout_width="wrap_content"
-        app:cardBackgroundColor="@color/beige_500"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="频道"
-            android:textColor="@color/white"
-            android:textAppearance="?attr/textAppearanceBody1"/>
-    </com.google.android.material.card.MaterialCardView>
+        android:layout_height="wrap_content"
+        app:chipBackgroundColor="@color/beige_500"
+        android:textColor="@color/white"
+        android:layout_marginTop="15dp"
+        android:text="频道"/>
 
     <RadioGroup
         android:layout_width="match_parent"

@@ -1,5 +1,7 @@
 package com.e.pkugrouper;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import com.e.pkugrouper.Models.IUser;
 import com.e.pkugrouper.Models.Mission;
 import com.e.pkugrouper.Models.User;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -44,13 +48,17 @@ public class MissionManageFragment extends Fragment {
     private List<IUser> members = new ArrayList<IUser>(),applicants = new ArrayList<IUser>();
     private UserCardAdapter memberCardAdapter,applicantCardAdapter;
 
-    private ContentLoadingProgressBar pb1;
+    private List<View> contents;
+    private List<ProgressBar> progressBars;
+
 
     private MaterialCardView applicantCard;
 
     private TextView missionTitleText, missionContentText, missionStatusText;
 
     private Button missionStartOrStopButton, missionDeleteButton;
+
+    private Chip startChip,endChip,createChip;
 //    private Button missionEditButton;
 
 
@@ -98,6 +106,9 @@ public class MissionManageFragment extends Fragment {
 //            applicants.add(new User());
 //        }
 
+        createChip = v.findViewById(R.id.missionManage_createChip);
+        startChip = v.findViewById(R.id.missionManage_startChip);
+        endChip = v.findViewById(R.id.missionManage_endChip);
 
         memberRecyclerView = v.findViewById(R.id.mission_detail_members_recyclerView);
         memberCardAdapter = new UserCardAdapter(members,getActivity());
@@ -124,42 +135,73 @@ public class MissionManageFragment extends Fragment {
         missionDeleteButton = v.findViewById(R.id.missionManage_deleteMission);
         missionStartOrStopButton = v.findViewById(R.id.missionManage_startOrStopMission);
 
-        pb1 = v.findViewById(R.id.missionManage_pb1);
-        pb1.show();
+
+        contents = new ArrayList<>();
+        progressBars = new ArrayList<>();
+
+        contents.add(v.findViewById(R.id.missionDetail_content1));
+        contents.add(v.findViewById(R.id.missionDetail_content2));
+        contents.add(v.findViewById(R.id.missionDetail_content3));
+        contents.add(v.findViewById(R.id.missionDetail_content4));
+
+        progressBars.add(v.findViewById(R.id.missionDetail_progress1));
+        progressBars.add(v.findViewById(R.id.missionDetail_progress2));
+        progressBars.add(v.findViewById(R.id.missionDetail_progress3));
+        progressBars.add(v.findViewById(R.id.missionDetail_progress4));
 
 
-        missionStartOrStopButton.setText("开始");
-        missionDeleteButton.setText("删除");
-        missionDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new MaterialAlertDialogBuilder(getContext()).setTitle("警告")
-                        .setMessage("这将删除整个任务，此操作无法撤销")
-                        .setNeutralButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        })
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new MissionDelete().execute();
-                                dialog.cancel();
-                            }
-                        })
-                        .show();
-            }
-        });
-
-
-        new MissionLoadTask().execute();
 
         return v;
     }
 
 
     private void missionLoadSucceeded(List<IUser> members,@Nullable List<IUser> applicants){
+
+        startChip.setChipIconVisible(false);
+        endChip.setChipIconVisible(false);
+        createChip.setChipIconVisible(false);
+        if(GlobalObjects.currentMission.isInApplication())
+            createChip.setChipIconVisible(true);
+        if(GlobalObjects.currentMission.isInExecution()) {
+            createChip.setChipIconVisible(true);
+            startChip.setChipIconVisible(true);
+        }
+        if(GlobalObjects.currentMission.isFinished()){
+            createChip.setChipIconVisible(true);
+            startChip.setChipIconVisible(true);
+            endChip.setChipIconVisible(true);
+        }
+        for(View view : contents){
+            view.setAlpha(0f);
+            view.setVisibility(View.VISIBLE);
+            ObjectAnimator.ofFloat(view,"alpha",0f,1f).setDuration(1000).start();
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+            final ObjectAnimator anim = ObjectAnimator.ofFloat(progressBar,"alpha",1f,0f).setDuration(1000);
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            anim.start();
+        }
 
         missionTitleText.setText(GlobalObjects.currentMission.getTitle());
         missionContentText.setText(GlobalObjects.currentMission.getContent());
@@ -608,6 +650,36 @@ public class MissionManageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        for(View view : contents){
+            view.setVisibility(View.INVISIBLE);
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        missionStartOrStopButton.setText("开始");
+        missionDeleteButton.setText("删除");
+        missionDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialAlertDialogBuilder(getContext()).setTitle("警告")
+                        .setMessage("这将删除整个任务，此操作无法撤销")
+                        .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new MissionDelete().execute();
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
+            }
+        });
         new MissionLoadTask().execute();
     }
 }

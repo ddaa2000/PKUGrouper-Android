@@ -36,15 +36,9 @@ public class UserCardHolder extends RecyclerView.ViewHolder implements View.OnCl
 
         if(user.getUserID()==GlobalObjects.currentUser.getUserID())
             return;
-        if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)||
-                GlobalObjects.currentMission.hasMember(GlobalObjects.currentUser)){
-            Intent intent = new Intent(activity,UserDetailActivity.class);
-            GlobalObjects.currentMember = user;
-            activity.startActivity(intent);
-        }
-        else{
-            Toast.makeText(activity,"只有任务成员可以查看详细信息",2).show();
-        }
+        Intent intent = new Intent(activity,UserDetailActivity.class);
+        GlobalObjects.currentMember = user;
+        activity.startActivity(intent);
 
     }
 

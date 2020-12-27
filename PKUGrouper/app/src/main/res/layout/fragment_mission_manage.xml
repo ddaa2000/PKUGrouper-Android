@@ -27,6 +27,7 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
+                        android:id="@+id/missionDetail_content1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -73,12 +74,14 @@
                         <!--                        style="@style/Widget.MaterialComponents.Button.TextButton"-->
                         <!--                        android:text="修改任务信息"/>-->
                     </LinearLayout>
-
-                    <androidx.core.widget.ContentLoadingProgressBar
-                        android:id="@+id/missionManage_pb1"
-                        android:elevation="400dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                    <ProgressBar
+                        android:id="@+id/missionDetail_progress1"
+                        android:scaleX="1.5"
+                        android:scaleY="1.5"
+                        android:indeterminateTint="@color/beige_500"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
 
                 </FrameLayout>
 
@@ -89,85 +92,146 @@
                 app:cardElevation="5dp"
                 android:layout_margin="5dp"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="vertical"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:padding="5dp"
                     android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="状态"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
-
-                    <View
-                        android:layout_marginTop="5dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
-
-                    <TextView
-                        android:id="@+id/missionManage_missionStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="未开始"
-                        android:textAppearance="?attr/textAppearanceBody2" />
                     <LinearLayout
+                        android:id="@+id/missionDetail_content2"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
+                        android:padding="5dp"
                         android:layout_height="wrap_content">
-                        <Button
-                            android:id="@+id/missionManage_startOrStopMission"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="开始任务"/>
-                        <Button
-                            android:id="@+id/missionManage_deleteMission"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/red"
-                            android:text="删除任务"/>
-                    </LinearLayout>
 
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="状态"
+                            android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                        <View
+                            android:layout_marginTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider" />
+
+                        <LinearLayout
+                            android:layout_marginTop="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/missionManage_createChip"
+                                style="@style/MyApp.Chip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                app:chipIcon="@drawable/ic_mtrl_chip_checked_circle"
+                                app:chipIconEnabled="true"
+                                android:text="创建"/>
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/missionManage_startChip"
+                                style="@style/MyApp.Chip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                app:chipIcon="@drawable/ic_mtrl_chip_checked_circle"
+                                app:chipIconEnabled="true"
+                                android:text="开始"/>
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/missionManage_endChip"
+                                style="@style/MyApp.Chip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                app:chipIcon="@drawable/ic_mtrl_chip_checked_circle"
+                                app:chipIconEnabled="true"
+                                android:text="完成"/>
+                        </LinearLayout>
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/missionManage_missionStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="未开始"
+                            android:textAppearance="?attr/textAppearanceBody2" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <Button
+                                android:id="@+id/missionManage_startOrStopMission"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="开始任务"/>
+                            <Button
+                                android:id="@+id/missionManage_deleteMission"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/red"
+                                android:text="删除任务"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <ProgressBar
+                        android:id="@+id/missionDetail_progress2"
+                        android:scaleX="1.5"
+                        android:scaleY="1.5"
+                        android:indeterminateTint="@color/beige_500"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+                </FrameLayout>
+
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 app:cardElevation="5dp"
                 android:layout_margin="5dp"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="vertical"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:divider="@drawable/line_divider_for_layout"
-                    android:padding="10dp"
                     android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/missionDetail_content3"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:divider="@drawable/line_divider_for_layout"
+                        android:padding="10dp"
+                        android:layout_height="wrap_content">
 
 
-                    <TextView
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="成员"
+                            android:textAppearance="?attr/textAppearanceHeadline6" />
+
+
+                        <View
+                            android:layout_marginTop="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/mission_detail_members_recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                    </LinearLayout>
+                    <ProgressBar
+                        android:id="@+id/missionDetail_progress3"
+                        android:scaleX="1.5"
+                        android:scaleY="1.5"
+                        android:indeterminateTint="@color/beige_500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="成员"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
+                        android:layout_gravity="center"/>
+                </FrameLayout>
 
-
-                    <View
-                        android:layout_marginTop="20dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/mission_detail_members_recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/missionManage_applicantCard"
@@ -175,35 +239,50 @@
                 app:cardElevation="5dp"
                 android:layout_margin="5dp"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="vertical"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:divider="@drawable/line_divider_for_layout"
-                    android:padding="10dp"
                     android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/missionDetail_content4"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:divider="@drawable/line_divider_for_layout"
+                        android:padding="10dp"
+                        android:layout_height="wrap_content">
 
 
-                    <TextView
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="申请"
+                            android:textAppearance="?attr/textAppearanceHeadline6" />
+
+
+                        <View
+                            android:layout_marginTop="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/mission_detail_applicants_recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                    </LinearLayout>
+                    <ProgressBar
+                        android:id="@+id/missionDetail_progress4"
+                        android:scaleX="1.5"
+                        android:scaleY="1.5"
+                        android:indeterminateTint="@color/beige_500"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="申请"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
+                        android:layout_gravity="center"/>
+                </FrameLayout>
 
 
-                    <View
-                        android:layout_marginTop="20dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/mission_detail_applicants_recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>

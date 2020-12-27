@@ -184,7 +184,7 @@ public class SquareFragment extends Fragment {
         }
         params.keywords = null;
         params.reload = true;
-        channelSearchTask.execute(params);
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -221,36 +221,13 @@ public class SquareFragment extends Fragment {
         });
 
         missionAdapter = new MissionAdapter(missions,getActivity(),mHandler);
-        missionAdapter.setLoadState(missionAdapter.LOADING);
+
         missionRecyclerView = v.findViewById(R.id.mission_list);
         missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         missionRecyclerView.setAdapter(missionAdapter);
-//        missionRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
-//            @Override
-//            public void onLoadMore() {
-//                missionAdapter.setLoadState(missionAdapter.LOADING);
-//                Toast.makeText(getContext(),"loading",2).show();
-//                ChannelSearchParams params = new ChannelSearchParams();
-//                params.keywords = presentContent;
-//                params.reload = false;
-//                switch (channelTab.getSelectedTabPosition()){
-//                    case 0:
-//                        params.channel = Channel.ALL;
-//                        break;
-//                    case 1:
-//                        params.channel = Channel.PROFESSIONAL_COURSE;
-//                        break;
-//                    case 2:
-//                        params.channel = Channel.GENERAL_COURSE;
-//                        break;
-//                    case 3:
-//                        params.channel = Channel.LIFE;
-//                        break;
-//                }
-//
-//                new ChannelSearchTask().execute(params);
-//            }
-//        });
+
+        missionAdapter.setLoadState(missionAdapter.LOADING);
+        channelSearchTask.execute(params);
 
         return v;
     }
@@ -325,6 +302,18 @@ public class SquareFragment extends Fragment {
         private FailCode failure;
         private boolean reload;
         Boolean issearch=Boolean.FALSE;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if(!swipeRefreshLayout.isRefreshing()){
+                if(missionAdapter.loadState != missionAdapter.LOADING){
+                    missionAdapter.setLoadState(missionAdapter.LOADING);
+                    missionAdapter.reloadData(new ArrayList<IMission>());
+                }
+            }
+        }
+
         @Override
         protected Void doInBackground(ChannelSearchParams... channelSearchParams) {
             ChannelSearchParams param=channelSearchParams[0];
@@ -373,12 +362,16 @@ public class SquareFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             if(issearch){
-                if(missionList!=null)
+                if(missionList!=null){
                     presentEnd+=missionList.size();
-                if(missionList.size()<LOAD_COUNT_ONCE)
+                    if(missionList.size()<LOAD_COUNT_ONCE)
+                        missionAdapter.setLoadState(missionAdapter.LOADING_END);
+                    else
+                        missionAdapter.setLoadState(missionAdapter.LOADING_COMPLETE);
+                }
+                else{
                     missionAdapter.setLoadState(missionAdapter.LOADING_END);
-                else
-                    missionAdapter.setLoadState(missionAdapter.LOADING_COMPLETE);
+                }
                 changeMissionList(missionList,reload);
             }else{
                 changeMissionListfailed(failure);
