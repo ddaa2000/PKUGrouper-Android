@@ -110,7 +110,7 @@ public class ReportFragment extends DialogFragment {
             message.setPublisherID(GlobalObjects.currentUser.getUserID());
             message.setReporteeID(GlobalObjects.currentMember.getUserID());
             List<Integer> rep=new ArrayList<Integer>();
-            rep.add(0);
+            rep.add(1);
             message.setRecipientIDs(rep);
             message.setType("Report");
             message.setTimeStamp(String.valueOf(System.currentTimeMillis()));
