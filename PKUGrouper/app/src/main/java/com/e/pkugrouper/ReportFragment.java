@@ -13,7 +13,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
-
+import java.util.ArrayList;
+import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ReportFragment#newInstance} factory method to
@@ -100,15 +101,42 @@ public class ReportFragment extends DialogFragment {
     }
     private class ReportTask extends AsyncTask<String,Void,Void>{
 
+        Boolean isreport=Boolean.FALSE;
+        IMessage message=new Message();
         @Override
         protected Void doInBackground(String... strings) {
+            String content=strings[0];
+            message.setMessageContent(content);
+            message.setPublisherID(GlobalObjects.currentUser.getUserID());
+            message.setReporteeID(GlobalObjects.currentMember.getUserID());
+            List<Integer> rep=new ArrayList<Integer>();
+            rep.add(0);
+            message.setRecipientIDs(rep);
+            message.setType("Report");
+            message.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+            try{
+                isreport=GlobalObjects.messageManager.report(message);
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("currentUser is null!")){
+
+                }else if(s.equals("You should send a Report!")){
+
+                }else{
+
+                }
+                System.out.println(s);
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            reportSucceeded();
+            if(isreport){
+                reportSucceeded();
+            }else{
+                reportFailed();
+            }
         }
     }
 }
