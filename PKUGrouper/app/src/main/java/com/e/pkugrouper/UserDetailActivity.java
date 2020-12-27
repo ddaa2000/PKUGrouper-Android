@@ -305,6 +305,8 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
         String missiontotal;
         double average=0.0;
         Boolean isapplicant;
+        IEvaluation eval=new Evaluation();
+        Boolean isevaluate=Boolean.FALSE;
         private HttpManager http=new HttpManager();
         @Override
         protected Void doInBackground(Void... voids) {
@@ -335,7 +337,14 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
 
                     IEvaluation evaluation = new Evaluation();
                     evaluation.loadFromJSON(evaluation_JSON);
+                    if(evaluation.getMissionID()==GlobalObjects.currentMission.getID()&&evaluation.getEvaluaterID()==GlobalObjects.currentUser.getUserID()){
+                        eval=evaluation;
+                        isevaluate=Boolean.TRUE;
+                    }
                     average+=evaluation.getScore();
+                }
+                if(isevaluate==Boolean.FALSE){
+                    eval=null;
                 }
                 if(evaluationlist.size()==0){
                     averagescore="暂无";
@@ -354,7 +363,7 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            userDetailLoadSucceeded(averagescore,missiontotal,isapplicant, null);
+            userDetailLoadSucceeded(averagescore,missiontotal,isapplicant, eval);
         }
     }
 
