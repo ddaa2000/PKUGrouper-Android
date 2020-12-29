@@ -126,15 +126,13 @@ public class EditPasswordFragment extends DialogFragment {
         protected Void doInBackground(String... strings) {
             String oldpassword=strings[0];
             String newpassword=strings[1];
-            String savepassword=GlobalObjects.currentUser.getPassword();
-            String RSAOld = new RSAUtils().encrypto(oldpassword);
-            if(savepassword.equals(RSAOld)){
+            String savepassword=new RSAUtils().decrypto(GlobalObjects.currentUser.getPassword());
+            if(savepassword.equals(oldpassword)){
                 if(newpassword.equals(oldpassword)){
                     failure= FailCode.OLDNEWSAME;
                 }else{
                     try{
-                        GlobalObjects.userManager.changePassword(newpassword);
-                        ischange=Boolean.TRUE;
+                        ischange=GlobalObjects.userManager.changePassword(newpassword);
                     }catch(Exception e){
                         String s=e.getMessage();
                         if(s.equals("User is null")||s.equals("User is not found!")){

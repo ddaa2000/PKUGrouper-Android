@@ -190,7 +190,7 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
             if(evaluation!=null) {
                 evaluateButton.setClickable(false);
                 evaluateButton.setText("已评价");
-                ratingBar.setRating((float)evaluation.getScore());
+                ratingBar.setRating((float)evaluation.getScore()/2);
                 evaluationText.setVisibility(View.GONE);
             }
             else{
@@ -325,8 +325,8 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
                 for(Integer evaluationID:evaluationlist){
                     List<String> parameters = Arrays.asList(String.valueOf(evaluationID));
                     JSONObject request_body = new JSONObject();
-                    request_body.put("senderID",GlobalObjects.currentMember.getUserID());
-                    request_body.put("passwordAfterRSA", GlobalObjects.currentMember.getPassword());
+                    request_body.put("senderID",GlobalObjects.currentUser.getUserID());
+                    request_body.put("passwordAfterRSA", GlobalObjects.currentUser.getPassword());
 
                     String evaluation_JSON = http.httpGet(url,parameters,request_body.toJSONString());
 

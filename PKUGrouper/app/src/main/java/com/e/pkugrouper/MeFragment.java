@@ -21,7 +21,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.e.pkugrouper.Models.IMessage;
+import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.Message;
+import com.e.pkugrouper.Models.Mission;
 import com.e.pkugrouper.Models.User;
 import com.google.android.material.card.MaterialCardView;
 
@@ -164,7 +166,7 @@ public class MeFragment extends Fragment {
         return v;
     }
 
-    private void userLoadSucceeded(List<IMessage> messages,int missionPresentNum, int missionPublishedNum, double evaluationAverage){
+    private void userLoadSucceeded(List<IMessage> messages,int missionPresentNum, int missionPublishedNum, double evaluationAverage,int evaluationNumber){
 
         for(View view : contents){
             view.setAlpha(0f);
@@ -206,8 +208,8 @@ public class MeFragment extends Fragment {
         missionPublished.setText(""+missionPublishedNum);
         missionPresent.setText(""+missionPresentNum);
         userNameSecondText.setText(GlobalObjects.currentUser.getUserName());
-        evaluationText.setText(((Float)(float)evaluationAverage).toString());
-        ratingBar.setRating((float)evaluationAverage);
+        evaluationText.setText(""+evaluationNumber);
+        ratingBar.setRating((float)evaluationAverage/2);
         firstCharacter.setText(""+GlobalObjects.currentUser.getUserName().charAt(0));
 
         messageAdapter.reloadData(messages);
@@ -256,7 +258,7 @@ public class MeFragment extends Fragment {
         int missionPresentNum=0;
         int missionPublishedNum=0;
         double evaluationAverage=0.0;
-        IMission mission=new Mission();
+        int evaluationNumber=0;
         FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
@@ -265,9 +267,15 @@ public class MeFragment extends Fragment {
                 messagelist=GlobalObjects.messageManager.getCurrentUserMessages();
                 evaluationAverage=GlobalObjects.currentUser.getAverageScore();
                 List<Integer> missionlist=GlobalObjects.currentUser.getMissionIDs();
-                for(Integer id:missionlist){
-                    mission=GlobalObjects.missionManager.findMissionByID(id);
-                    if(mission.getState().equals("in execution")){
+                int missionidlist[]=new int[missionlist.size()];
+                for(int i=0;i<missionlist.size();i++){
+                    missionidlist[i]=missionlist.get(i);
+                }
+                List<IMission> missions=GlobalObjects.missionManager.findMissions(missionidlist);
+                evaluationNumber=GlobalObjects.currentUser.getEvaluationIDs().size();
+                for(IMission mission:missions){
+
+                    if(!mission.isFinished()){
                         missionPresentNum=missionPresentNum+1;
                     }
                     if(mission.getPublisher()==GlobalObjects.currentUser.getUserID()){
@@ -293,7 +301,7 @@ public class MeFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             if(isload){
-                userLoadSucceeded(messagelist,missionPresentNum,missionPublishedNum,evaluationAverage);
+                userLoadSucceeded(messagelist,missionPresentNum,missionPublishedNum,evaluationAverage,evaluationNumber);
             }else{
                 userLoadFailed(failure);
             }

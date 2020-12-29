@@ -287,9 +287,14 @@ public class MissionFragment extends Fragment {
             try{
                 GlobalObjects.currentUser = GlobalObjects.userManager.getSelf();
                 missionIDList = GlobalObjects.currentUser.getMissionIDs();
+                int missionidlist[]=new int[missionIDList.size()];
+                for(int i=0;i<missionIDList.size();i++){
+                    missionidlist[i]=missionIDList.get(i);
+                }
+                List<IMission> missions=GlobalObjects.missionManager.findMissions(missionidlist);
                 if(channelid==1){
-                    for(Integer i:missionIDList){
-                        IMission tmp=GlobalObjects.missionManager.findMissionByID(i);
+
+                    for(IMission tmp:missions){
                         if((tmp.getMemberIDs().contains(GlobalObjects.currentUser.getUserID())||
                                 tmp.getPublisher()==(GlobalObjects.currentUser.getUserID()))
                                 &&!(tmp.getState().equals("finished"))){
@@ -297,15 +302,13 @@ public class MissionFragment extends Fragment {
                         }
                     }
                 }else if(channelid==2){
-                    for(Integer i:missionIDList){
-                        IMission tmp=GlobalObjects.missionManager.findMissionByID(i);
+                    for(IMission tmp:missions){
                         if(tmp.getApplicantIDs().contains(GlobalObjects.currentUser.getUserID())){
                             missionList.add(tmp);
                         }
                     }
                 }else{
-                    for(Integer i:missionIDList){
-                        IMission tmp=GlobalObjects.missionManager.findMissionByID(i);
+                    for(IMission tmp:missions){
                         if(tmp.getState().equals("finished")){
                             missionList.add(tmp);
                         }

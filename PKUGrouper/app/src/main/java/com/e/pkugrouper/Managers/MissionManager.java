@@ -122,12 +122,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
         if(mission_id_list.size() == 0)
             return null;
         List<IMission> mission_list = new ArrayList<>();
-        for(int mission_id: mission_id_list){
-            IMission mission = findMissionByID(mission_id);
-            mission.setID(mission_id);
-            if(mission != null)
-                mission_list.add(mission);
+        int mission_ids[]=new int[mission_id_list.size()];
+
+        for(int i=0;i<mission_id_list.size();i++){
+            mission_ids[i]=mission_id_list.get(i);
         }
+        mission_list=findMissions(mission_ids);
         return mission_list;
     }
 
@@ -583,9 +583,12 @@ public class MissionManager extends HttpManager implements IMissionManager{
 
         List<IMission> Mission_List = new ArrayList<>();
         JSONArray platformArray = JSON.parseArray(find_response);
+        int i=0;
         for (Object jsonObject : platformArray) {
             String mission_json = jsonObject.toString();
             IMission mission = new Mission();
+            mission.setID(missionIDs[i]);
+            i++;
             mission.loadFromJSON(mission_json);
             Mission_List.add(mission);
         }

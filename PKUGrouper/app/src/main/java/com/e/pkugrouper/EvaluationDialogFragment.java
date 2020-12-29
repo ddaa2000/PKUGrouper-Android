@@ -99,14 +99,13 @@ public class EvaluationDialogFragment extends DialogFragment {
     }
 
     private class EvaluationTask extends AsyncTask<Double,Void,Void>{
-
         Boolean isevaluate=Boolean.FALSE;
         @Override
         protected Void doInBackground(Double... doubles) {
             double score=doubles[0];
             try{
                 int missionid=GlobalObjects.currentMission.getID();
-                int evaluatee=GlobalObjects.currentUser.getUserID();
+                int evaluatee=GlobalObjects.currentMember.getUserID();
                 isevaluate=GlobalObjects.userManager.evaluate(missionid,evaluatee,(int)score);
             }catch(Exception e){
                 String s=e.getMessage();
