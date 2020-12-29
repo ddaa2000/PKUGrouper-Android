@@ -428,22 +428,42 @@ public class MissionManageFragment extends Fragment {
             try{
                 mission=GlobalObjects.currentMission;
                 GlobalObjects.currentMission=GlobalObjects.missionManager.findMissionByID(mission.getID());
-                int userid=GlobalObjects.currentUser.getUserID();
                 List<Integer> list1=GlobalObjects.currentMission.getMemberIDs();
                 List<Integer> list2=GlobalObjects.currentMission.getApplicantIDs();
-
+                int members[]=new int[list1.size()];
+                for(int i=0;i<list1.size();i++){
+                    members[i]=list1.get(i);
+                }
+                int applicants[]=new int[list2.size()];
+                for(int i=0;i<list2.size();i++){
+                    applicants[i]=list2.get(i);
+                }
                 int missionid=GlobalObjects.currentMission.getID();
-                if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser))
-                    member.add(GlobalObjects.currentUser);
-                else
-                    member.add(GlobalObjects.userManager.findMemberByID(missionid,GlobalObjects.currentMission.getPublisher()));
-                for(Integer i:list1){
-                    member.add(GlobalObjects.userManager.findMemberByID(missionid,i));
-                }
-                for(Integer i:list2){
-                    applicant.add(GlobalObjects.userManager.findMemberByID(missionid,i));
-                }
 
+                List<IUser> memberlist=new ArrayList<>();
+                if(members.length!=0){
+                    memberlist=GlobalObjects.userManager.findUsers(missionid,members);
+                }
+                if(applicants.length!=0){
+                    applicant=GlobalObjects.userManager.findUsers(missionid,applicants);
+                }
+                if(GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)){
+                    member.add(GlobalObjects.currentUser);
+                    if(members.length!=0){
+                        for(IUser i:memberlist){
+                            member.add(i);
+                        }
+                    }
+
+                }
+                else{
+                    member.add(GlobalObjects.userManager.findMemberByID(missionid,GlobalObjects.currentMission.getPublisher()));
+                    if(members.length!=0){
+                        for(IUser i:memberlist){
+                            member.add(i);
+                        }
+                    }
+                }
                 isload=Boolean.TRUE;
             }catch(Exception e){
                 String s=e.getMessage();

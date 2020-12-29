@@ -14,6 +14,8 @@ public class Message implements  IMessage{
 
     List<Integer> recipientIDs;
 
+    public static final String TYPE_REPORT ="Report";
+
 
     @Override
     public int getPublisherID() {
@@ -53,7 +55,7 @@ public class Message implements  IMessage{
 
     @Override
     public int getReporteeID() {
-        if(messageType=="Report"){
+        if(messageType.equals(TYPE_REPORT)){
             return reporteeID;
         }
         else{
@@ -63,7 +65,7 @@ public class Message implements  IMessage{
 
     @Override
     public void setReporteeID(int _ID) {
-        if(messageType=="Report") {
+        if(messageType.equals(TYPE_REPORT)) {
             reporteeID=_ID;
         }
     }

@@ -99,15 +99,39 @@ public class EvaluationDialogFragment extends DialogFragment {
     }
 
     private class EvaluationTask extends AsyncTask<Double,Void,Void>{
-
+        Boolean isevaluate=Boolean.FALSE;
         @Override
         protected Void doInBackground(Double... doubles) {
+            double score=doubles[0];
+            try{
+                int missionid=GlobalObjects.currentMission.getID();
+                int evaluatee=GlobalObjects.currentMember.getUserID();
+                isevaluate=GlobalObjects.userManager.evaluate(missionid,evaluatee,(int)score);
+            }catch(Exception e){
+                String s=e.getMessage();
+                if(s.equals("User is null!")){
+
+                }else if(s.equals("Mission ID and Evaluatee ID should be greater than 0!")||s.equals("Score should be greater than 0!")){
+
+                }else if(s.equals("Evaluate is bad request!")){
+
+                }else if(s.equals("Evaluate is forbidden!")){
+
+                }else{
+
+                }
+                System.out.println(s);
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            evaluateSucceeded();
+            if(isevaluate){
+                evaluateSucceeded();
+            }else {
+                evaluateFailed();
+            }
         }
     }
 }

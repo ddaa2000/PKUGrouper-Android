@@ -1,9 +1,11 @@
 package com.e.pkugrouper;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -64,19 +66,18 @@ public class EditPasswordActivity extends AppCompatActivity {
          * @param strings 依次是 旧密码，新密码
          * @return
          */
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected Void doInBackground(String... strings) {
             String oldpassword=strings[0];
             String newpassword=strings[1];
-            String savepassword=GlobalObjects.currentUser.getPassword();
-            String RSAOld = new RSAUtils().encrypto(oldpassword);
-            if(savepassword.equals(RSAOld)){
+            String savepassword=new RSAUtils().decrypto(GlobalObjects.currentUser.getPassword());
+            if(savepassword.equals(oldpassword)){
                 if(newpassword.equals(oldpassword)){
                     failure=FailCode.OLDNEWSAME;
                 }else{
                     try{
-                        GlobalObjects.userManager.changePassword(newpassword);
-                        ischange=Boolean.TRUE;
+                        ischange=GlobalObjects.userManager.changePassword(newpassword);
                     }catch(Exception e){
                         String s=e.getMessage();
                         if(s.equals("User is null")||s.equals("User is not found!")){

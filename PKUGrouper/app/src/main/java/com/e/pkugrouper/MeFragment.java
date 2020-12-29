@@ -21,7 +21,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.e.pkugrouper.Models.IMessage;
+import com.e.pkugrouper.Models.IMission;
 import com.e.pkugrouper.Models.Message;
+import com.e.pkugrouper.Models.Mission;
 import com.e.pkugrouper.Models.User;
 import com.google.android.material.card.MaterialCardView;
 
@@ -164,7 +166,7 @@ public class MeFragment extends Fragment {
         return v;
     }
 
-    private void userLoadSucceeded(List<IMessage> messages,int missionPresentNum, int missionPublishedNum, double evaluationAverage){
+    private void userLoadSucceeded(List<IMessage> messages,int missionPresentNum, int missionPublishedNum, double evaluationAverage,int evaluationNumber){
 
         for(View view : contents){
             view.setAlpha(0f);
@@ -206,8 +208,8 @@ public class MeFragment extends Fragment {
         missionPublished.setText(""+missionPublishedNum);
         missionPresent.setText(""+missionPresentNum);
         userNameSecondText.setText(GlobalObjects.currentUser.getUserName());
-        evaluationText.setText(((Float)(float)evaluationAverage).toString());
-        ratingBar.setRating((float)evaluationAverage);
+        evaluationText.setText(""+evaluationNumber);
+        ratingBar.setRating((float)evaluationAverage/2);
         firstCharacter.setText(""+GlobalObjects.currentUser.getUserName().charAt(0));
 
         messageAdapter.reloadData(messages);
@@ -243,7 +245,7 @@ public class MeFragment extends Fragment {
         });
     }
     private enum FailCode{
-        USERNF,ERROR
+        USERNF,BADREQUEST,MISSIONID,MISSIONNF
     }
     private void userLoadFailed(FailCode failCode){
 
@@ -253,19 +255,44 @@ public class MeFragment extends Fragment {
 
         List<IMessage> messagelist=new ArrayList<>();
         Boolean isload=Boolean.FALSE;
+        int missionPresentNum=0;
+        int missionPublishedNum=0;
+        double evaluationAverage=0.0;
+        int evaluationNumber=0;
         FailCode failure;
         @Override
         protected Void doInBackground(Void... voids) {
             GlobalObjects.currentUser=GlobalObjects.userManager.getSelf();
             try{
                 messagelist=GlobalObjects.messageManager.getCurrentUserMessages();
+                evaluationAverage=GlobalObjects.currentUser.getAverageScore();
+                List<Integer> missionlist=GlobalObjects.currentUser.getMissionIDs();
+                int missionidlist[]=new int[missionlist.size()];
+                for(int i=0;i<missionlist.size();i++){
+                    missionidlist[i]=missionlist.get(i);
+                }
+                List<IMission> missions=GlobalObjects.missionManager.findMissions(missionidlist);
+                evaluationNumber=GlobalObjects.currentUser.getEvaluationIDs().size();
+                for(IMission mission:missions){
+
+                    if(!mission.isFinished()){
+                        missionPresentNum=missionPresentNum+1;
+                    }
+                    if(mission.getPublisher()==GlobalObjects.currentUser.getUserID()){
+                        missionPublishedNum=missionPublishedNum+1;
+                    }
+                }
                 isload=Boolean.TRUE;
             }catch(Exception e){
                 String s=e.getMessage();
                 if(s.equals("currentUser is null")||s.equals("User is not found!")){
                     failure= FailCode.USERNF;
-                }else{
-                    failure=FailCode.ERROR;
+                }else if(s.equals("missionID should be greater than 0!")){
+                    failure= FailCode.MISSIONID;
+                }else if(s.equals("mission is not found!")){
+                    failure= FailCode.MISSIONNF;
+                } else{
+                    failure=FailCode.BADREQUEST;
                 }
             }
             return null;
@@ -274,7 +301,7 @@ public class MeFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             if(isload){
-                userLoadSucceeded(messagelist,0,0,0);
+                userLoadSucceeded(messagelist,missionPresentNum,missionPublishedNum,evaluationAverage,evaluationNumber);
             }else{
                 userLoadFailed(failure);
             }

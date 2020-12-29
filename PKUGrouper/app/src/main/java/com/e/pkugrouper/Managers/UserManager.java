@@ -538,9 +538,12 @@ public class UserManager extends HttpManager implements IUserManager{
 
         List<IUser> gettee_List = new ArrayList<>();
         JSONArray platformArray = JSON.parseArray(find_response);
+        int i=0;
         for (Object jsonObject : platformArray) {
             String gettee_json = jsonObject.toString();
             IUser gettee = new User();
+            gettee.setUserID(getteeIDs[i]);
+            i++;
             gettee.loadFromJSON(gettee_json);
             gettee_List.add(gettee);
         }

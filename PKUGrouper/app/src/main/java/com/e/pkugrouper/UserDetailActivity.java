@@ -190,7 +190,7 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
             if(evaluation!=null) {
                 evaluateButton.setClickable(false);
                 evaluateButton.setText("已评价");
-                ratingBar.setRating((float)evaluation.getScore());
+                ratingBar.setRating((float)evaluation.getScore()/2);
                 evaluationText.setVisibility(View.GONE);
             }
             else{
@@ -305,6 +305,8 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
         String missiontotal;
         double average=0.0;
         Boolean isapplicant;
+        IEvaluation eval=new Evaluation();
+        Boolean isevaluate=Boolean.FALSE;
         private HttpManager http=new HttpManager();
         @Override
         protected Void doInBackground(Void... voids) {
@@ -323,8 +325,8 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
                 for(Integer evaluationID:evaluationlist){
                     List<String> parameters = Arrays.asList(String.valueOf(evaluationID));
                     JSONObject request_body = new JSONObject();
-                    request_body.put("senderID",GlobalObjects.currentMember.getUserID());
-                    request_body.put("passwordAfterRSA", GlobalObjects.currentMember.getPassword());
+                    request_body.put("senderID",GlobalObjects.currentUser.getUserID());
+                    request_body.put("passwordAfterRSA", GlobalObjects.currentUser.getPassword());
 
                     String evaluation_JSON = http.httpGet(url,parameters,request_body.toJSONString());
 
@@ -335,7 +337,14 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
 
                     IEvaluation evaluation = new Evaluation();
                     evaluation.loadFromJSON(evaluation_JSON);
+                    if(evaluation.getMissionID()==GlobalObjects.currentMission.getID()&&evaluation.getEvaluaterID()==GlobalObjects.currentUser.getUserID()){
+                        eval=evaluation;
+                        isevaluate=Boolean.TRUE;
+                    }
                     average+=evaluation.getScore();
+                }
+                if(isevaluate==Boolean.FALSE){
+                    eval=null;
                 }
                 if(evaluationlist.size()==0){
                     averagescore="暂无";
@@ -354,7 +363,7 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            userDetailLoadSucceeded(averagescore,missiontotal,isapplicant, null);
+            userDetailLoadSucceeded(averagescore,missiontotal,isapplicant, eval);
         }
     }
 

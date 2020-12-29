@@ -47,7 +47,7 @@ public class LoginFragment extends Fragment {
         passwordEditText = v.findViewById(R.id.logInPasswordEditText);
 
         userNameEditText.setText("1800013008@pku.edu.cn");
-        passwordEditText.setText("DD2000114%%%");
+        passwordEditText.setText("12345678");
 
         logInButton = v.findViewById(R.id.logInButton);
         logInButton.setOnClickListener(new View.OnClickListener(){
