@@ -11,7 +11,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#E0F7FA</color>
 
-    <color name="transparent">#0000E2FF</color>
+    <color name="transparent">#00000000</color>
     <color name="transparent2">#00FFFFFF</color>
 
     <color name="cardColor">@color/beige_25</color>
@@ -21,6 +21,7 @@
     <color name="primaryColor">@color/beige_500</color>
     <color name="primaryVariantColor">@color/beige_700</color>
     <color name="textColor">@color/beige_900</color>
+    <color name="textColor_gray">#A18882</color>
 
     <!--    <color name="primary_25">@color/cyan_25</color>-->
     <!--    <color name="primary_50">@color/cyan_100</color>-->

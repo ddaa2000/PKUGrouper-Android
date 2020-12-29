@@ -2,9 +2,11 @@ package com.e.pkugrouper;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.ViewFlipper;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +36,7 @@ public class HelloWorldFragment extends Fragment {
 
     private Button helloButton;
     private TabLayout logInRegisterTab;
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private LogInRegisterAdpater logInRegisterAdpater;
 
     public HelloWorldFragment() {
@@ -104,8 +107,24 @@ public class HelloWorldFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        logInRegisterAdpater = new LogInRegisterAdpater(getActivity().getSupportFragmentManager());
+        logInRegisterAdpater = new LogInRegisterAdpater(getActivity());
+        viewPager.setAdapter(null);
         viewPager.setAdapter(logInRegisterAdpater);
-        logInRegisterTab.setupWithViewPager(viewPager);
+        new TabLayoutMediator(logInRegisterTab, viewPager,
+                new TabLayoutMediator.TabConfigurationStrategy() {
+                    @Override
+                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position){
+                        switch (position){
+                            case 0:
+                                tab.setText("登录");
+                                break;
+                            case 1:
+                                tab.setText("注册");
+                                break;
+                        }
+
+                    }
+                }
+        ).attach();
     }
 }

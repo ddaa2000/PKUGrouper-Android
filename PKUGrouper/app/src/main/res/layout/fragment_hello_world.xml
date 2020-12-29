@@ -62,14 +62,14 @@
                     </com.google.android.material.tabs.TabLayout>
 
 
-                    <androidx.viewpager.widget.ViewPager
+                    <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/logInRegisterViewPager"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
 
-                    </androidx.viewpager.widget.ViewPager>
+                    </androidx.viewpager2.widget.ViewPager2>
 
 
                 </LinearLayout>

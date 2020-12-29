@@ -141,7 +141,7 @@
         <item name="android:fontFamily">@font/fangzhenglantinghei</item>
     </style>
     <style name="TextAppearance.Shrine.body2" parent="TextAppearance.MaterialComponents.Body2">
-        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColor">@color/textColor_gray</item>
         <item name="fontFamily">@font/fangzhenglantinghei</item>
         <item name="android:fontFamily">@font/fangzhenglantinghei</item>
     </style>
