@@ -27,4 +27,5 @@ public interface IMissionManager {
     boolean quit(int missionID);                       // mission/quit
     boolean start(int missionID);                      // mission/start
     boolean finish(int missionID);                     // mission/finish
+    List<IMission> findMissions(int[] missionIDs);    // findmissions
 }

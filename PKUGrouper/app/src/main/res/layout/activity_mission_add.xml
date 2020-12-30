@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MissionAddActivity">
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:menu="@menu/bottom_navigation_menu"
+                app:navigationIcon="@drawable/ic_launcher_foreground"
+                app:title="page title" />
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:orientation="vertical" >
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任务标题"
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="任务标题"
+                android:layout_marginTop="10dp"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/missionAdd_missionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任务内容"
+                android:layout_marginTop="40dp"
+                android:textAppearance="?attr/textAppearanceHeadline4"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="任务内容"
+                android:layout_marginTop="10dp"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:gravity="top"
+                    android:id="@+id/missionAdd_mssionContent"
+                    android:layout_width="match_parent"
+                    android:lines="6"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_marginTop="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceHeadline4"
+                android:text="频道"/>
+
+            <CheckBox
+                android:id="@+id/missionAdd_channelProfessional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="专业课"/>
+            <CheckBox
+                android:id="@+id/missionAdd_channelGeneral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="通选课"/>
+            <CheckBox
+                android:id="@+id/missionAdd_channelLife"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="生活"/>
+<!--            <CheckBox-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="其他"/>-->
+            <Button
+                android:id="@+id/missionAdd_missionCreate"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="创建任务"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

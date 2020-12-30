@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".UserDetailActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:background="@color/beige_500"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:background="@color/beige_500"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    app:titleMarginStart="70dp"
+                    app:titleTextColor="@color/white"
+                    app:title="PKUGrouper"
+                    android:background="@color/beige_500"
+                    android:id="@+id/topAppBar"
+                    style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize" />
+
+
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <ImageView
+            app:srcCompat="@drawable/icon"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="50dp"
+            android:layout_weight="0"
+            android:layout_height="50dp"/>
+    </FrameLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardElevation="5dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/userDetail_content1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp">
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/circle_bg" />
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceHeadline5"
+                            android:textColor="@color/white"
+                            android:id="@+id/userDetail_firstCharacter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="无"/>
+                    </FrameLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="***"
+                            android:id="@+id/userDetail_memberName"
+                            android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                        <View
+                            android:layout_marginVertical="5dp"
+                            android:id="@+id/divider2"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/userDetail_email"
+                            android:text="***********"
+                            android:textAppearance="?attr/textAppearanceBody2" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <ProgressBar
+                android:id="@+id/userDetail_progress1"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:indeterminateTint="@color/beige_500"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardElevation="5dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/userDetail_content2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:text="统计"/>
+
+                <View
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:textAppearance="?attr/textAppearanceBody2"
+                        android:text="获得的评价数："/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="textEnd"
+                        android:textAppearance="?attr/textAppearanceBody2"
+                        android:id="@+id/userDeatail_evaluationTotal"
+                        android:layout_marginRight="10dp"
+                        android:text="***"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:textAppearance="?attr/textAppearanceBody2"
+                        android:text="评价得分："/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/userDetail_evaluation"
+                        android:textAppearance="?attr/textAppearanceBody2"
+                        android:layout_marginRight="10dp"
+                        android:text="***"/>
+                </LinearLayout>
+            </LinearLayout>
+            <ProgressBar
+                android:id="@+id/userDetail_progress2"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:indeterminateTint="@color/beige_500"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/userDeatail_manageCard"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardElevation="5dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/userDetail_content3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="管理"
+                    android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                <View
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:id="@+id/userDetail_kickOrAccept"
+                        android:text="踢出任务"/>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:id="@+id/userDetail_refuseApplicant"
+                        android:text="拒绝申请"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <ProgressBar
+                android:id="@+id/userDetail_progress3"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:indeterminateTint="@color/beige_500"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/userDetail_evaluationCard"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardElevation="5dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/userDetail_content4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="评价"
+                    android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                <View
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <RatingBar
+                    android:id="@+id/userDetail_rating"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:stepSize="0.5"
+                    android:numStars="5"
+                    android:isIndicator="true"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    android:layout_gravity="center_horizontal"/>
+                <TextView
+                    android:id="@+id/userDetail_evaluationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:text="还没有进行评价"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:id="@+id/userDetail_evaluate"
+                        android:text="评价"/>
+                </LinearLayout>
+
+            </LinearLayout>
+            <ProgressBar
+                android:id="@+id/userDetail_progress4"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:indeterminateTint="@color/beige_500"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/userDeatail_reportCard"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardElevation="5dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_marginVertical="10dp"
+                android:id="@+id/userDetail_content5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/userDetail_report"
+                    android:text="举报该用户"/>
+
+            </LinearLayout>
+            <ProgressBar
+                android:id="@+id/userDetail_progress5"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:indeterminateTint="@color/beige_500"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="支持"-->
+<!--                android:textAppearance="?attr/textAppearanceHeadline6"/>-->
+
+<!--            <View-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:background="?android:attr/listDivider" />-->
+
+<!--            -->
+
+<!--        </LinearLayout>-->
+
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

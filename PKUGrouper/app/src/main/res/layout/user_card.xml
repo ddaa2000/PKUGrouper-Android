@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/user_card"
+    android:clickable="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:layout_marginLeft="8dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_gravity="center"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="0"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/circle_bg" />
+            <ImageView
+                android:layout_gravity="center"
+                android:id="@+id/imageView2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon" />
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:layout_marginLeft="16dp">
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/userCard_userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="方正兰亭细黑简体"
+                android:textAppearance="?attr/textAppearanceHeadline5" />
+
+
+
+<!--            <FrameLayout-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content">-->
+<!--                <ProgressBar-->
+<!--                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:scaleY="5"-->
+<!--                    android:max="10"-->
+<!--                    an-->
+<!--                    android:progress="5"/>-->
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:text="5"/>-->
+
+<!--            </FrameLayout>-->
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

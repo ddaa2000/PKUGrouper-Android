@@ -3,12 +3,21 @@ package com.e.pkugrouper;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.e.pkugrouper.Models.IMission;
+import com.e.pkugrouper.Models.Mission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +40,22 @@ public class MissionListFragment extends Fragment {
 
     private List<String> stringArrayList = new ArrayList<String>();
     private MissionAdapter missionAdapter;
-    private ListView listView;
+    private RecyclerView missionRecyclerView;
+    private List<IMission> missions = new ArrayList<IMission>();
+
+
+    public Fragment parentFragment;
+
+
+    public Handler mHandler = new Handler() {
+        public void handleMessage (Message msg) {//此方法在ui线程运行
+            setMissions((List<IMission>)msg.obj);
+        }
+    };
+
+    public void setMissions(List<IMission> newMissions){
+        missionAdapter.reloadData(newMissions);
+    }
 
     public MissionListFragment() {
         // Required empty public constructor
@@ -70,13 +94,23 @@ public class MissionListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.e("list added","list added");
+
         View v = inflater.inflate(R.layout.fragment_mission_list, container, false);
-        for(int i = 0;i<40;i++){
-            stringArrayList.add("Mission "+i);
-        }
-        missionAdapter = new MissionAdapter(getActivity(),R.layout.mission_item,stringArrayList);
-        listView = v.findViewById(R.id.mission_list);
-        listView.setAdapter(missionAdapter);
+
+//        missionAdapter = new MissionAdapter(missions,getActivity());
+//        missionRecyclerView = v.findViewById(R.id.mission_list);
+//        missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        missionRecyclerView.setAdapter(missionAdapter);
+//        missionRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+//            @Override
+//            public void onLoadMore() {
+//                missionAdapter.setLoadState(missionAdapter.LOADING);
+//                Toast.makeText(getContext(),"loading",2).show();
+//            }
+//        });
+
+        //listView = v.findViewById(R.id.mission_list);
+        //listView.setAdapter(missionAdapter);
         Log.e("list added","list added");
         return v;
     }

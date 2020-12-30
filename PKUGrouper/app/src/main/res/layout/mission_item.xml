@@ -5,20 +5,114 @@
     android:id="@+id/mission_item"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_height="100dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/mission_list_mission_name"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:textSize="24sp"
-        android:text="Mission" />
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:id="@+id/mission_item_card"
+        app:cardElevation="5dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginVertical="2.5dp"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:textSize="18sp"
-        android:text="description of the mission" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_gravity="top"
+                android:layout_width="50dp"
+                android:layout_height="50dp">
+                <ImageView
+                    android:id="@+id/missionItem_professional"
+                    android:layout_gravity="top"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/professional_new" />
+                <ImageView
+                    android:id="@+id/missionItem_general"
+                    android:layout_gravity="top"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/general_new" />
+                <ImageView
+                    android:id="@+id/missionItem_life"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/life_new" />
+                <ImageView
+                    android:id="@+id/missionItem_other"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/other_new" />
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_gravity="top"
+                        android:layout_marginTop="0dp"
+                        android:id="@+id/mission_item_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="任务标题"
+                        android:maxLines="3"
+                        android:ellipsize="end"
+                        android:textAppearance="?attr/textAppearanceHeadline5" />
+<!--                    <com.google.android.material.chip.Chip-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="0"-->
+<!--                        android:text="专业课"/>-->
+                </LinearLayout>
+
+
+
+                <TextView
+                    android:id="@+id/mission_item_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:text="任务内容"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:textAppearance="?attr/textAppearanceBody2" />
+                <!--            <TextView-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_marginTop="10dp"-->
+                <!--                android:text="5/10"-->
+                <!--                android:textAppearance="?attr/textAppearanceBody2" />-->
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>
