@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.e.pkugrouper.Models.IMessage;
 import com.e.pkugrouper.Models.IMission;
@@ -216,6 +217,7 @@ public class MeFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 EditMeFragment fragment = new EditMeFragment();
+                fragment.setTargetFragment(MeFragment.this,0);
                 fragment.show(fm,"editMeFragment");
             }
         });
@@ -225,6 +227,7 @@ public class MeFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 EditPasswordFragment fragment = new EditPasswordFragment();
+                fragment.setTargetFragment(MeFragment.this,0);
                 fragment.show(fm,"editPasswordFragment");
             }
         });
@@ -301,6 +304,28 @@ public class MeFragment extends Fragment {
             view.setVisibility(View.INVISIBLE);
         }
         for(ProgressBar progressBar : progressBars){
+            progressBar.setAlpha(1);
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        for(MaterialCardView card : cards){
+            final ObjectAnimator anim1 = ObjectAnimator.ofFloat(card,"scaleX",0f,1f);
+            final ObjectAnimator anim2 = ObjectAnimator.ofFloat(card,"scaleY",0f,1f);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(anim1,anim2);
+            animatorSet.setDuration((long)(Math.random()*300+150));
+            animatorSet.start();
+        }
+
+        new UserLoadTask().execute();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        for(View view : contents){
+            view.setVisibility(View.INVISIBLE);
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setAlpha(1);
             progressBar.setVisibility(View.VISIBLE);
         }
         for(MaterialCardView card : cards){

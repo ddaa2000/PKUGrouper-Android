@@ -190,6 +190,7 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
             if(evaluation!=null) {
                 evaluateButton.setClickable(false);
                 evaluateButton.setText("已评价");
+                ratingBar.setVisibility(View.VISIBLE);
                 ratingBar.setRating((float)evaluation.getScore()/2);
                 evaluationText.setVisibility(View.GONE);
             }

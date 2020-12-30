@@ -1,6 +1,7 @@
 package com.e.pkugrouper;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -101,6 +102,8 @@ public class EditPasswordFragment extends DialogFragment {
 
     private void userEditPasswordSucceeded(){
         Toast.makeText(getContext(),"修改成功",2).show();
+        Intent intent = new Intent();
+        getTargetFragment().onActivityResult(getTargetRequestCode(),1,intent);
         dismiss();
     }
 
