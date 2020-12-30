@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -13,12 +15,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.e.pkugrouper.Models.IMission;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -39,6 +43,8 @@ public class MissionFragment extends Fragment {
     private FloatingActionButton addMissionButton;
     private TabLayout statusTab;
     private MissionListFragment missionListFragment;
+
+    NavigationView navigationView;
 
     private StatusSearchTask statusSearchTask;
 
@@ -107,6 +113,11 @@ public class MissionFragment extends Fragment {
         }
     }
 
+    private void createMission(){
+        MissionAddFragment missionAddFragment = new MissionAddFragment();
+        missionAddFragment.show(getActivity().getSupportFragmentManager(),"missionAddDialog");
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -123,12 +134,49 @@ public class MissionFragment extends Fragment {
 
         missionListFragment = (MissionListFragment)getChildFragmentManager().findFragmentById(R.id.mission_missionListFragment);
 
+        navigationView = v.findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
+                FragmentManager fm;
+                switch(item.getItemId()){
+                    case R.id.navigation_basicUse:
+                        intent = new Intent(getActivity(),HelpBasicUserActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.navigation_character:
+                        intent = new Intent(getActivity(),HelpCharacterActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.navigation_missionLife:
+                        intent = new Intent(getActivity(),HelpMissionLifecycleActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.navigation_reportBug:
+                        fm = getActivity().getSupportFragmentManager();
+                        ReportBugFragment fragment = new ReportBugFragment();
+                        fragment.show(fm,"reportBugFragment");
+                        break;
+                    case R.id.navigation_logOut:
+                        GlobalObjects.currentUser = null;
+                        fm = getActivity().getSupportFragmentManager();
+                        Fragment logInFragment = new HelloWorldFragment();
+                        fm.beginTransaction().replace(R.id.main_frame,logInFragment).commit();
+                        break;
+                    case R.id.navigation_missionCreate:
+                        createMission();
+                        break;
+                }
+                return true;
+            }
+        });
+
         addMissionButton = v.findViewById(R.id.mission_addMissionFloat);
         addMissionButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                MissionAddFragment fragment = new MissionAddFragment();
-                fragment.show(getActivity().getSupportFragmentManager(),"missionAddDialog");
+                createMission();
             }
         });
 

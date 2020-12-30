@@ -9,129 +9,149 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        tools:openDrawer="start"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:orientation="vertical">
-
-        <FrameLayout
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
+            android:orientation="vertical"
             android:layout_height="match_parent">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <androidx.coordinatorlayout.widget.CoordinatorLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.appbar.AppBarLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <com.google.android.material.appbar.MaterialToolbar
-                            app:titleMarginStart="70dp"
-                            app:titleTextColor="@color/white"
-                            app:title="PKUGrouper"
-                            android:id="@+id/topAppBar"
-                            style="@style/Widget.MaterialComponents.Toolbar.Primary"
-                            android:layout_width="match_parent"
-                            android:layout_height="?attr/actionBarSize" />
-
-
-
-                    </com.google.android.material.appbar.AppBarLayout>
-
-
-                </androidx.coordinatorlayout.widget.CoordinatorLayout>
-                <ImageView
-                    app:srcCompat="@drawable/icon"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="50dp"
-                    android:layout_weight="0"
-                    android:layout_height="50dp"/>
-
-            </FrameLayout>
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical">
+                android:layout_weight="0"
+                android:orientation="vertical">
 
-                <View
-                    android:layout_width="80dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="0" />
-                <!--                <com.google.android.material.textfield.TextInputLayout-->
-                <!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-                <!--                    android:layout_marginHorizontal="10dp"-->
-                <!--                    app:boxBackgroundColor="@color/beige_25"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content">-->
-                <!--                    <com.google.android.material.textfield.TextInputEditText-->
-                <!--                        android:layout_width="match_parent"-->
-                <!--                        android:layout_height="30dp"/>-->
-                <!--                </com.google.android.material.textfield.TextInputLayout>-->
-<!--                <SearchView-->
-<!--                    android:id="@+id/mission_searchView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:elevation="20dp"-->
-<!--                    android:iconifiedByDefault="false" />-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <androidx.coordinatorlayout.widget.CoordinatorLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.appbar.AppBarLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.google.android.material.appbar.MaterialToolbar
+                                    app:titleMarginStart="70dp"
+                                    app:titleTextColor="@color/white"
+                                    app:title="PKUGrouper"
+                                    android:id="@+id/topAppBar"
+                                    style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="?attr/actionBarSize" />
+
+
+
+                            </com.google.android.material.appbar.AppBarLayout>
+
+
+                        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                        <ImageView
+                            app:srcCompat="@drawable/icon"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="50dp"
+                            android:layout_weight="0"
+                            android:layout_height="50dp"/>
+
+                    </FrameLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical">
+
+                        <View
+                            android:layout_width="80dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="0" />
+                        <!--                <com.google.android.material.textfield.TextInputLayout-->
+                        <!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+                        <!--                    android:layout_marginHorizontal="10dp"-->
+                        <!--                    app:boxBackgroundColor="@color/beige_25"-->
+                        <!--                    android:layout_width="match_parent"-->
+                        <!--                    android:layout_height="wrap_content">-->
+                        <!--                    <com.google.android.material.textfield.TextInputEditText-->
+                        <!--                        android:layout_width="match_parent"-->
+                        <!--                        android:layout_height="30dp"/>-->
+                        <!--                </com.google.android.material.textfield.TextInputLayout>-->
+                        <!--                <SearchView-->
+                        <!--                    android:id="@+id/mission_searchView"-->
+                        <!--                    android:layout_width="match_parent"-->
+                        <!--                    android:layout_height="40dp"-->
+                        <!--                    android:elevation="20dp"-->
+                        <!--                    android:iconifiedByDefault="false" />-->
+
+                    </LinearLayout>
+
+
+                </FrameLayout>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/mission_statusTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="正在进行" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="申请中" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="已完成" />
+
+
+                </com.google.android.material.tabs.TabLayout>
 
             </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <fragment
+                    android:id="@+id/mission_missionListFragment"
+                    android:name="com.e.pkugrouper.MissionListFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
-        </FrameLayout>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/mission_addMissionFloat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="16dp"
+                    app:maxImageSize="50dp"
+                    app:srcCompat="@mipmap/ic_add_foreground"
+                    app:tint="@color/white"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/mission_statusTab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </FrameLayout>
+        </LinearLayout>
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="正在进行" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="申请中" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="已完成" />
-
-
-        </com.google.android.material.tabs.TabLayout>
-
-    </LinearLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <fragment
-            android:id="@+id/mission_missionListFragment"
-            android:name="com.e.pkugrouper.MissionListFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/mission_addMissionFloat"
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigationView"
+            app:menu="@menu/navigation_drawer"
+            app:headerLayout="@layout/navigation_header"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
-            app:maxImageSize="50dp"
-            app:srcCompat="@mipmap/ic_add_foreground"
-            app:tint="@color/white"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+            android:layout_height="match_parent"
+            android:layout_gravity="start" />
+    </androidx.drawerlayout.widget.DrawerLayout>
 
-    </FrameLayout>
+
 
 
 

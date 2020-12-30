@@ -4,15 +4,11 @@
         android:id="@+id/group1">
         <item
             android:id="@+id/navigation_missionCreate"
-            android:icon="@android:drawable/ic_dialog_info"
+            android:icon="@android:drawable/ic_menu_add"
             android:title="创建任务" />
         <item
-            android:id="@+id/navigation_settings"
-            android:icon="@android:drawable/ic_dialog_info"
-            android:title="设置" />
-        <item
             android:id="@+id/navigation_logOut"
-            android:icon="@android:drawable/ic_menu_call"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
             android:title="登出" />
     </group>
 
@@ -20,15 +16,15 @@
         <menu>
             <item
                 android:id="@+id/navigation_basicUse"
-                android:icon="@android:drawable/ic_dialog_info"
+                android:icon="@android:drawable/ic_menu_help"
                 android:title="基本操作" />
             <item
                 android:id="@+id/navigation_character"
-                android:icon="@android:drawable/ic_dialog_info"
+                android:icon="@android:drawable/ic_menu_help"
                 android:title="角色说明" />
             <item
                 android:id="@+id/navigation_missionLife"
-                android:icon="@android:drawable/ic_dialog_info"
+                android:icon="@android:drawable/ic_menu_help"
                 android:title="任务状态" />
         </menu>
     </item>
@@ -37,11 +33,8 @@
         <menu>
             <item
                 android:id="@+id/navigation_reportBug"
-                android:icon="@android:drawable/ic_dialog_info"
+                android:icon="@android:drawable/ic_menu_directions"
                 android:title="问题反馈" />
-            <item
-                android:icon="@android:drawable/ic_dialog_info"
-                android:title="关于" />
         </menu>
     </item>
 

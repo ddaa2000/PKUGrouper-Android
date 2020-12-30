@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,6 +29,7 @@ import com.e.pkugrouper.Models.Message;
 import com.e.pkugrouper.Models.Mission;
 import com.e.pkugrouper.Models.User;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +49,8 @@ public class MeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private NavigationView navigationView;
 
     private RecyclerView messageRecycler;
 
@@ -147,9 +152,52 @@ public class MeFragment extends Fragment {
         progressBars.add(v.findViewById(R.id.me_progress4));
         progressBars.add(v.findViewById(R.id.me_progress5));
 
+        navigationView = v.findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
+                FragmentManager fm;
+                switch(item.getItemId()){
+                    case R.id.navigation_basicUse:
+                        intent = new Intent(getActivity(),HelpBasicUserActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.navigation_character:
+                        intent = new Intent(getActivity(),HelpCharacterActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.navigation_missionLife:
+                        intent = new Intent(getActivity(),HelpMissionLifecycleActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.navigation_reportBug:
+                        fm = getActivity().getSupportFragmentManager();
+                        ReportBugFragment fragment = new ReportBugFragment();
+                        fragment.show(fm,"reportBugFragment");
+                        break;
+                    case R.id.navigation_logOut:
+                        GlobalObjects.currentUser = null;
+                        fm = getActivity().getSupportFragmentManager();
+                        Fragment logInFragment = new HelloWorldFragment();
+                        fm.beginTransaction().replace(R.id.main_frame,logInFragment).commit();
+                        break;
+                    case R.id.navigation_missionCreate:
+                        createMission();
+                        break;
+                }
+                return true;
+            }
+        });
+
+
 
 
         return v;
+    }
+    private void createMission(){
+        MissionAddFragment missionAddFragment = new MissionAddFragment();
+        missionAddFragment.show(getActivity().getSupportFragmentManager(),"missionAddDialog");
     }
 
     private void userLoadSucceeded(List<IMessage> messages,int missionPresentNum, int missionPublishedNum, double evaluationAverage,int evaluationNumber){
