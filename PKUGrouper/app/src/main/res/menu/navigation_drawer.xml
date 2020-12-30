@@ -3,14 +3,15 @@
     <group
         android:id="@+id/group1">
         <item
+            android:id="@+id/navigation_missionCreate"
             android:icon="@android:drawable/ic_dialog_info"
             android:title="创建任务" />
         <item
-            android:id="@+id/item1"
+            android:id="@+id/navigation_settings"
             android:icon="@android:drawable/ic_dialog_info"
             android:title="设置" />
         <item
-            android:id="@+id/item2"
+            android:id="@+id/navigation_logOut"
             android:icon="@android:drawable/ic_menu_call"
             android:title="登出" />
     </group>
@@ -18,23 +19,24 @@
     <item android:title="帮助">
         <menu>
             <item
-                android:id="@+id/item1_1"
+                android:id="@+id/navigation_basicUse"
                 android:icon="@android:drawable/ic_dialog_info"
-                android:title="任务创建" />
+                android:title="基本操作" />
             <item
-                android:id="@+id/item1_2"
+                android:id="@+id/navigation_character"
                 android:icon="@android:drawable/ic_dialog_info"
-                android:title="任务管理" />
+                android:title="角色说明" />
             <item
-                android:id="@+id/item1_3"
+                android:id="@+id/navigation_missionLife"
                 android:icon="@android:drawable/ic_dialog_info"
-                android:title="评分" />
+                android:title="任务状态" />
         </menu>
     </item>
 
     <item android:title="支持">
         <menu>
             <item
+                android:id="@+id/navigation_reportBug"
                 android:icon="@android:drawable/ic_dialog_info"
                 android:title="问题反馈" />
             <item

@@ -2,25 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.e.pkugrouper">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_pkugrouper"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.PKUGrouper">
-
-
-        <activity android:name=".EditPasswordActivity"></activity>
+        android:theme="@style/Theme.PKUGrouper.Purple"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".HelpMissionLifecycleActivity"></activity>
+        <activity android:name=".HelpCharacterActivity" />
+        <activity android:name=".HelpBasicUserActivity" />
+        <activity android:name=".EditPasswordActivity" />
         <activity android:name=".EditMeActivity" />
         <activity android:name=".TestThemeActivity" />
         <activity android:name=".MissionAddActivity" />
         <activity android:name=".UserDetailActivity" />
         <activity android:name=".MissionDetailActivity" />
-
-        <activity android:name=".MainActivity"
-                  android:windowSoftInputMode="adjustPan">
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +32,5 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>

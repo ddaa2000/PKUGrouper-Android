@@ -11,4 +11,18 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="help_missionCreate">您可以使用广场或任务列表页面的“+”按钮或快速导航中的“创建任务”按钮可以进行任务的创建。新建任务需要包含一个任务名，作为您任务的标题，以及一段任务内容描述，以讲解任务的内容。同时，可以选择一个频道以标明任务的类别。</string>
+    <string name="help_missionManage">任务的发起者可以管理任务，包括：\n
+        通过任务页面查看任务状态，任务成员和任务申请者。可以选择开始，删除或完成任务。\n
+        通过成员和申请者页面可以管理成员和申请者，包括踢出成员，同意或拒绝申请。</string>
+    <string name="help_missionJoin">可以通过在任务页面点击申请加入按钮申请加入某个任务，若该任务的发起者同意了申请，即可加入任务。\n
+        在任务正式开始前，可以在任务页面自由退出任务。</string>
+    <string name="help_evaluate">在任务结束后，所有人可以对同组的成员进行一次评价，评分将有助于体现一位用户在任务中的表现，在审核申请时，平均得分和获得的评价数将成为两个重要的指标。</string>
+    <string name="help_viewSelf">您可以在个人页面浏览自己的基本信息和统计信息，包括任务数统计，当前得分等。也可以在此处修改自己的个人资料和密码。</string>
+    <string name="help_publisher">发布者是任务的创建者，拥有任务的绝对管理权限，包括管理成员，管理任务状态，管理申请等，能够浏览成员的联系方式，在任务结束后可以评价成员和发布者。</string>
+    <string name="help_member">成员是加入任务的人员，在任务开始前可以自由退出任务，可以浏览同组成员的联系方式。在任务结束后可以评价成员和发布者。</string>
+    <string name="help_applicant">申请者和浏览者是尚未加入任务的成员，不可以浏览一个任务成员的联系方式，但是可以查看成员的评价得分。</string>
+    <string name="help_create">当任务刚刚创建时，任何人可以申请加入任务，发布者可以同意或拒绝申请，踢出成员，删除任务。成员可以自由退出任务和再次申请</string>
+    <string name="help_doing">任务开始后，进入进行状态，成员不可以退出任务，发布者不可以删除任务或踢出成员，所有申请将被清空，不可再申请加入任务。</string>
+    <string name="help_completed">任务完成后，任务的组内成员之间可以相互进行评价。</string>
 </resources>

@@ -14,7 +14,7 @@ public class Message implements  IMessage{
 
     List<Integer> recipientIDs;
 
-    public static final String TYPE_REPORT ="Report";
+    public static final String TYPE_REPORT ="Report", TYPE_BUG="Bug";
 
 
     @Override
