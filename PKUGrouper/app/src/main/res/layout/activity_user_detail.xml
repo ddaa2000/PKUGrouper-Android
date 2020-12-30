@@ -7,28 +7,43 @@
     android:orientation="vertical"
     tools:context=".UserDetailActivity">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:background="@color/beige_500"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBar"
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            <com.google.android.material.appbar.AppBarLayout
+                android:background="@color/beige_500"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:menu="@menu/bottom_navigation_menu"
-                app:navigationIcon="@drawable/ic_launcher_foreground"
-                app:title="page title" />
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    app:titleMarginStart="70dp"
+                    app:titleTextColor="@color/white"
+                    app:title="PKUGrouper"
+                    android:background="@color/beige_500"
+                    android:id="@+id/topAppBar"
+                    style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize" />
 
 
-        </com.google.android.material.appbar.AppBarLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
 
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <ImageView
+            app:srcCompat="@drawable/icon"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="50dp"
+            android:layout_weight="0"
+            android:layout_height="50dp"/>
+    </FrameLayout>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -84,6 +99,7 @@
                             android:textAppearance="?attr/textAppearanceHeadline6" />
 
                         <View
+                            android:layout_marginVertical="5dp"
                             android:id="@+id/divider2"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"

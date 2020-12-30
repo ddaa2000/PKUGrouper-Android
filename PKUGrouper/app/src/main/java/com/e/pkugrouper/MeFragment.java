@@ -146,22 +146,7 @@ public class MeFragment extends Fragment {
         progressBars.add(v.findViewById(R.id.me_progress4));
         progressBars.add(v.findViewById(R.id.me_progress5));
 
-        for(View view : contents){
-            view.setVisibility(View.INVISIBLE);
-        }
-        for(ProgressBar progressBar : progressBars){
-            progressBar.setVisibility(View.VISIBLE);
-        }
-        for(MaterialCardView card : cards){
-            final ObjectAnimator anim1 = ObjectAnimator.ofFloat(card,"scaleX",0f,1f);
-            final ObjectAnimator anim2 = ObjectAnimator.ofFloat(card,"scaleY",0f,1f);
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.playTogether(anim1,anim2);
-            animatorSet.setDuration((long)(Math.random()*300+150));
-            animatorSet.start();
-        }
 
-        new UserLoadTask().execute();
 
         return v;
     }
@@ -312,6 +297,21 @@ public class MeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        for(View view : contents){
+            view.setVisibility(View.INVISIBLE);
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        for(MaterialCardView card : cards){
+            final ObjectAnimator anim1 = ObjectAnimator.ofFloat(card,"scaleX",0f,1f);
+            final ObjectAnimator anim2 = ObjectAnimator.ofFloat(card,"scaleY",0f,1f);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(anim1,anim2);
+            animatorSet.setDuration((long)(Math.random()*300+150));
+            animatorSet.start();
+        }
+
         new UserLoadTask().execute();
     }
 }

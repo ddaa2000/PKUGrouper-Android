@@ -1,10 +1,14 @@
 package com.e.pkugrouper;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.e.pkugrouper.HelloWorldFragment;
 import com.e.pkugrouper.Managers.MessageManager;
@@ -39,4 +43,9 @@ public class MainActivity extends AppCompatActivity {
             fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
     }
 
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        Toast.makeText(this,"selected",2).show();
+        return super.onContextItemSelected(item);
+    }
 }

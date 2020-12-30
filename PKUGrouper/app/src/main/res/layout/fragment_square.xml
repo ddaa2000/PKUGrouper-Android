@@ -30,6 +30,9 @@
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.appbar.MaterialToolbar
+                        app:titleMarginStart="70dp"
+                        app:titleTextColor="@color/white"
+                        app:title="PKUGrouper"
                         android:background="@color/beige_500"
                         android:id="@+id/topAppBar"
                         style="@style/Widget.MaterialComponents.Toolbar.Primary"
@@ -48,26 +51,31 @@
                 android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content">
                 <ImageView
-                    app:srcCompat="@drawable/title_small"
-                    android:layout_width="80dp"
+                    app:srcCompat="@drawable/icon"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="50dp"
                     android:layout_weight="0"
                     android:layout_height="50dp"/>
-<!--                <com.google.android.material.textfield.TextInputLayout-->
-<!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--                    android:layout_marginHorizontal="10dp"-->
-<!--                    app:boxBackgroundColor="@color/beige_25"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content">-->
-<!--                    <com.google.android.material.textfield.TextInputEditText-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="30dp"/>-->
-<!--                </com.google.android.material.textfield.TextInputLayout>-->
                 <SearchView
+                    android:visibility="gone"
                     android:id="@+id/squareSearchView"
                     android:layout_width="match_parent"
                     android:elevation="20dp"
                     android:iconifiedByDefault="false"
                     android:layout_height="40dp" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="10dp"
+                    android:layout_weight="1"/>
+                <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/transparent"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/zoom"/>
 
             </LinearLayout>
 

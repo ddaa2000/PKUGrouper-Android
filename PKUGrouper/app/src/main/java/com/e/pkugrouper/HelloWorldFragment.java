@@ -1,5 +1,7 @@
 package com.e.pkugrouper;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -38,6 +40,8 @@ public class HelloWorldFragment extends Fragment {
     private TabLayout logInRegisterTab;
     private ViewPager2 viewPager;
     private LogInRegisterAdpater logInRegisterAdpater;
+
+    private View logoPage;
 
     public HelloWorldFragment() {
         // Required empty public constructor
@@ -79,28 +83,39 @@ public class HelloWorldFragment extends Fragment {
         Log.e("hello created","hello created");
         View v = inflater.inflate(R.layout.fragment_hello_world, container, false);
 
+        logoPage = v.findViewById(R.id.logInRegister_logoPage);
+
         viewPager = v.findViewById(R.id.logInRegisterViewPager);
         logInRegisterTab = v.findViewById(R.id.logInRegisterTab);
 
-        //FragmentManager fm = getActivity().getSupportFragmentManager();
-        //Fragment fragment = new LoginFragment();
-       // fm.beginTransaction().replace(R.id.logInFrame,fragment).commit();
+        final ObjectAnimator anim = ObjectAnimator.ofFloat(logoPage,"alpha",1f,0f)
+                .setDuration(500);
+        anim.setStartDelay(4000);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
+            }
 
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                logoPage.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        anim.start();
 
 
         Log.e("setup over","hello created");
-        /*
-        helloButton = v.findViewById(R.id.HelloButton);
-        helloButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                Fragment fragment = new MainViewFragment();
-                fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
-            }
-        });
-        */
         return v;
     }
 

@@ -33,6 +33,9 @@
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.appbar.MaterialToolbar
+                            app:titleMarginStart="70dp"
+                            app:titleTextColor="@color/white"
+                            app:title="PKUGrouper"
                             android:background="@color/beige_500"
                             android:id="@+id/topAppBar"
                             style="@style/Widget.MaterialComponents.Toolbar.Primary"
@@ -46,10 +49,12 @@
 
                 </androidx.coordinatorlayout.widget.CoordinatorLayout>
                 <ImageView
-                    app:srcCompat="@drawable/pkugrouper_withicon"
-                    android:layout_width="100dp"
+                    app:srcCompat="@drawable/icon"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="50dp"
                     android:layout_weight="0"
-                    android:layout_height="55dp"/>
+                    android:layout_height="50dp"/>
 
             </FrameLayout>
 

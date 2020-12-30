@@ -237,6 +237,21 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
 
     @Override
     public void OnDialogCompleted() {
+        evaluationCard.setVisibility(View.GONE);
+        if(!GlobalObjects.currentMission.hasPublisher(GlobalObjects.currentUser)
+                || GlobalObjects.currentMission.isFinished()){
+            manageCard.setVisibility(View.GONE);
+        }
+        if(GlobalObjects.currentMission.isFinished()){
+            evaluationCard.setVisibility(View.VISIBLE);
+        }
+
+        for(View view : contents){
+            view.setVisibility(View.INVISIBLE);
+        }
+        for(ProgressBar progressBar : progressBars){
+            progressBar.setVisibility(View.VISIBLE);
+        }
         new UserDetailLoadTask().execute();
     }
 
@@ -320,6 +335,8 @@ public class UserDetailActivity extends AppCompatActivity implements  DialogComp
                 }else{
                     isapplicant=Boolean.FALSE;
                 }
+                GlobalObjects.currentMember = GlobalObjects.userManager
+                        .findMemberByID(GlobalObjects.currentMission.getID(),GlobalObjects.currentMember.getUserID());
                 List<Integer> evaluationlist=GlobalObjects.currentMember.getEvaluationIDs();
                 String url = "/user/evaluation";
                 for(Integer evaluationID:evaluationlist){
