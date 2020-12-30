@@ -154,12 +154,12 @@ public class MissionFragment extends Fragment {
         missionRecyclerView = v.findViewById(R.id.mission_list);
         missionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         missionRecyclerView.setAdapter(missionAdapter);
-        missionRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
-            @Override
-            public void onLoadMore() {
-                missionAdapter.setLoadState(missionAdapter.LOADING);
-            }
-        });
+//        missionRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+//            @Override
+//            public void onLoadMore() {
+//                missionAdapter.setLoadState(missionAdapter.LOADING);
+//            }
+//        });
 
         swipeRefreshLayout = v.findViewById(R.id.missionList_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
