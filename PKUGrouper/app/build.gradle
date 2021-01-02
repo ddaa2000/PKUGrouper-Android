@@ -3,6 +3,18 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        demo {
+            storeFile file('C:\\Users\\ddaa\\SignedKey.jks')
+            storePassword '114555'
+            keyPassword '114555'
+            keyAlias 'key0'
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 

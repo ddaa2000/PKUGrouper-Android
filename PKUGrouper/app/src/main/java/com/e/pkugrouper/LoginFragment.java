@@ -8,7 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -43,11 +45,11 @@ public class LoginFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
 
+
+
         userNameEditText = v.findViewById(R.id.logInUserNameEditText);
         passwordEditText = v.findViewById(R.id.logInPasswordEditText);
 
-        userNameEditText.setText("1800013008@pku.edu.cn");
-        passwordEditText.setText("12345678");
 
         logInButton = v.findViewById(R.id.logInButton);
         logInButton.setOnClickListener(new View.OnClickListener(){
@@ -70,6 +72,7 @@ public class LoginFragment extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         Fragment fragment = new MainViewFragment();
         fm.beginTransaction().replace(R.id.main_frame,fragment).commit();
+
     }
 
     private final int TIME_EXCEEDED = 0, WRONG_USER_OR_PASSWORD = 1, UNKNOWN_FAILURE = 2, SERVER_FAILURE = 3;
